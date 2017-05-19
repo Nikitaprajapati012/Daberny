@@ -1,0 +1,196 @@
+<resources>
+    <string name="app_name">Daberny</string>
+    <string name="daberny">Daberny</string>
+    <string name="fb">Lets Choose the Way for Join.</string>
+    <string name="votingdesc">Its Quiz time.</string>
+    <string name="usernameoremail">Username or Email</string>
+    <string name="username">Username</string>
+    <string name="fullname">Full Name</string>
+    <string name="country">Country</string>
+    <string name="editprofile">Edit Profile</string>
+    <string name="follow">Follow</string>
+    <string name="block">Block</string>
+    <string name="unfollow">UnFollow</string>
+    <string name="unblock">UnBlock</string>
+    <string name="phone">Phone</string>
+    <string name="male">Male</string>
+    <string name="female">Female</string>
+    <string name="language">Select Language</string>
+
+
+    <string name="repassword">RePassword</string>
+
+    <string name="reg">Register Now</string>
+    <string name="next">Next</string>
+    <string name="signup">Sign Up</string>
+    <string name="signin">Sign In</string>
+    <string name="logout">Logout</string>
+    <string name="or">OR</string>
+
+    <string name="fblogin">Log In With Facebook.</string>
+    <string name="gmaillogin">Log In With Gmail.</string>
+    <string name="term_and_condition">I have read the Terms</string>
+
+    <!-- Subject select dialog -->
+    <string-array name="subject_select">
+        <item></item>
+        <item></item>
+
+    </string-array>
+
+    <!-- Subject select reason for block -->
+    <string-array name="reason_select">
+        <item>I am not interested in this account</item>
+        <item>There are posting spam</item>
+        <item>Their account may be hacked</item>
+        <item>They are being abusive or harmful</item>
+
+    </string-array>
+    <string name="report_user">Report User</string>
+
+    <!-- Login screen-->
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="login">LOGIN</string>
+    <string name="forgot">Forgot your login details? Get help signing in.</string>
+    <string name="dont_account">Dont have an account?</string>
+    <string name="already_account">Already have an account</string>
+    <string name="reg_here">Register Here</string>
+    <string name="login_here">Login Here</string>
+    <string name="account">Don/t have an account?</string>
+    <string name="forgot_pwd">Forgot Password ?</string>
+    <string name="or_signinwith">or Sign in with</string>
+    <string name="rememberme">Remember me</string>
+    <string name="facebooklogin">Login in with facebook</string>
+
+
+    <!-- Facebook Login screen-->
+    <string name="facebook_app_id">1303556883000422</string>
+
+    <!-- Interest  screen-->
+    <string name="interest_movie">Movie</string>
+    <string name="interest_music">Music</string>
+    <string name="interest_reading">Reading</string>
+    <string name="interest_writing">Writing</string>
+    <string name="interest_back">Back</string>
+    <string name="interest_save">Save</string>
+    <string name="interest">Interest</string>
+
+    <!-- Home list-->
+    <string name="home_like">Like</string>
+    <string name="home_fb">Facebook</string>
+    <string name="home_twitter">Twitter</string>
+    <string name="home_write_comment">Write a Comment</string>
+    <string name="home_comment">Comment</string>
+    <string name="general">General</string>
+    <string name="title">Title</string>
+    <string name="option1">Option1</string>
+    <string name="option2">Option2</string>
+    <string name="option3">Option3</string>
+    <string name="option4">Option4</string>
+    <string name="tag">Tags</string>
+    <string name="file">File (media file)</string>
+    <string name="choosefile">Choose file</string>
+    <string name="chooseinterest">Choose your interest</string>
+    <string name="addtime">Add Time</string>
+
+    <string-array name="time">
+
+        <item>Add Time Duration*</item>
+        <item>00:30:00</item>
+        <item>01:00:00</item>
+        <item>01:30:00</item>
+        <item>02:00:00</item>
+        <item>02:30:00</item>
+        <item>03:00:00</item>
+        <item>03:30:00</item>
+        <item>04:00:00</item>
+        <item>04:30:00</item>
+        <item>05:00:00</item>
+        <item>05:30:00</item>
+        <item>06:00:00</item>
+        <item>06:30:00</item>
+        <item>07:00:00</item>
+        <item>07:30:00</item>
+        <item>08:00:00</item>
+        <item>08:30:00</item>
+        <item>09:00:00</item>
+        <item>09:30:00</item>
+        <item>10:00:00</item>
+        <item>10:30:00</item>
+        <item>11:00:00</item>
+        <item>11:30:00</item>
+        <item>12:00:00</item>
+        <item>12:30:00</item>
+        <item>13:00:00</item>
+        <item>13:30:00</item>
+        <item>14:00:00</item>
+        <item>14:30:00</item>
+        <item>15:00:00</item>
+        <item>15:30:00</item>
+        <item>16:00:00</item>
+        <item>16:30:00</item>
+        <item>17:00:00</item>
+        <item>17:30:00</item>
+        <item>18:00:00</item>
+        <item>18:30:00</item>
+        <item>19:00:00</item>
+        <item>19:30:00</item>
+        <item>20:00:00</item>
+        <item>20:30:00</item>
+        <item>21:00:00</item>
+        <item>21:30:00</item>
+        <item>22:00:00</item>
+        <item>22:30:00</item>
+        <item>23:00:00</item>
+        <item>23:30:00</item>
+
+    </string-array>
+
+    <string-array name="sports_array">
+        <item>Shuttle Badminton</item>
+        <item>Tennis</item>
+        <item>Table Tennis</item>
+        <item>Basket Ball</item>
+        <item>Foot Ball</item>
+        <item>Volley Ball</item>
+        <item>Hockey</item>
+        <item>Swimming</item>
+
+        <item>Shuttle Badminton 2</item>
+        <item>Tennis 2</item>
+        <item>Table Tennis 2</item>
+        <item>Basket Ball 2</item>
+        <item>Foot Ball 2</item>
+        <item>Volley Ball 2</item>
+        <item>Hockey 2</item>
+        <item>Swimming 2</item>
+
+        <item>Shuttle Badminton 3</item>
+        <item>Tennis 3</item>
+        <item>Table Tennis 3</item>
+        <item>Basket Ball 3</item>
+        <item>Foot Ball 3</item>
+        <item>Volley Ball 3</item>
+        <item>Hockey 3</item>
+        <item>Swimming 3</item>
+
+        <item>Shuttle Badminton 4</item>
+        <item>Tennis 4</item>
+        <item>Table Tennis 4</item>
+        <item>Basket Ball 4</item>
+        <item>Foot Ball 4</item>
+        <item>Volley Ball 4</item>
+        <item>Hockey 4</item>
+        <item>Swimming 4</item>
+
+        <item>Shuttle Badminton 5</item>
+        <item>Tennis 5</item>
+        <item>Table Tennis 5</item>
+        <item>Basket Ball 5</item>
+        <item>Foot Ball 5</item>
+        <item>Volley Ball 5</item>
+        <item>Hockey 5</item>
+        <item>Swimming 5</item>
+    </string-array>
+</resources>

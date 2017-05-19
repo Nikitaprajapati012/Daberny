@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:id="@+id/activity_interest_header"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_50sdp"
+                android:background="@color/blue"
+                android:padding="@dimen/_5sdp"
+                android:weightSum="3">
+
+                <TextView
+                    android:id="@+id/activity_interest_txtback"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:gravity="center|top|left"
+                    android:paddingTop="@dimen/_10sdp"
+                    android:text="@string/interest_back"
+                    android:layout_weight="1"
+                    android:textColor="@android:color/white"
+                    android:textSize="@dimen/_18sdp" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:gravity="center|top"
+                    android:paddingTop="@dimen/_10sdp"
+                    android:text="@string/interest"
+                    android:layout_weight="1"
+                    android:textColor="@android:color/white"
+                    android:textSize="@dimen/_18sdp" />
+
+                <TextView
+                    android:id="@+id/activity_interest_txtsave"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center|top|right"
+                    android:gravity="center|top|right"
+                    android:paddingTop="@dimen/_10sdp"
+                    android:text="@string/interest_save"
+                    android:layout_weight="1"
+                    android:textColor="@android:color/white"
+                    android:textSize="@dimen/_18sdp" />
+            </LinearLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@+id/activity_interest_header"
+                android:layout_marginTop="@dimen/_10sdp">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center"
+                        android:layout_toLeftOf="@+id/activity_interest_spinnerInterest"
+                        android:gravity="center"
+                        android:text="Interests"
+                        android:textSize="@dimen/_15sdp"
+                        android:textStyle="bold" />
+
+                    <com.example.raviarchi.multiplespinner.MultiSelectionSpinner
+                        android:id="@+id/activity_interest_spinnerInterest"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/_40sdp"
+                        android:background="@android:color/transparent"
+                        android:gravity="center|right"
+                        android:textColor="@color/black"
+                        android:textColorHint="@color/black" />
+
+                </LinearLayout>
+            </RelativeLayout>
+
+        </LinearLayout>
+    </ScrollView>
+</RelativeLayout>

@@ -1,0 +1,287 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_login"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".Activity.Activity.LoginActivity">
+
+    <RelativeLayout
+        android:id="@+id/headerview"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_40sdp">
+        <include layout="@layout/header_layout" />
+    </RelativeLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scrollbars="none">
+
+        <LinearLayout
+            android:id="@+id/activity_login_linearlyout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="@dimen/_15sdp"
+            android:layout_marginBottom="@dimen/_25sdp"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_100sdp"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/logo" />
+            </LinearLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_45sdp"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:gravity="center">
+
+                <ImageView
+                    android:id="@+id/activity_login_user"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_margin="@dimen/_5sdp"
+                    android:padding="@dimen/_5sdp"
+                    android:src="@drawable/ic_userlogin" />
+
+                <EditText
+                    android:id="@+id/actvity_login_edituname"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_toRightOf="@+id/activity_login_user"
+                    android:background="@android:color/transparent"
+                    android:gravity="center|left"
+                    android:hint="@string/username"
+                    android:textColor="@color/signin_text"
+                    android:textColorHint="@color/logintext"
+                    android:textSize="@dimen/_12sdp" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_45sdp"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:gravity="center_vertical">
+
+                <ImageView
+                    android:id="@+id/activity_login_password"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_margin="@dimen/_5sdp"
+                    android:padding="@dimen/_5sdp"
+                    android:src="@drawable/ic_pwd" />
+
+                <EditText
+                    android:id="@+id/actvity_login_edpassword"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_toRightOf="@+id/activity_login_password"
+                    android:background="@android:color/transparent"
+                    android:gravity="center|left"
+                    android:hint="@string/password"
+                    android:textColor="@color/signin_text"
+                    android:textColorHint="@color/logintext"
+                    android:textSize="@dimen/_12sdp" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_45sdp"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:gravity="center_vertical">
+
+                <CheckBox
+                    android:id="@+id/activity_login_ckrememberme"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_margin="@dimen/_5sdp"
+                    android:padding="@dimen/_5sdp"
+                    android:src="@drawable/ic_pwd" />
+
+                <EditText
+                    android:id="@+id/actvity_login_edrememberme"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_toRightOf="@+id/activity_login_ckrememberme"
+                    android:background="@android:color/transparent"
+                    android:gravity="center|left"
+                    android:hint="@string/rememberme"
+                    android:textColor="@color/signin_text"
+                    android:textColorHint="@color/logintext"
+                    android:textSize="@dimen/_12sdp" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_45sdp"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:background="@color/signin_bg"
+                android:gravity="center_vertical">
+
+                <LinearLayout
+                    android:id="@+id/activity_login_layoutsignin"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    android:weightSum="2">
+
+                    <TextView
+                        android:id="@+id/activity_login_txtsignin"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="0.4"
+                        android:background="@android:color/transparent"
+                        android:gravity="center"
+                        android:paddingLeft="@dimen/_40sdp"
+                        android:text="@string/signin"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/_15sdp" />
+
+                    <ImageView
+                        android:id="@+id/activity_login_imgsignin"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_toRightOf="@+id/activity_login_txtsignin"
+                        android:layout_weight="1.6"
+                        android:padding="@dimen/_12sdp"
+                        android:src="@drawable/ic_rightsign" />
+                </LinearLayout>
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_centerVertical="true"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:gravity="center_vertical">
+
+                <TextView
+                    android:id="@+id/actvity_login_txtor"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_centerInParent="true"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:background="@android:color/transparent"
+                    android:gravity="center"
+                    android:text="@string/or_signinwith"
+                    android:textColor="@color/signin_text"
+                    android:textSize="@dimen/_11sdp" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="16dp"
+                    android:layout_toLeftOf="@id/actvity_login_txtor"
+                    android:background="@color/signin_text" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="16dp"
+                    android:layout_toRightOf="@id/actvity_login_txtor"
+                    android:background="@color/signin_text" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_45sdp"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:background="@drawable/loginborder"
+                android:gravity="center_vertical">
+
+                <LinearLayout
+                    android:id="@+id/activity_login_layoutsigninwithfb"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    android:weightSum="2">
+
+                    <com.facebook.login.widget.LoginButton
+                        android:id="@+id/btnfblogin"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_marginTop="30dp"
+                        android:visibility="gone" />
+
+                    <TextView
+                        android:id="@+id/activity_login_txtsigninwithfb"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="0.4"
+                        android:background="@android:color/transparent"
+                        android:gravity="center"
+                        android:paddingLeft="@dimen/_40sdp"
+                        android:text="@string/facebooklogin"
+                        android:textColor="@color/signin_text"
+                        android:textSize="@dimen/_15sdp" />
+
+                    <ImageView
+                        android:id="@+id/activity_login_imgsigninwithfb"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_toRightOf="@+id/activity_login_txtsignin"
+                        android:layout_weight="1.6"
+                        android:padding="@dimen/_12sdp"
+                        android:src="@drawable/ic_facebook" />
+                </LinearLayout>
+            </RelativeLayout>
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_45sdp"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:gravity="center_vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="@dimen/_10sdp"
+                    android:weightSum="2">
+
+                    <TextView
+                        android:id="@+id/activity_login_txtaccount"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="0.8"
+                        android:background="@android:color/transparent"
+                        android:gravity="center|right"
+                        android:paddingRight="@dimen/_5sdp"
+                        android:text="@string/dont_account"
+                        android:textColor="@color/signin_text"
+                        android:textSize="@dimen/_12sdp" />
+
+                   <TextView
+                        android:id="@+id/activity_login_txtsignuphere"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1.2"
+                        android:background="@android:color/transparent"
+                        android:gravity="center|left"
+                        android:text="@string/reg_here"
+                        android:textColor="@color/signin_bg"
+                        android:textSize="@dimen/_12sdp" />
+
+
+                </LinearLayout>
+            </RelativeLayout>
+
+        </LinearLayout>
+    </ScrollView>
+</LinearLayout>
+
+
+

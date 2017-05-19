@@ -1,0 +1,579 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/blue">
+
+        <TextView
+            android:id="@+id/fragment_user_profile_txttitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:paddingTop="@dimen/_5sdp"
+            android:text="Profile"
+            android:textColor="@color/white"
+            android:textSize="@dimen/_15sdp"
+            android:textStyle="bold" />
+
+    </RelativeLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <ImageView
+                android:id="@+id/fragment_user_profile_imgBrowse"
+                android:layout_width="@dimen/_30sdp"
+                android:layout_height="@dimen/_30sdp"
+                android:layout_gravity="center|right"
+                android:layout_marginLeft="@dimen/_270sdp"
+                android:gravity="center|right"
+                android:src="@drawable/ic_blue_dot" />
+
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/_45sdp"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_5sdp"
+                        android:orientation="vertical"
+                        android:weightSum="2">
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:orientation="horizontal"
+                            android:weightSum="2">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:layout_weight="1.5"
+                                android:gravity="center"
+                                android:orientation="vertical"
+                                android:padding="@dimen/_5sdp"
+                                android:weightSum="3">
+
+                                <de.hdodenhof.circleimageview.CircleImageView
+                                    android:id="@+id/fragment_user_profile_imgphoto"
+                                    android:layout_width="80dp"
+                                    android:layout_height="80dp"
+                                    android:layout_gravity="center|left"
+                                    android:layout_weight="2"
+                                    android:gravity="center|left"
+                                    android:padding="@dimen/_10sdp"
+                                    android:src="@drawable/ic_placeholder" />
+
+                                <TextView
+                                    android:id="@+id/fragment_user_profile_txtusername"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center|left"
+                                    android:gravity="center|left"
+                                    android:paddingLeft="@dimen/_10sdp"
+                                    android:text="@string/username" />
+                            </LinearLayout>
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="0.5"
+                                android:orientation="vertical"
+                                android:weightSum="2">
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:gravity="center"
+                                    android:orientation="horizontal"
+                                    android:padding="@dimen/_5sdp"
+                                    android:weightSum="3">
+
+                                    <LinearLayout
+                                        android:id="@+id/fragment_user_profile_layoutposts"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:layout_weight="1"
+                                        android:orientation="vertical"
+                                        android:weightSum="2">
+
+                                        <TextView
+                                            android:id="@+id/fragment_user_profile_txtposts"
+                                            android:layout_width="match_parent"
+                                            android:layout_height="match_parent"
+                                            android:layout_gravity="center"
+                                            android:layout_weight="1"
+                                            android:gravity="center"
+                                            android:text="0"
+                                            android:textColor="@color/blue"
+                                            android:textSize="@dimen/_12sdp"
+                                            android:textStyle="bold" />
+
+                                        <TextView
+                                            android:layout_width="match_parent"
+                                            android:layout_height="match_parent"
+                                            android:layout_gravity="center"
+                                            android:layout_weight="1"
+                                            android:gravity="center"
+                                            android:text="POSTS"
+                                            android:textColor="@color/blue"
+                                            android:textSize="@dimen/_11sdp" />
+                                    </LinearLayout>
+
+                                    <LinearLayout
+                                        android:id="@+id/fragment_user_profile_layoutfollowers"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:layout_weight="1"
+                                        android:orientation="vertical"
+                                        android:weightSum="2">
+
+                                        <TextView
+                                            android:id="@+id/fragment_user_profile_txtfollowers"
+                                            android:layout_width="match_parent"
+                                            android:layout_height="match_parent"
+                                            android:layout_gravity="center"
+                                            android:layout_weight="1"
+                                            android:gravity="center"
+                                            android:text="0"
+                                            android:textColor="@color/blue"
+                                            android:textSize="@dimen/_12sdp"
+                                            android:textStyle="bold" />
+
+                                        <TextView
+                                            android:layout_width="match_parent"
+                                            android:layout_height="match_parent"
+                                            android:layout_gravity="center"
+                                            android:layout_weight="1"
+                                            android:gravity="center"
+                                            android:text="FOLLOWERS"
+                                            android:textColor="@color/blue"
+                                            android:textSize="@dimen/_11sdp" />
+                                    </LinearLayout>
+
+                                    <LinearLayout
+                                        android:id="@+id/fragment_user_profile_layoutfollowing"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:layout_weight="1"
+                                        android:orientation="vertical"
+                                        android:weightSum="2">
+
+                                        <TextView
+                                            android:id="@+id/fragment_user_profile_txtfollowing"
+                                            android:layout_width="match_parent"
+                                            android:layout_height="match_parent"
+                                            android:layout_gravity="center"
+                                            android:layout_weight="1"
+                                            android:gravity="center"
+                                            android:text="0"
+                                            android:textColor="@color/blue"
+                                            android:textSize="@dimen/_12sdp"
+                                            android:textStyle="bold" />
+
+                                        <TextView
+                                            android:layout_width="match_parent"
+                                            android:layout_height="match_parent"
+                                            android:layout_gravity="center"
+                                            android:layout_weight="1"
+                                            android:gravity="center"
+                                            android:text="FOLLOWING"
+                                            android:textColor="@color/blue"
+                                            android:textSize="@dimen/_11sdp" />
+                                    </LinearLayout>
+
+                                </LinearLayout>
+
+
+                            </LinearLayout>
+                        </LinearLayout>
+
+                        <TextView
+                            android:id="@+id/fragment_user_profile_txteditprofile"
+                            android:layout_width="@dimen/_150sdp"
+                            android:layout_height="@dimen/_30sdp"
+                            android:layout_gravity="center|right"
+                            android:layout_marginTop="@dimen/_5sdp"
+                            android:layout_weight="1"
+                            android:background="@color/blue"
+                            android:gravity="center"
+                            android:text="@string/editprofile"
+                            android:textColor="@color/white"
+                            android:textSize="@dimen/_12sdp"
+                            android:textStyle="bold" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="@dimen/_5sdp"
+                        android:gravity="center"
+                        android:orientation="vertical"
+                        android:weightSum="4">
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/_2sdp" />
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:orientation="vertical"
+                            android:weightSum="2">
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_weight="1"
+                                android:orientation="horizontal"
+                                android:weightSum="2">
+
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:layout_weight="1.5"
+                                    android:text="Interests :"
+                                    android:textSize="@dimen/_15sdp"
+                                    android:textStyle="bold" />
+
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:layout_weight="0.5"
+                                    android:orientation="horizontal"
+                                    android:weightSum="1">
+
+                                    <TextView
+                                        android:id="@+id/fragment_user_profile_txtinterest1"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:layout_weight="1"
+                                        android:text="interest1"
+                                        android:textSize="@dimen/_15sdp" />
+
+                                    <!-- <TextView
+                                         android:id="@+id/fragment_user_profile_txtinterest2"
+                                         android:layout_width="match_parent"
+                                         android:layout_height="match_parent"
+                                         android:layout_weight="1"
+                                         android:text="interest2"
+                                         android:textSize="@dimen/_15sdp" />
+
+                                     <TextView
+                                         android:id="@+id/fragment_user_profile_txtinterest3"
+                                         android:layout_width="match_parent"
+                                         android:layout_height="match_parent"
+                                         android:layout_weight="1"
+                                         android:text="interest3"
+                                         android:textSize="@dimen/_15sdp" />-->
+                                </LinearLayout>
+                            </LinearLayout>
+
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_weight="1"
+                                android:orientation="vertical">
+
+                                <LinearLayout
+                                    android:id="@+id/fragment_user_profile_layout_interest_first"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:layout_marginTop="@dimen/_5sdp"
+                                    android:layout_weight="1"
+                                    android:orientation="vertical"
+                                    android:weightSum="2">
+
+                                    <TextView
+                                        android:id="@+id/fragment_user_profile_txtinterestchart1"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:layout_weight="1"
+                                        android:text="Interest1 :"
+                                        android:textSize="@dimen/_15sdp"
+                                        android:textStyle="bold" />
+
+                                    <LinearLayout
+                                        android:layout_width="match_parent"
+                                        android:layout_height="@dimen/_50sdp"
+                                        android:orientation="horizontal"
+                                        android:weightSum="3">
+
+                                        <LinearLayout
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="match_parent"
+                                            android:orientation="vertical">
+
+                                            <TextView
+                                                android:id="@+id/fragment_user_profile_txtlevelstart1"
+                                                android:layout_width="wrap_content"
+                                                android:layout_height="match_parent"
+                                                android:layout_gravity="center|left"
+                                                android:layout_weight="0.5"
+                                                android:gravity="center|left"
+                                                android:text="Beginner"
+                                                android:textSize="@dimen/_11sdp" />
+
+                                            <TextView
+                                                android:id="@+id/fragment_user_profile_txtlevelstartpoints1"
+                                                android:layout_width="wrap_content"
+                                                android:layout_height="match_parent"
+                                                android:layout_gravity="center"
+                                                android:layout_weight="0.5"
+                                                android:gravity="center"
+                                                android:text="0"
+                                                android:textSize="@dimen/_11sdp" />
+
+                                        </LinearLayout>
+
+                                        <com.daimajia.numberprogressbar.NumberProgressBar
+                                            android:id="@+id/fragment_user_profile_progressbar1"
+                                            style="android: attr/progressBarStyleHorizontal"
+                                            android:layout_width="@dimen/_200sdp"
+                                            android:layout_height="match_parent"
+                                            android:layout_weight="2"
+                                            android:background="@color/com_facebook_button_border_color_focused"
+                                            android:padding="@dimen/_5sdp"
+                                            app:progress_max="100" />
+
+                                        <LinearLayout
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="match_parent"
+                                            android:orientation="vertical">
+
+                                            <TextView
+                                                android:id="@+id/fragment_user_profile_txtlevelend1"
+                                                android:layout_width="wrap_content"
+                                                android:layout_height="match_parent"
+                                                android:layout_gravity="center|right"
+                                                android:layout_weight="0.5"
+                                                android:gravity="center|right"
+                                                android:text="Member"
+                                                android:textSize="@dimen/_11sdp" />
+
+                                            <TextView
+                                                android:id="@+id/fragment_user_profile_txtlevelendpoints1"
+                                                android:layout_width="wrap_content"
+                                                android:layout_height="match_parent"
+                                                android:layout_gravity="center"
+                                                android:layout_weight="0.5"
+                                                android:gravity="center"
+                                                android:text="44"
+                                                android:textSize="@dimen/_11sdp" />
+                                        </LinearLayout>
+                                    </LinearLayout>
+                                </LinearLayout>
+
+                                <LinearLayout
+                                    android:id="@+id/fragment_user_profile_layout_interest_second"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:layout_marginTop="@dimen/_5sdp"
+                                    android:layout_weight="1"
+                                    android:orientation="vertical"
+                                    android:weightSum="2">
+
+                                    <TextView
+                                        android:id="@+id/fragment_user_profile_txtinterestchart2"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:layout_weight="1"
+                                        android:text="Interest2 :"
+                                        android:textSize="@dimen/_15sdp"
+                                        android:textStyle="bold" />
+
+                                    <LinearLayout
+                                        android:layout_width="match_parent"
+                                        android:layout_height="@dimen/_50sdp"
+                                        android:orientation="horizontal"
+                                        android:weightSum="3">
+
+                                        <LinearLayout
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="match_parent"
+                                            android:orientation="vertical">
+
+                                            <TextView
+                                                android:id="@+id/fragment_user_profile_txtlevelstart2"
+                                                android:layout_width="wrap_content"
+                                                android:layout_height="match_parent"
+                                                android:layout_gravity="center|left"
+                                                android:layout_weight="0.5"
+                                                android:gravity="center|left"
+                                                android:text="Beginner"
+                                                android:textSize="@dimen/_11sdp" />
+
+                                            <TextView
+                                                android:id="@+id/fragment_user_profile_txtlevelstartpoints2"
+                                                android:layout_width="wrap_content"
+                                                android:layout_height="match_parent"
+                                                android:layout_gravity="center"
+                                                android:layout_weight="0.5"
+                                                android:gravity="center"
+                                                android:text="0"
+                                                android:textSize="@dimen/_11sdp" />
+                                        </LinearLayout>
+
+
+                                        <com.daimajia.numberprogressbar.NumberProgressBar
+                                            android:id="@+id/fragment_user_profile_progressbar2"
+                                            style="android: attr/progressBarStyleHorizontal"
+                                            android:layout_width="@dimen/_200sdp"
+                                            android:layout_height="match_parent"
+                                            android:layout_weight="2"
+                                            android:background="@color/com_facebook_button_border_color_focused"
+                                            android:padding="@dimen/_5sdp"
+                                            app:progress_max="100" />
+
+                                        <LinearLayout
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="match_parent"
+                                            android:orientation="vertical">
+
+                                            <TextView
+                                                android:id="@+id/fragment_user_profile_txtlevelend2"
+                                                android:layout_width="wrap_content"
+                                                android:layout_height="match_parent"
+                                                android:layout_gravity="center|right"
+                                                android:layout_weight="0.5"
+                                                android:gravity="center|right"
+                                                android:text="Member"
+                                                android:textSize="@dimen/_11sdp" />
+
+                                            <TextView
+                                                android:id="@+id/fragment_user_profile_txtlevelendpoints2"
+                                                android:layout_width="wrap_content"
+                                                android:layout_height="match_parent"
+                                                android:layout_gravity="center"
+                                                android:layout_weight="0.5"
+                                                android:gravity="center"
+                                                android:text="44"
+                                                android:textSize="@dimen/_11sdp" />
+                                        </LinearLayout>
+                                    </LinearLayout>
+                                </LinearLayout>
+
+                                <LinearLayout
+                                    android:id="@+id/fragment_user_profile_layout_interest_third"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:layout_marginTop="@dimen/_5sdp"
+                                    android:layout_weight="1"
+                                    android:orientation="vertical"
+                                    android:weightSum="2">
+
+                                    <TextView
+                                        android:id="@+id/fragment_user_profile_txtinterestchart3"
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:layout_weight="1"
+                                        android:text="Interest3 :"
+                                        android:textSize="@dimen/_15sdp"
+                                        android:textStyle="bold" />
+
+                                    <LinearLayout
+                                        android:layout_width="match_parent"
+                                        android:layout_height="@dimen/_50sdp"
+                                        android:orientation="horizontal"
+                                        android:weightSum="3">
+
+                                        <LinearLayout
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="match_parent"
+                                            android:orientation="vertical">
+
+                                            <TextView
+                                                android:id="@+id/fragment_user_profile_txtlevelstart3"
+                                                android:layout_width="wrap_content"
+                                                android:layout_height="match_parent"
+                                                android:layout_gravity="center|left"
+                                                android:layout_weight="0.5"
+                                                android:gravity="center|left"
+                                                android:text="Beginner"
+                                                android:textSize="@dimen/_11sdp" />
+
+                                            <TextView
+                                                android:id="@+id/fragment_user_profile_txtlevelstartpoints3"
+                                                android:layout_width="wrap_content"
+                                                android:layout_height="match_parent"
+                                                android:layout_gravity="center"
+                                                android:layout_weight="0.5"
+                                                android:gravity="center"
+                                                android:text="0"
+                                                android:textSize="@dimen/_11sdp" />
+
+                                        </LinearLayout>
+
+
+                                        <com.daimajia.numberprogressbar.NumberProgressBar
+                                            android:id="@+id/fragment_user_profile_progressbar3"
+                                            style="android: attr/progressBarStyleHorizontal"
+                                            android:layout_width="@dimen/_200sdp"
+                                            android:layout_height="match_parent"
+                                            android:layout_weight="2"
+                                            android:background="@color/com_facebook_button_border_color_focused"
+                                            android:padding="@dimen/_5sdp"
+                                            app:progress_max="100" />
+
+                                        <LinearLayout
+                                            android:layout_width="wrap_content"
+                                            android:layout_height="match_parent"
+                                            android:orientation="vertical">
+
+                                            <TextView
+                                                android:id="@+id/fragment_user_profile_txtlevelend3"
+                                                android:layout_width="wrap_content"
+                                                android:layout_height="match_parent"
+                                                android:layout_gravity="center|right"
+                                                android:layout_weight="0.5"
+                                                android:gravity="center|right"
+                                                android:text="Member"
+                                                android:textSize="@dimen/_11sdp" />
+
+                                            <TextView
+                                                android:id="@+id/fragment_user_profile_txtlevelendpoints3"
+                                                android:layout_width="wrap_content"
+                                                android:layout_height="match_parent"
+                                                android:layout_gravity="center"
+                                                android:layout_weight="0.5"
+                                                android:gravity="center"
+                                                android:text="44"
+                                                android:textSize="@dimen/_11sdp" />
+                                        </LinearLayout>
+                                    </LinearLayout>
+                                </LinearLayout>
+                            </LinearLayout>
+                        </LinearLayout>
+                    </LinearLayout>
+                </LinearLayout>
+            </ScrollView>
+        </LinearLayout>
+    </ScrollView>
+</RelativeLayout>
+
+

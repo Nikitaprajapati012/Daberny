@@ -1,0 +1,21 @@
+<resources>
+
+    <style name="AppBaseTheme" parent="@style/Theme.AppCompat.Light.DarkActionBar" />
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+
+
+    <!--<style name="MaterialSpinner" parent="Widget.AppCompat.Spinner">
+        <item name="rd_style">@style/Material.Drawable.Ripple.Wave.Light</item>
+        <item name="spn_labelEnable">true</item>
+        <item name="spn_labelTextSize">18sp</item>
+        <item name="spn_arrowSwitchMode">true</item>
+        <item name="spn_arrowAnimDuration">@android:integer/config_shortAnimTime</item>
+        <item name="spn_arrowInterpolator">@android:anim/decelerate_interpolator</item>
+    </style>-->
+</resources>

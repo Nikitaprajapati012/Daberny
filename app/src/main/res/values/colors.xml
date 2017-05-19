@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#FF4081</color>
+    <color name="green">#8bad74</color>
+    <color name="yellow">#eab05c</color>
+    <color name="blue">#110739</color>
+    <color name="dark">#525051</color>
+    <color name="light_blue">#012345</color>
+    <color name="purpole">#39103b</color>
+    <color name="white">#ffffff</color>
+    <color name="black">#000000</color>
+    <color name="red">#ff352b</color>
+    <color name="light_brown">#a84937</color>
+    <color name="pink">#b1455c</color>
+    <color name="brown">#704b52</color>
+    <color name="gray">#bfbfbf</color>
+    <color name="countdown">#000000</color>
+    <color name="countdownred">#ff0404</color>
+    <color name="bluebgcolor">#6d86af</color>
+    <color name="yesno">#55628f</color>
+    <color name="yesnobg">#d8deec</color>
+
+
+    <!-- Home screen-->
+    <color name="home_bg">#cfdae3</color>
+    <color name="follower_bg">#e6ebf1</color>
+
+
+    <!-- login screen-->
+    <color name="login_white">@color/white</color>
+    <color name="login_pink">@color/pink</color>
+    <color name="login_light_blue">@color/light_blue</color>
+    <color name="login_bg">#ababab</color>
+    <color name="signinbg">#16376d</color>
+    <color name="signin_text">#666666</color>
+    <color name="logintext">#5f5f5f</color>
+
+
+    <!-- splash screen-->
+    <color name="splash_white">@color/white</color>
+    <color name="splash_pink">@color/pink</color>
+    <color name="splash_light_blue">@color/light_blue</color>
+
+    <!-- FacebookLogin screen-->
+    <color name="facebooklogin_white">@color/white</color>
+    <color name="facebooklogin_pink">@color/pink</color>
+    <color name="facebooklogin_light_blue">@color/light_blue</color>
+
+    <!-- Main screen-->
+    <color name="main_white">@color/white</color>
+    <color name="main_pink">@color/pink</color>
+    <color name="main_light_blue">@color/light_blue</color>
+
+    <!-- User screen-->
+    <color name="userprofile_white">@color/white</color>
+    <color name="userprofile_pink">@color/pink</color>
+    <color name="userprofile_light_blue">@color/light_blue</color>
+
+    <!--Other User screen-->
+    <color name="otheruserprofile_white">@color/white</color>
+    <color name="otheruserprofile_pink">@color/pink</color>
+    <color name="otheruserprofile_light_blue">@color/light_blue</color>
+    <color name="otheruserprofile_sky_blue">@color/yesno</color>
+
+    <!--ask que screen-->
+    <color name="askque">#064a8a</color>
+    <color name="choosefile">#1083dc</color>
+</resources>

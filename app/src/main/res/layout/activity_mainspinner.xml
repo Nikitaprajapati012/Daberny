@@ -1,0 +1,40 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginBottom="10dp"
+    android:orientation="vertical"
+    tools:context=".Activity.Activity.MainSpinner">
+
+   <!-- <com.example.raviarchi.multiselectionsearchspinner.MultiSpinner
+        android:id="@+id/simpleMultiSpinner"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp"
+        android:visibility="gone"
+        app:hintText="Multi Selection" />-->
+
+    <com.example.raviarchi.multiselectionsearchspinner.MultiSpinnerSearch
+        android:id="@+id/searchMultiSpinner"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        app:hintText="Multi Selection With Filter" />
+
+  <!--  <com.example.raviarchi.multiselectionsearchspinner.SingleSpinnerSearch
+        android:id="@+id/searchSingleSpinner"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        app:hintText="Single Selection With Filter" />-->
+
+    <!--<com.example.raviarchi.multiselectionsearchspinner.SingleSpinner
+        android:id="@+id/singleSpinner"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        app:hintText="Single Selection" />
+-->
+
+</LinearLayout>

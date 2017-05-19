@@ -1,0 +1,70 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="bottom"
+    android:gravity="bottom">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/_40sdp"
+        android:layout_gravity="bottom"
+        android:layout_weight="5"
+        android:background="@color/signin_bg"
+        android:gravity="bottom"
+        android:orientation="horizontal"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true">
+
+        <ImageView
+            android:id="@+id/footer_imghome"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:padding="5dp"
+            android:src="@mipmap/ic_home" />
+
+        <ImageView
+            android:id="@+id/footer_imggeneral"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:padding="5dp"
+            android:src="@mipmap/ic_general" />
+
+        <ImageView
+
+            android:id="@+id/footer_imgaddquestion"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:padding="5dp"
+            android:src="@mipmap/ic_askque" />
+
+
+        <ImageView
+            android:id="@+id/footer_imgnotification"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:padding="5dp"
+            android:src="@mipmap/ic_notification" />
+
+        <ImageView
+            android:id="@+id/footer_imgsearch"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:padding="5dp"
+            android:src="@mipmap/ic_searchtab" />
+
+        <ImageView
+            android:id="@+id/footer_imguserprofile"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:padding="5dp"
+            android:src="@mipmap/ic_userprofile" />
+
+    </LinearLayout>
+</RelativeLayout>
