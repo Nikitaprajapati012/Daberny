@@ -266,6 +266,7 @@ public class UserProfile extends Fragment implements View.OnClickListener {
             for (int i=0;i<details.getUserRankPoints().size();i++){
                 Log.d("hi","&&"+details.getUserRankPoints().get(i) );
             }
+            //Hello
             txtInterestChartUserPoints1.setText("hjhjhuibhj");
 //            String firstInterest = Interest.split("/")[0];
 //            txtInterestChart1.setText(firstInterest);

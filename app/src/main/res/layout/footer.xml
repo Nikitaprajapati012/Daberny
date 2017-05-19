@@ -9,7 +9,7 @@
         android:layout_height="@dimen/_40sdp"
         android:layout_gravity="bottom"
         android:layout_weight="5"
-        android:background="@color/signin_bg"
+        android:background="@color/signinbg"
         android:gravity="bottom"
         android:orientation="horizontal"
         android:layout_alignParentTop="true"

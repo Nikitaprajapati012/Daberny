@@ -1,0 +1,1 @@
+include ':app', ':multiplespinner', ':multiselectionsearchspinner'

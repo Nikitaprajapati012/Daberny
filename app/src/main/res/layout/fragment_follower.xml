@@ -14,7 +14,7 @@
             android:id="@+id/fragment_follower_header"
             android:layout_width="match_parent"
             android:layout_height="@dimen/_50sdp"
-            android:background="@color/signin_bg"
+            android:background="@color/signinbg"
             android:padding="@dimen/_5sdp">
 
             <ImageView

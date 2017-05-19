@@ -125,7 +125,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/_45sdp"
                 android:layout_marginTop="@dimen/_10sdp"
-                android:background="@color/signin_bg"
+                android:background="@color/signinbg"
                 android:gravity="center_vertical">
 
                 <LinearLayout
@@ -264,7 +264,7 @@
                         android:textColor="@color/signin_text"
                         android:textSize="@dimen/_12sdp" />
 
-                   <TextView
+                    <TextView
                         android:id="@+id/activity_login_txtsignuphere"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
@@ -272,7 +272,7 @@
                         android:background="@android:color/transparent"
                         android:gravity="center|left"
                         android:text="@string/reg_here"
-                        android:textColor="@color/signin_bg"
+                        android:textColor="@color/signinbg"
                         android:textSize="@dimen/_12sdp" />
 
 
