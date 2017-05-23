@@ -12,40 +12,8 @@ public class UserProfileDetails {
     private ArrayList<String> endRankName;
     private ArrayList<String> endRankPoints;
     private ArrayList<String> totalRankPoints;
-
-    public ArrayList<String> getStartRankPoints() {
-        return startRankPoints;
-    }
-
-    public void setStartRankPoints(ArrayList<String> startRankPoints) {
-        this.startRankPoints = startRankPoints;
-    }
-
-    public ArrayList<String> getEndRankPoints() {
-        return endRankPoints;
-    }
-
-    public void setEndRankPoints(ArrayList<String> endRankPoints) {
-        this.endRankPoints = endRankPoints;
-    }
-
-    public ArrayList<String> getTotalRankPoints() {
-        return totalRankPoints;
-    }
-
-    public void setTotalRankPoints(ArrayList<String> totalRankPoints) {
-        this.totalRankPoints = totalRankPoints;
-    }
-
-    public ArrayList<String> getUserRankPoints() {
-        return userRankPoints;
-    }
-
-    public void setUserRankPoints(ArrayList<String> userRankPoints) {
-        this.userRankPoints = userRankPoints;
-    }
-
     private ArrayList<String> userRankPoints;
+    private ArrayList<String> userRankPercentage;
     private ArrayList<String> intId;
     private ArrayList<String> userFollowingId;
     private ArrayList<String> userFollowingName;
@@ -92,6 +60,19 @@ public class UserProfileDetails {
     private boolean isSelected;
     private String userFollowStatus;
     private String queLikeStatus;
+    private String queNotificationStatus;
+    private String queNotificationId;
+    private String queNotificationContentId;
+
+    public String getQueNotificationType() {
+        return queNotificationType;
+    }
+
+    public void setQueNotificationType(String queNotificationType) {
+        this.queNotificationType = queNotificationType;
+    }
+
+    private String queNotificationType;
     private String queRemainHour;
     private String queRemainMinute;
     private String queRemainSecond;
@@ -99,11 +80,73 @@ public class UserProfileDetails {
 
     public UserProfileDetails() {
     }
-
     public UserProfileDetails(String quename, boolean isSelected) {
         this.queTitle = quename;
         this.isSelected = isSelected;
+    }
 
+    public String getQueNotificationStatus() {
+        return queNotificationStatus;
+    }
+
+    public void setQueNotificationStatus(String queNotificationStatus) {
+        this.queNotificationStatus = queNotificationStatus;
+    }
+
+    public String getQueNotificationId() {
+        return queNotificationId;
+    }
+
+    public void setQueNotificationId(String queNotificationId) {
+        this.queNotificationId = queNotificationId;
+    }
+
+    public String getQueNotificationContentId() {
+        return queNotificationContentId;
+    }
+
+    public void setQueNotificationContentId(String queNotificationContentId) {
+        this.queNotificationContentId = queNotificationContentId;
+    }
+
+    public ArrayList<String> getUserRankPercentage() {
+        return userRankPercentage;
+    }
+
+    public void setUserRankPercentage(ArrayList<String> userRankPercentage) {
+        this.userRankPercentage = userRankPercentage;
+    }
+
+    public ArrayList<String> getStartRankPoints() {
+        return startRankPoints;
+    }
+
+    public void setStartRankPoints(ArrayList<String> startRankPoints) {
+        this.startRankPoints = startRankPoints;
+    }
+
+    public ArrayList<String> getEndRankPoints() {
+        return endRankPoints;
+    }
+
+    public void setEndRankPoints(ArrayList<String> endRankPoints) {
+        this.endRankPoints = endRankPoints;
+    }
+
+    public ArrayList<String> getTotalRankPoints() {
+        return totalRankPoints;
+    }
+
+    public void setTotalRankPoints(ArrayList<String> totalRankPoints) {
+        this.totalRankPoints = totalRankPoints;
+    }
+
+    public ArrayList<String> getUserRankPoints() {
+        return userRankPoints;
+    }
+
+    public void setUserRankPoints(ArrayList<String> userRankPoints) {
+        this.userRankPoints = userRankPoints;
     }
 
     public String getQueCommentUserId() {

@@ -370,6 +370,7 @@ public class UserProfile extends Fragment implements View.OnClickListener {
             Log.d("RESPONSE", "User Details..." + s);
             pd.dismiss();
             try {
+                //user profile
                 JSONObject jsonObject = new JSONObject(s);
                 if (jsonObject.getString("status").equalsIgnoreCase("true")) {
                     JSONObject userObject = jsonObject.getJSONObject("data");
@@ -393,8 +394,9 @@ public class UserProfile extends Fragment implements View.OnClickListener {
                     details.setUserImage(userObject.getString("image"));
                     details.setUserCountryId(userObject.getString("country_id"));
                     details.setUserCountryName(userObject.getString("country_name"));
-//user interest array
+                    //user interest array
                     JSONArray userArray = userObject.getJSONArray("user_interests");
+                    if (userArray.length() > 0) {
                     for (int i = 0; i < userArray.length(); i++) {
                         JSONObject interestObject = userArray.getJSONObject(i);
                         arrayInterestList.add(interestObject.getString("name"));
@@ -415,6 +417,7 @@ public class UserProfile extends Fragment implements View.OnClickListener {
                         details.setUserRankPercentage(arrayInterestUserPercentageList);
                         details.setUserRankPercentage(arrayInterestUserPercentageList);
                     }
+                }
                     arrayList.add(details);
                 }
                 if (arrayList.size() > 0) {
