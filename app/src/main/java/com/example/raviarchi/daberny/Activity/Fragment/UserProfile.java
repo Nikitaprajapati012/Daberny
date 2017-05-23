@@ -3,11 +3,13 @@ package com.example.raviarchi.daberny.Activity.Fragment;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,6 +21,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar;
 import com.example.raviarchi.daberny.Activity.Activity.AskQuestionActivity;
 import com.example.raviarchi.daberny.Activity.Activity.LoginActivity;
 import com.example.raviarchi.daberny.Activity.Model.UserProfileDetails;
@@ -47,13 +50,14 @@ public class UserProfile extends Fragment implements View.OnClickListener {
     public UserProfileDetails details;
     public Dialog dialog;
     public Button btnAskQue, btnUserProfile, btnLogout;
-    public String ID, Interest,InterestStartRankName,InterestEndRankName,InterestStartRankPoints,InterestEndRankPoints,InterestTotalPoints,InterestUserPoints;
+    public String ID, Interest;
     public ArrayList<String> arrayInterestList, arrayInterestIdList, interestList,
     arrayInterestStartNameList,arrayInterestStartPointsList,
             arrayInterestEndNameList,arrayInterestEndPointsList,
-            arrayInterestTotalPointsList,arrayInterestUserPointsList;
+            arrayInterestTotalPointsList,arrayInterestUserPointsList,arrayInterestUserPercentageList;
     public ArrayList<UserProfileDetails> arrayList;
-    public RelativeLayout headerView;
+    public Toolbar toolBar;
+    public TextView txtTitle;
     /*@BindView(R.id.fragment_user_profile_imgBrowse)
     ImageView imgBrowse;*/
     @BindView(R.id.fragment_user_profile_imgphoto)
@@ -118,14 +122,21 @@ public class UserProfile extends Fragment implements View.OnClickListener {
     LinearLayout layoutInterestChart2;
     @BindView(R.id.fragment_user_profile_layout_interest_first)
     LinearLayout layoutInterestChart1;
+    @BindView(R.id.fragment_user_profile_progressbar1)
+    RoundCornerProgressBar progressbar1;
+    @BindView(R.id.fragment_user_profile_progressbar2)
+    RoundCornerProgressBar progressbar2;
+    @BindView(R.id.fragment_user_profile_progressbar3)
+    RoundCornerProgressBar progressbar3;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
-        View view = inflater.inflate(R.layout.test_user_profile, container, false);
+        View view = inflater.inflate(R.layout.fragment_user_profile, container, false);
         ButterKnife.bind(this, view);
-        headerView = (RelativeLayout) getActivity().findViewById(R.id.headerview);
-        headerView.setVisibility(View.GONE);
+        toolBar = (Toolbar) getActivity().findViewById(R.id.activity_main_toolbar);
+        txtTitle = (TextView) toolBar.findViewById(R.id.toolbar_title);
+        txtTitle.setText(R.string.profile);
         init();
         new GetUserProfileDetails().execute();
         click();
@@ -236,7 +247,20 @@ public class UserProfile extends Fragment implements View.OnClickListener {
         txtFollowers.setText(details.getUserFollowers());
         txtFollowing.setText(details.getUserFollowing());
 
-      //TODO: 3/15/2017 get interest at this screen
+        // TODO: 5/19/2017 set first progress
+        progressbar1.setProgress(Float.parseFloat(details.getUserRankPercentage().get(0)));
+        progressbar1.setBackgroundColor(getResources().getColor(R.color.progress));
+        progressbar1.setProgressColor(R.color.signinbg);
+
+        // TODO: 5/19/2017 set second progress
+        progressbar2.setProgress(Float.parseFloat(details.getUserRankPercentage().get(1)));
+        progressbar2.setProgressColor(R.color.signinbg);
+
+        // TODO: 5/19/2017 set third progress
+        progressbar3.setProgress(Float.parseFloat(details.getUserRankPercentage().get(2)));
+        progressbar3.setProgressColor(R.color.signinbg);
+
+        //TODO: 3/15/2017 get interest at this screen
         interestList = new ArrayList<>();
         if (arrayInterestList.size() > 0) {
             for (int i = 0; i < arrayInterestList.size(); i++) {
@@ -247,7 +271,7 @@ public class UserProfile extends Fragment implements View.OnClickListener {
         if (interestList.size() > 0) {
             for (int i = 0; i < interestList.size(); i++) {
                 if (Interest.length() > 0) {
-                    Interest = Interest + "/" + interestList.get(i);
+                    Interest = Interest + " / " + interestList.get(i);
                 } else {
                     Interest = interestList.get(i);
                 }
@@ -263,18 +287,15 @@ public class UserProfile extends Fragment implements View.OnClickListener {
 
         // TODO: 3/15/2017 for first interest
         if (Interest.split("/").length > 0) {
-            for (int i=0;i<details.getUserRankPoints().size();i++){
-                Log.d("hi","&&"+details.getUserRankPoints().get(i) );
-            }
-            //Hello
-            txtInterestChartUserPoints1.setText("hjhjhuibhj");
-//            String firstInterest = Interest.split("/")[0];
-//            txtInterestChart1.setText(firstInterest);
-//            txtInterestChartStartLevel1.setText(""+details.getStartRankName().get(0));
-//            txtInterestChartStartLevel2.setText(""+details.getStartRankName().get(0));
-//            txtInterestChartStartLevel3.setText(""+details.getStartRankName().get(0));
-//            txtInterestChartUserPoints1.setText(""+details.getUserRankPoints().get(0) + " Points");
-
+            String firstInterest = Interest.split("/")[0];
+            txtInterestChart1.setText(firstInterest);
+            txtInterestChartStartLevel1.setText(""+details.getStartRankName().get(0));
+            txtInterestChartStartLevel2.setText(""+details.getStartRankName().get(0));
+            txtInterestChartStartLevel3.setText(""+details.getStartRankName().get(0));
+            txtInterestChartEndLevel1.setText(""+details.getStartRankName().get(0));
+            txtInterestChartEndLevel2.setText(""+details.getStartRankName().get(0));
+            txtInterestChartEndLevel3.setText(""+details.getStartRankName().get(0));
+            txtInterestChartUserPoints1.setText(""+details.getUserRankPoints().get(0) + " Points");
         } else {
             txtInterestChart1.setText(" ");
             layoutInterestChart1.setVisibility(View.GONE);
@@ -287,7 +308,10 @@ public class UserProfile extends Fragment implements View.OnClickListener {
             txtInterestChartStartLevel1.setText(""+details.getStartRankName().get(1));
             txtInterestChartStartLevel2.setText(""+details.getStartRankName().get(1));
             txtInterestChartStartLevel3.setText(""+details.getStartRankName().get(1));
-            txtInterestChartUserPoints1.setText(""+details.getUserRankPoints().get(1)+ " Points");
+            txtInterestChartEndLevel1.setText(""+details.getStartRankName().get(1));
+            txtInterestChartEndLevel2.setText(""+details.getStartRankName().get(1));
+            txtInterestChartEndLevel3.setText(""+details.getStartRankName().get(1));
+            txtInterestChartUserPoints2.setText(""+details.getUserRankPoints().get(1)+ " Points");
         } else {
             txtInterestChart2.setText(" ");
             layoutInterestChart2.setVisibility(View.GONE);
@@ -300,7 +324,10 @@ public class UserProfile extends Fragment implements View.OnClickListener {
             txtInterestChartStartLevel1.setText(""+details.getStartRankName().get(2));
             txtInterestChartStartLevel2.setText(""+details.getStartRankName().get(2));
             txtInterestChartStartLevel3.setText(""+details.getStartRankName().get(2));
-            txtInterestChartUserPoints1.setText(""+details.getUserRankPoints().get(2)+ " Points");
+            txtInterestChartEndLevel1.setText(""+details.getStartRankName().get(2));
+            txtInterestChartEndLevel2.setText(""+details.getStartRankName().get(2));
+            txtInterestChartEndLevel3.setText(""+details.getStartRankName().get(2));
+            txtInterestChartUserPoints3.setText(""+details.getUserRankPoints().get(2)+ " Points");
 
         } else {
             txtInterestChart3.setText(" ");
@@ -316,7 +343,6 @@ public class UserProfile extends Fragment implements View.OnClickListener {
             Picasso.with(getActivity()).load(R.drawable.ic_placeholder)
             .transform(new RoundedTransformation(120, 2))
                     .into(imgProfilePic);
-            // Picasso.with(getActivity()).load(R.mipmap.ic_launcher).placeholder(R.drawable.ic_placeholder).into(imgProfilePic);
         }
     }
 
@@ -356,6 +382,7 @@ public class UserProfile extends Fragment implements View.OnClickListener {
                     arrayInterestEndPointsList = new ArrayList<>();
                     arrayInterestTotalPointsList = new ArrayList<>();
                     arrayInterestUserPointsList = new ArrayList<>();
+                    arrayInterestUserPercentageList = new ArrayList<>();
                     details.setUserId(userObject.getString("user_id"));
                     details.setUserFullName(userObject.getString("fullname"));
                     details.setUserUserName(userObject.getString("username"));
@@ -378,12 +405,15 @@ public class UserProfile extends Fragment implements View.OnClickListener {
                         arrayInterestEndPointsList.add(interestObject.getString("end_point"));
                         arrayInterestTotalPointsList.add(interestObject.getString("total_point"));
                         arrayInterestUserPointsList.add(interestObject.getString("user_point"));
+                        arrayInterestUserPercentageList.add(interestObject.getString("percentage_count"));
                         details.setStartRankName(arrayInterestStartNameList);
                         details.setStartRankPoints(arrayInterestStartPointsList);
                         details.setEndRankName(arrayInterestEndNameList);
                         details.setEndRankPoints(arrayInterestEndPointsList);
                         details.setTotalRankPoints(arrayInterestTotalPointsList);
                         details.setUserRankPoints(arrayInterestUserPointsList);
+                        details.setUserRankPercentage(arrayInterestUserPercentageList);
+                        details.setUserRankPercentage(arrayInterestUserPercentageList);
                     }
                     arrayList.add(details);
                 }
@@ -397,8 +427,6 @@ public class UserProfile extends Fragment implements View.OnClickListener {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-
-
         }
     }
 }
