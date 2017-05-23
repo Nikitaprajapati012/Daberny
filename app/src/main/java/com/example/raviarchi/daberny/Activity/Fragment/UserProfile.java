@@ -393,7 +393,7 @@ public class UserProfile extends Fragment implements View.OnClickListener {
                     details.setUserImage(userObject.getString("image"));
                     details.setUserCountryId(userObject.getString("country_id"));
                     details.setUserCountryName(userObject.getString("country_name"));
-
+//user interest array
                     JSONArray userArray = userObject.getJSONArray("user_interests");
                     for (int i = 0; i < userArray.length(); i++) {
                         JSONObject interestObject = userArray.getJSONObject(i);

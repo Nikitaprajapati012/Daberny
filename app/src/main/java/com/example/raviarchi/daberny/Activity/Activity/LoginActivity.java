@@ -32,6 +32,7 @@ import com.facebook.appevents.AppEventsLogger;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -60,7 +61,6 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         FacebookSdk.sdkInitialize(getApplicationContext());
         AppEventsLogger.activateApp(this);
         setContentView(R.layout.activity_login);
-        getSupportActionBar().hide();
         hashKey();
         init();
         findViewId();
@@ -118,7 +118,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         imgIcon = (ImageView) findViewById(R.id.header_icon);
         txtHeaderTitle = (TextView) findViewById(R.id.header_title);
         imgIcon.setVisibility(View.INVISIBLE);
-        txtHeaderTitle.setText(R.string.signup);
+        txtHeaderTitle.setText(R.string.signin);
         saveLogin = Utils.ReadSharePref(LoginActivity.this,Constant.REMEMBER_ME);
         if (!saveLogin.equalsIgnoreCase("")) {
             edemail.setText(Utils.ReadSharePref(LoginActivity.this,Constant.USER_EMAIL));
@@ -299,9 +299,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
+            pd.dismiss();
             try {
                 Log.d("RESPONSE" + "LOGIN", "" + s);
-
                 JSONObject jsonObject = new JSONObject(s);
                 JSONObject jsonSecondOnject = jsonObject.getJSONObject("user_details");
                 if (jsonObject.getString("status").equalsIgnoreCase("true")) {
@@ -318,13 +318,14 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                         startActivity(i);
                         finish();
                     }*/
+
                 } else {
                     Toast.makeText(LoginActivity.this, jsonObject.getString("msg"), Toast.LENGTH_SHORT).show();
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            pd.dismiss();
+
         }
     }
 }

@@ -9,6 +9,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,11 +21,13 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar;
 import com.daimajia.numberprogressbar.NumberProgressBar;
 import com.example.raviarchi.daberny.Activity.Activity.AskQuestionActivity;
 import com.example.raviarchi.daberny.Activity.Activity.LoginActivity;
 import com.example.raviarchi.daberny.Activity.Model.UserProfileDetails;
 import com.example.raviarchi.daberny.Activity.Utils.Constant;
+import com.example.raviarchi.daberny.Activity.Utils.RoundedTransformation;
 import com.example.raviarchi.daberny.Activity.Utils.Utils;
 import com.example.raviarchi.daberny.R;
 import com.google.gson.Gson;
@@ -39,8 +42,7 @@ import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-/**
- * Created by Ravi archi on 1/10/2017.
+/*** Created by Ravi archi on 1/10/2017.
  */
 
 public class OtherUserProfile extends Fragment implements View.OnClickListener {
@@ -50,12 +52,14 @@ public class OtherUserProfile extends Fragment implements View.OnClickListener {
     public Button btnAskQue, btnUserProfile, btnLogout, btnSend, btnClose, btnSetting;
     public String ID, userId, isInFollowList, isInBlockList, task, blocktask;
     public int flag;
-    public ArrayList<String> arrayInterestList;
-    public ArrayList<String> interestList, arrayFollowUnFollowList;
+    public ArrayList<String> arrayInterestList, arrayInterestIdList, interestList,
+            arrayInterestStartNameList,arrayInterestStartPointsList,
+            arrayInterestEndNameList,arrayInterestEndPointsList,
+            arrayInterestTotalPointsList,arrayInterestUserPointsList,arrayInterestUserPercentageList;
     public RelativeLayout headerView;
-    @BindView(R.id.fragment_other_user_profile_imgBrowse)
+    /*@BindView(R.id.fragment_other_user_profile_imgBrowse)
     ImageView imgBrowse;
-    @BindView(R.id.fragment_other_user_profile_imgphoto)
+    */@BindView(R.id.fragment_other_user_profile_imgphoto)
     ImageView imgProfilePic;
     @BindView(R.id.fragment_other_user_profile_txtposts)
     TextView txtPosts;
@@ -85,19 +89,45 @@ public class OtherUserProfile extends Fragment implements View.OnClickListener {
     LinearLayout layoutFollowers;
     @BindView(R.id.fragment_other_user_profile_layoutfollowing)
     LinearLayout layoutFollowing;
-    @BindView(R.id.fragment_other_user_profile_progressbar1)
-    NumberProgressBar progressBar1;
-    @BindView(R.id.fragment_other_user_profile_progressbar2)
-    NumberProgressBar progressBar2;
-    @BindView(R.id.fragment_other_user_profile_progressbar3)
-    NumberProgressBar progressBar3;
-    @BindView(R.id.fragment_other_user_profile_layout_interest_third)
+       @BindView(R.id.fragment_other_user_profile_layout_interest_third)
     LinearLayout layoutInterestChart3;
     @BindView(R.id.fragment_other_user_profile_layout_interest_second)
     LinearLayout layoutInterestChart2;
     @BindView(R.id.fragment_other_user_profile_layout_interest_first)
     LinearLayout layoutInterestChart1;
+    @BindView(R.id.fragment_other_user_profile_txtlevelendpoints1)
+    TextView txtInterestChartEndLevelPoints1;
+    @BindView(R.id.fragment_other_user_profile_txtlevelendpoints2)
+    TextView txtInterestChartEndLevelPoints2;
+    @BindView(R.id.fragment_other_user_profile_txtlevelendpoints3)
+    TextView txtInterestChartEndLevelPoints3;
+    @BindView(R.id.fragment_other_user_profile_txtlevelstart1)
+    TextView txtInterestChartStartLevel1;
+    @BindView(R.id.fragment_other_user_profile_txtlevelstart2)
+    TextView txtInterestChartStartLevel2;
+    @BindView(R.id.fragment_other_user_profile_txtlevelstart3)
+    TextView txtInterestChartStartLevel3;
+    @BindView(R.id.fragment_other_user_profile_txtlevelend1)
+    TextView txtInterestChartEndLevel1;
+    @BindView(R.id.fragment_other_user_profile_txtlevelend2)
+    TextView txtInterestChartEndLevel2;
+    @BindView(R.id.fragment_other_user_profile_txtlevelend3)
+    TextView txtInterestChartEndLevel3;
+    @BindView(R.id.fragment_other_user_profile_txtuserpointlevel1)
+    TextView txtInterestChartUserPoints1;
+    @BindView(R.id.fragment_other_user_profile_txtuserpointlevel2)
+    TextView txtInterestChartUserPoints2;
+    @BindView(R.id.fragment_other_user_profile_txtuserpointlevel3)
+    TextView txtInterestChartUserPoints3;
+    @BindView(R.id.fragment_other_user_profile_progressbar1)
+    RoundCornerProgressBar progressbar1;
+    @BindView(R.id.fragment_other_user_profile_progressbar2)
+    RoundCornerProgressBar progressbar2;
+    @BindView(R.id.fragment_other_user_profile_progressbar3)
+    RoundCornerProgressBar progressbar3;
     private ArrayList<UserProfileDetails> arrayList;
+    public Toolbar toolBar;
+    public TextView txtTitle;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -119,12 +149,6 @@ public class OtherUserProfile extends Fragment implements View.OnClickListener {
             View view = inflater.inflate(R.layout.fragment_other_user_profile, container, false);
             ButterKnife.bind(this, view);
             init();
-            headerView = (RelativeLayout) getActivity().findViewById(R.id.headerview);
-            headerView.setVisibility(View.GONE);
-            progressBar1.setMinimumHeight(50);
-            progressBar1.setProgress(9);
-            progressBar2.setProgress(9);
-            progressBar3.setProgress(7);
             click();
             return view;
         }
@@ -134,15 +158,20 @@ public class OtherUserProfile extends Fragment implements View.OnClickListener {
     // TODO: 2/21/2017 initilization
     private void init() {
         arrayList = new ArrayList<>();
+        toolBar = (Toolbar) getActivity().findViewById(R.id.activity_main_toolbar);
+        txtTitle = (TextView) toolBar.findViewById(R.id.toolbar_title);
+        txtTitle.setText(R.string.profile);
+
         // TODO: 4/5/2017 get user details
         new GetUserProfileDetails().execute();
+
     }
 
     private void click() {
+        //imgBrowse.setOnClickListener(this);
         txtFollow.setOnClickListener(this);
         txtReport.setOnClickListener(this);
         txtBlock.setOnClickListener(this);
-        imgBrowse.setOnClickListener(this);
         layoutFollowers.setOnClickListener(this);
         layoutFollowing.setOnClickListener(this);
         layoutPosts.setOnClickListener(this);
@@ -172,9 +201,10 @@ public class OtherUserProfile extends Fragment implements View.OnClickListener {
                 //new GetFollowUnFollow().execute();
                 break;
 
-            case R.id.fragment_other_user_profile_imgBrowse:
+           /* case R.id.fragment_other_user_profile_imgBrowse:
                 openDialog();
-                break;
+                break;*/
+
             case R.id.fragment_other_user_profile_txtreport:
                 openDialogForReport();
                 break;
@@ -290,24 +320,37 @@ public class OtherUserProfile extends Fragment implements View.OnClickListener {
     }
 
     private void openUserProfileDetailsList() {
+        // TODO: 5/19/2017 set first progress
+        progressbar1.setProgress(Float.parseFloat(details.getUserRankPercentage().get(0)));
+        progressbar1.setBackgroundColor(getResources().getColor(R.color.progress));
+        progressbar1.setProgressColor(R.color.signinbg);
+
+        // TODO: 5/19/2017 set second progress
+        progressbar2.setProgress(Float.parseFloat(details.getUserRankPercentage().get(1)));
+        progressbar2.setProgressColor(R.color.signinbg);
+
+        // TODO: 5/19/2017 set third progress
+        progressbar3.setProgress(Float.parseFloat(details.getUserRankPercentage().get(2)));
+        progressbar3.setProgressColor(R.color.signinbg);
+
         // TODO: 4/5/2017 show follow & unfollow status 
         if (details.getUserFollowStatus().equalsIgnoreCase("follow")) {
-            txtFollow.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.gray));
-            txtFollow.setTextColor(ContextCompat.getColor(getActivity(), R.color.blue));
+            txtFollow.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.login_bg));
+            txtFollow.setTextColor(ContextCompat.getColor(getActivity(), R.color.signinbg));
             txtFollow.setText(R.string.unfollow);
         } else {
-            txtFollow.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.blue));
+            txtFollow.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.signinbg));
             txtFollow.setTextColor(ContextCompat.getColor(getActivity(), R.color.white));
             txtFollow.setText(R.string.follow);
         }
 
         // TODO: 4/5/2017 to show block & unblock
         if (details.getUserBlockStatus().equalsIgnoreCase("block")) {
-            txtBlock.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.gray));
-            txtBlock.setTextColor(ContextCompat.getColor(getActivity(), R.color.blue));
+            txtBlock.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.login_bg));
+            txtBlock.setTextColor(ContextCompat.getColor(getActivity(), R.color.signinbg));
             txtBlock.setText(R.string.unblock);
         } else {
-            txtBlock.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.blue));
+            txtBlock.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.signinbg));
             txtBlock.setTextColor(ContextCompat.getColor(getActivity(), R.color.white));
             txtBlock.setText(R.string.block);
         }
@@ -329,7 +372,7 @@ public class OtherUserProfile extends Fragment implements View.OnClickListener {
         if (interestList.size() > 0) {
             for (int i = 0; i < interestList.size(); i++) {
                 if (interest.length() > 0) {
-                    interest = interest + "," + interestList.get(i);
+                    interest = interest + "/" + interestList.get(i);
                 } else {
                     interest = interestList.get(i);
                 }
@@ -339,27 +382,48 @@ public class OtherUserProfile extends Fragment implements View.OnClickListener {
 
         // TODO: 3/9/2017 get interest in different text
         // TODO: 3/15/2017 for first interest
-        if (interest.split(",").length > 0) {
-            String firstInterest = interest.split(",")[0];
-            txtInterestChart1.setText(firstInterest + ":");
+        if (interest.split("/").length > 0) {
+            String firstInterest = interest.split("/")[0];
+            txtInterestChart1.setText(firstInterest);
+            txtInterestChartStartLevel1.setText(""+details.getStartRankName().get(0));
+            txtInterestChartStartLevel2.setText(""+details.getStartRankName().get(0));
+            txtInterestChartStartLevel3.setText(""+details.getStartRankName().get(0));
+            txtInterestChartEndLevel1.setText(""+details.getStartRankName().get(0));
+            txtInterestChartEndLevel2.setText(""+details.getStartRankName().get(0));
+            txtInterestChartEndLevel3.setText(""+details.getStartRankName().get(0));
+            txtInterestChartUserPoints1.setText(""+details.getUserRankPoints().get(0) + " Points");
         } else {
             txtInterestChart1.setText(" ");
             layoutInterestChart1.setVisibility(View.GONE);
         }
 
         // TODO: 3/15/2017 for second interest
-        if (interest.split(",").length > 1) {
-            String secondInterest = interest.split(",")[1];
-            txtInterestChart2.setText(secondInterest + ":");
+        if (interest.split("/").length > 1) {
+            String secondInterest = interest.split("/")[1];
+            txtInterestChart2.setText(secondInterest);
+            txtInterestChartStartLevel1.setText(""+details.getStartRankName().get(1));
+            txtInterestChartStartLevel2.setText(""+details.getStartRankName().get(1));
+            txtInterestChartStartLevel3.setText(""+details.getStartRankName().get(1));
+            txtInterestChartEndLevel1.setText(""+details.getStartRankName().get(1));
+            txtInterestChartEndLevel2.setText(""+details.getStartRankName().get(1));
+            txtInterestChartEndLevel3.setText(""+details.getStartRankName().get(1));
+            txtInterestChartUserPoints2.setText(""+details.getUserRankPoints().get(1)+ " Points");
         } else {
             txtInterestChart2.setText(" ");
             layoutInterestChart2.setVisibility(View.GONE);
         }
 
         // TODO: 3/15/2017 for third interest
-        if (interest.split(",").length > 2) {
-            String thirdInterest = interest.split(",")[2];
-            txtInterestChart3.setText(thirdInterest + ":");
+        if (interest.split("/").length > 2) {
+            String thirdInterest = interest.split("/")[2];
+            txtInterestChart3.setText(thirdInterest );
+            txtInterestChartStartLevel1.setText(""+details.getStartRankName().get(2));
+            txtInterestChartStartLevel2.setText(""+details.getStartRankName().get(2));
+            txtInterestChartStartLevel3.setText(""+details.getStartRankName().get(2));
+            txtInterestChartEndLevel1.setText(""+details.getStartRankName().get(2));
+            txtInterestChartEndLevel2.setText(""+details.getStartRankName().get(2));
+            txtInterestChartEndLevel3.setText(""+details.getStartRankName().get(2));
+            txtInterestChartUserPoints3.setText(""+details.getUserRankPoints().get(2)+ " Points");
         } else {
             txtInterestChart3.setText(" ");
             layoutInterestChart3.setVisibility(View.GONE);
@@ -367,20 +431,25 @@ public class OtherUserProfile extends Fragment implements View.OnClickListener {
 
 
         if (details.getUserImage().length() > 0) {
-            Picasso.with(getActivity()).load(details.getUserImage()).placeholder(R.drawable.ic_placeholder).into(imgProfilePic);
+            Picasso.with(getActivity()).load(details.getUserImage())
+                    .transform(new RoundedTransformation(120, 2))
+                    .placeholder(R.drawable.ic_placeholder).into(imgProfilePic);
         } else {
-            Picasso.with(getActivity()).load(R.mipmap.ic_launcher).placeholder(R.drawable.ic_placeholder).into(imgProfilePic);
+            Picasso.with(getActivity()).load(R.mipmap.ic_launcher)
+                    .transform(new RoundedTransformation(120, 2))
+                    .placeholder(R.drawable.ic_placeholder).into(imgProfilePic);
         }
     }
 
     private void showUserFollowUnfollow() {
         // TODO: 4/5/2017 for show follow & unfollow status
         if (details.getUserFollowStatus().equalsIgnoreCase("follow")) {
-            txtFollow.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.gray));
-            txtFollow.setTextColor(ContextCompat.getColor(getActivity(), R.color.blue));
+            txtFollow.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.login_bg));
+            txtFollow.setTextColor(ContextCompat.getColor(getActivity(), R.color.signinbg));
             txtFollow.setText(R.string.unfollow);
+
         } else {
-            txtFollow.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.blue));
+            txtFollow.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.signinbg));
             txtFollow.setTextColor(ContextCompat.getColor(getActivity(), R.color.white));
             txtFollow.setText(R.string.follow);
         }
@@ -389,11 +458,11 @@ public class OtherUserProfile extends Fragment implements View.OnClickListener {
     // TODO: 4/5/2017 set status of user block and unblock
     private void showUserBlockUnblock() {
         if (details.getUserBlockStatus().equalsIgnoreCase("block")) {
-            txtBlock.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.gray));
-            txtBlock.setTextColor(ContextCompat.getColor(getActivity(), R.color.blue));
+            txtBlock.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.login_bg));
+            txtBlock.setTextColor(ContextCompat.getColor(getActivity(), R.color.signinbg));
             txtBlock.setText(R.string.unblock);
         } else {
-            txtBlock.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.blue));
+            txtBlock.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.signinbg));
             txtBlock.setTextColor(ContextCompat.getColor(getActivity(), R.color.white));
             txtBlock.setText(R.string.block);
         }
@@ -428,6 +497,14 @@ public class OtherUserProfile extends Fragment implements View.OnClickListener {
                     JSONObject userObject = jsonObject.getJSONObject("data");
                     details = new UserProfileDetails();
                     arrayInterestList = new ArrayList<>();
+                    arrayInterestIdList = new ArrayList<>();
+                    arrayInterestStartNameList = new ArrayList<>();
+                    arrayInterestStartPointsList = new ArrayList<>();
+                    arrayInterestEndNameList = new ArrayList<>();
+                    arrayInterestEndPointsList = new ArrayList<>();
+                    arrayInterestTotalPointsList = new ArrayList<>();
+                    arrayInterestUserPointsList = new ArrayList<>();
+                    arrayInterestUserPercentageList = new ArrayList<>();
                     details.setUserId(userObject.getString("user_id"));
                     details.setUserFullName(userObject.getString("fullname"));
                     details.setUserUserName(userObject.getString("username"));
@@ -450,6 +527,21 @@ public class OtherUserProfile extends Fragment implements View.OnClickListener {
                     for (int i = 0; i < userArray.length(); i++) {
                         JSONObject interestObject = userArray.getJSONObject(i);
                         arrayInterestList.add(interestObject.getString("name"));
+                        arrayInterestIdList.add(interestObject.getString("id"));
+                        arrayInterestStartNameList.add(interestObject.getString("start_name"));
+                        arrayInterestStartPointsList.add(interestObject.getString("start_point"));
+                        arrayInterestEndNameList.add(interestObject.getString("end_name"));
+                        arrayInterestEndPointsList.add(interestObject.getString("end_point"));
+                        arrayInterestTotalPointsList.add(interestObject.getString("total_point"));
+                        arrayInterestUserPointsList.add(interestObject.getString("user_point"));
+                        arrayInterestUserPercentageList.add(interestObject.getString("percentage_count"));
+                        details.setStartRankName(arrayInterestStartNameList);
+                        details.setStartRankPoints(arrayInterestStartPointsList);
+                        details.setEndRankName(arrayInterestEndNameList);
+                        details.setEndRankPoints(arrayInterestEndPointsList);
+                        details.setTotalRankPoints(arrayInterestTotalPointsList);
+                        details.setUserRankPoints(arrayInterestUserPointsList);
+                        details.setUserRankPercentage(arrayInterestUserPercentageList);
                     }
                     arrayList.add(details);
                 }

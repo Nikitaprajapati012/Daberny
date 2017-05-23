@@ -60,10 +60,10 @@ public class AskQuestionActivity extends AppCompatActivity implements View.OnCli
     public ArrayAdapter<String> spinnerAdapter;
     public String[] spinnerTimeList;
     public ArrayList<UserProfileDetails> arrayList;
-    @BindView(R.id.activity_ask_question_imgbrowse)
-    ImageView imgBrowse;
-    @BindView(R.id.activity_ask_question_txtback)
-    TextView txtBack;
+    /*@BindView(R.id.activity_ask_question_imgbrowse)
+    ImageView imgBrowse;*/
+    /*@BindView(R.id.activity_ask_question_txtback)
+    TextView txtBack;*/
     @BindView(R.id.activity_ask_question_btnbrowse)
     Button btnBrowse;
     @BindView(R.id.activity_ask_question_btnsubmit)
@@ -90,9 +90,8 @@ public class AskQuestionActivity extends AppCompatActivity implements View.OnCli
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_ask_quetion);
+        setContentView(R.layout.test_ask_quetion);
         ButterKnife.bind(this);
-        getSupportActionBar().hide();
         init();
         new GetInterest().execute();
         click();
@@ -138,9 +137,9 @@ public class AskQuestionActivity extends AppCompatActivity implements View.OnCli
             case R.id.activity_ask_question_btnsubmit:
                 postQuestionDetails();
                 break;
-            case R.id.activity_ask_question_txtback:
-                onBackPressed();
-                break;
+//            case R.id.activity_ask_question_txtback:
+//                onBackPressed();
+//                break;
 
             case R.id.activity_ask_question_btnbrowse:
                 Intent intentPickImage = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
@@ -208,7 +207,7 @@ public class AskQuestionActivity extends AppCompatActivity implements View.OnCli
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                imgBrowse.setImageBitmap(bitmap);
+                //imgBrowse.setImageBitmap(bitmap);
                 onSelectFromGalleryResult(data);
             } else {
                 Toast.makeText(this, "You haven't picked Image", Toast.LENGTH_SHORT).show();
@@ -232,8 +231,8 @@ public class AskQuestionActivity extends AppCompatActivity implements View.OnCli
 
                 if (saveImageInDB(uri)) {
                     Toast.makeText(this, "GalleryImage Saved in Database...", Toast.LENGTH_SHORT).show();
-                    imgBrowse.setVisibility(View.VISIBLE);
-                    imgBrowse.setImageURI(uri);
+                    //imgBrowse.setVisibility(View.VISIBLE);
+                    //imgBrowse.setImageURI(uri);
                 }
                 imagePath = cursor.getString(columnIndex);
                 if (columnIndex < 0) // no column index

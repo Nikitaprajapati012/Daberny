@@ -18,6 +18,7 @@ import com.example.raviarchi.daberny.Activity.Fragment.OtherUserProfile;
 import com.example.raviarchi.daberny.Activity.Model.UserProfileDetails;
 import com.example.raviarchi.daberny.Activity.Utils.Utils;
 import com.example.raviarchi.daberny.R;
+import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -68,6 +69,7 @@ public class CommentPeopleAdapter extends RecyclerView.Adapter<CommentPeopleAdap
             @Override
             public void onClick(View v) {
                 Fragment fragment = new OtherUserProfile();
+                Gson gson = new Gson();
                 Bundle bundle = new Bundle();
                 bundle.putString("id", userdetails.getUserId());
 

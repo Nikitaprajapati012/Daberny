@@ -43,7 +43,6 @@ public class InterestActivity extends AppCompatActivity implements View.OnClickL
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_interest);
         ButterKnife.bind(this);
-        getSupportActionBar().hide();
         init();
         new GetInterest().execute();
         findViewId();

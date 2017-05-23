@@ -19,7 +19,7 @@
                 android:layout_height="@dimen/_50sdp"
                 android:layout_gravity="center"
                 android:gravity="center|left"
-                android:text="Report User"
+                android:text="@string/report_user"
                 android:textColor="@android:color/black"
                 android:textSize="@dimen/_15sdp"
                 android:textStyle="bold" />
@@ -27,14 +27,14 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/_1sdp"
-                android:background="@color/gray" />
+                android:background="@color/logintext" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/_50sdp"
                 android:layout_gravity="center"
                 android:gravity="center|left"
-                android:text="Reason :"
+                android:text="@string/reason"
                 android:textColor="@android:color/black"
                 android:textSize="@dimen/_12sdp" />
 
@@ -56,10 +56,11 @@
                 <Button
                     android:id="@+id/dialog_report_btnsend"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/_40sdp"
+                    android:layout_height="match_parent"
                     android:layout_weight="1.5"
-                    android:text="Send"
-                    android:textColor="@android:color/black"
+                    android:text="@string/send"
+                    android:background="@color/signinbg"
+                    android:textColor="@color/white"
                     android:textSize="@dimen/_10sdp" />
             </LinearLayout>
 
@@ -75,9 +76,9 @@
                 android:layout_gravity="right"
                 android:layout_marginTop="@dimen/_10sdp"
                 android:layout_weight="1"
-                android:background="@drawable/loginbtn_bg"
-                android:text="Close"
-                android:textColor="@android:color/black"
+                android:background="@drawable/loginborder"
+                android:text="@string/close"
+                android:textColor="@color/logintext"
                 android:textSize="@dimen/_10sdp" />
         </LinearLayout>
     </ScrollView>

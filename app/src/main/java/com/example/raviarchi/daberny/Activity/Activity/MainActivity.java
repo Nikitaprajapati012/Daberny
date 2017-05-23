@@ -11,10 +11,15 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.raviarchi.daberny.Activity.Fragment.AddQuestions;
@@ -35,14 +40,16 @@ import static com.example.raviarchi.daberny.Activity.Utils.Utils.ReadSharePrefre
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     public Utils utils;
     public RelativeLayout headerView, footerView;
-    public ImageView imgHome, imgGeneral, imgSearch, imgAdd, imgNotification, imgUserProfile, imgCamera;
+    public ImageView imgUserAdd,imgInbox,imgOption,imgHome, imgGeneral, imgSearch, imgAdd, imgNotification, imgUserProfile/*, imgCamera*/;
     public FragmentManager fragmentManager;
     public FragmentTransaction transaction;
     public String Email, userId, InterestId;
     public Uri uri;
     public UserProfileDetails details;
     public ArrayList<UserProfileDetails> arrayInterestList;
-    private int REQUEST_CAMERA = 0;
+    //private int REQUEST_CAMERA = 0;
+    public Toolbar toolBar;
+    public TextView txtTitle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,7 +79,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             } else {
                 //TODO: 2/22/2017 actvitity main start
                 setContentView(R.layout.activity_main);
-                getSupportActionBar().hide();
                 findById();
                 click();
             }
@@ -82,7 +88,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     // TODO: 2/23/2017 get id from previous account
 
     private void click() {
-        imgCamera.setOnClickListener(this);
+       //imgCamera.setOnClickListener(this);
+        imgUserAdd.setOnClickListener(this);
+        imgInbox.setOnClickListener(this);
         imgHome.setOnClickListener(this);
         imgGeneral.setOnClickListener(this);
         imgSearch.setOnClickListener(this);
@@ -94,19 +102,25 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     // TODO: 2/22/2017 bind field
     private void findById() {
-        headerView = (RelativeLayout) findViewById(R.id.headerview);
+        headerView = (RelativeLayout) findViewById(R.id.mainview);
         footerView = (RelativeLayout) findViewById(R.id.footerview);
         imgHome = (ImageView) findViewById(R.id.footer_imghome);
         imgGeneral = (ImageView) findViewById(R.id.footer_imggeneral);
-        imgCamera = (ImageView) findViewById(R.id.header_camera);
+        //imgCamera = (ImageView) findViewById(R.id.header_camera);
         imgSearch = (ImageView) findViewById(R.id.footer_imgsearch);
         imgAdd = (ImageView) findViewById(R.id.footer_imgaddquestion);
         imgNotification = (ImageView) findViewById(R.id.footer_imgnotification);
         imgUserProfile = (ImageView) findViewById(R.id.footer_imguserprofile);
         footerView.setVisibility(View.VISIBLE);
+        toolBar = (Toolbar) findViewById(R.id.activity_main_toolbar);
+        setSupportActionBar(toolBar);
+        imgUserAdd= (ImageView) findViewById(R.id.toolbar_useradd);
+        imgInbox= (ImageView) findViewById(R.id.toolbar_inbox);
+      //  imgOption= (ImageView) findViewById(R.id.toolbar_option);
+        txtTitle= (TextView) findViewById(R.id.toolbar_title);
     }
 
-    @Override
+  /*  @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) {
@@ -116,7 +130,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         } else {
             Toast.makeText(this, "You haven't picked Image", Toast.LENGTH_SHORT).show();
         }
-    }
+    }*/
 
     private void onCaptureImage(Intent data) {
         String[] projection = {MediaStore.Images.Media.DATA};
@@ -128,13 +142,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         cursor.moveToFirst();
         String picturePath = cursor.getString(column_index_data);
         Log.d("imagepath", "" + picturePath);
-        /*MyImage image = new MyImage();
-        image.setTitle("Test");
-        image.setDescription(
-                "test take a photo and add it to list view");
-        image.setDatetime(System.currentTimeMillis());
-        image.setPath(picturePath);
-        images.add(image);*/
     }
 
     @Override
@@ -143,7 +150,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         fragmentManager = getSupportFragmentManager();
 
         switch (v.getId()) {
-            case R.id.header_camera:
+           /* case R.id.header_camera:
                 Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                 if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
                     String fileName = "temp.jpg";
@@ -157,76 +164,76 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     startActivityForResult(takePictureIntent, REQUEST_CAMERA);
                 }
                 break;
-
+*/
             //home
             case R.id.footer_imghome:
                 headerView.setVisibility(View.VISIBLE);
                 fragment = new Home();
                 imgHome.setBackgroundColor(ContextCompat.getColor(MainActivity.this,R.color.choosefile));
-                imgGeneral.setBackgroundColor(ContextCompat.getColor(MainActivity.this,R.color.askque));
-                imgSearch.setBackgroundColor(ContextCompat.getColor(MainActivity.this,R.color.askque));
-                imgAdd.setBackgroundColor(ContextCompat.getColor(MainActivity.this,R.color.askque));
-                imgNotification.setBackgroundColor(ContextCompat.getColor(MainActivity.this,R.color.askque));
-                imgUserProfile.setBackgroundColor(ContextCompat.getColor(MainActivity.this,R.color.askque));
+                imgGeneral.setBackgroundColor(ContextCompat.getColor(MainActivity.this,R.color.signinbg));
+                imgSearch.setBackgroundColor(ContextCompat.getColor(MainActivity.this,R.color.signinbg));
+                imgAdd.setBackgroundColor(ContextCompat.getColor(MainActivity.this,R.color.signinbg));
+                imgNotification.setBackgroundColor(ContextCompat.getColor(MainActivity.this,R.color.signinbg));
+                imgUserProfile.setBackgroundColor(ContextCompat.getColor(MainActivity.this,R.color.signinbg));
                 break;
 
             //general
             case R.id.footer_imggeneral:
                 headerView.setVisibility(View.VISIBLE);
                 fragment = new General();
-                imgHome.setBackgroundColor(ContextCompat.getColor(MainActivity.this,R.color.askque));
+                imgHome.setBackgroundColor(ContextCompat.getColor(MainActivity.this,R.color.signinbg));
                 imgGeneral.setBackgroundColor(ContextCompat.getColor(MainActivity.this,R.color.choosefile));
-                imgSearch.setBackgroundColor(ContextCompat.getColor(MainActivity.this,R.color.askque));
-                imgAdd.setBackgroundColor(ContextCompat.getColor(MainActivity.this,R.color.askque));
-                imgNotification.setBackgroundColor(ContextCompat.getColor(MainActivity.this,R.color.askque));
-                imgUserProfile.setBackgroundColor(ContextCompat.getColor(MainActivity.this,R.color.askque));
+                imgSearch.setBackgroundColor(ContextCompat.getColor(MainActivity.this,R.color.signinbg));
+                imgAdd.setBackgroundColor(ContextCompat.getColor(MainActivity.this,R.color.signinbg));
+                imgNotification.setBackgroundColor(ContextCompat.getColor(MainActivity.this,R.color.signinbg));
+                imgUserProfile.setBackgroundColor(ContextCompat.getColor(MainActivity.this,R.color.signinbg));
                 break;
 
             //add question
             case R.id.footer_imgaddquestion:
                 headerView.setVisibility(View.VISIBLE);
                 fragment = new AddQuestions();
-                imgHome.setBackgroundColor(ContextCompat.getColor(MainActivity.this,R.color.askque));
-                imgGeneral.setBackgroundColor(ContextCompat.getColor(MainActivity.this,R.color.askque));
-                imgSearch.setBackgroundColor(ContextCompat.getColor(MainActivity.this,R.color.askque));
+                imgHome.setBackgroundColor(ContextCompat.getColor(MainActivity.this,R.color.signinbg));
+                imgGeneral.setBackgroundColor(ContextCompat.getColor(MainActivity.this,R.color.signinbg));
+                imgSearch.setBackgroundColor(ContextCompat.getColor(MainActivity.this,R.color.signinbg));
                 imgAdd.setBackgroundColor(ContextCompat.getColor(MainActivity.this,R.color.choosefile));
-                imgNotification.setBackgroundColor(ContextCompat.getColor(MainActivity.this,R.color.askque));
-                imgUserProfile.setBackgroundColor(ContextCompat.getColor(MainActivity.this,R.color.askque));
+                imgNotification.setBackgroundColor(ContextCompat.getColor(MainActivity.this,R.color.signinbg));
+                imgUserProfile.setBackgroundColor(ContextCompat.getColor(MainActivity.this,R.color.signinbg));
                 break;
 
             //notification
             case R.id.footer_imgnotification:
                 headerView.setVisibility(View.VISIBLE);
                 fragment = new Notification();
-                imgHome.setBackgroundColor(ContextCompat.getColor(MainActivity.this,R.color.askque));
-                imgGeneral.setBackgroundColor(ContextCompat.getColor(MainActivity.this,R.color.askque));
-                imgSearch.setBackgroundColor(ContextCompat.getColor(MainActivity.this,R.color.askque));
-                imgAdd.setBackgroundColor(ContextCompat.getColor(MainActivity.this,R.color.askque));
+                imgHome.setBackgroundColor(ContextCompat.getColor(MainActivity.this,R.color.signinbg));
+                imgGeneral.setBackgroundColor(ContextCompat.getColor(MainActivity.this,R.color.signinbg));
+                imgSearch.setBackgroundColor(ContextCompat.getColor(MainActivity.this,R.color.signinbg));
+                imgAdd.setBackgroundColor(ContextCompat.getColor(MainActivity.this,R.color.signinbg));
                 imgNotification.setBackgroundColor(ContextCompat.getColor(MainActivity.this,R.color.choosefile));
-                imgUserProfile.setBackgroundColor(ContextCompat.getColor(MainActivity.this,R.color.askque));
+                imgUserProfile.setBackgroundColor(ContextCompat.getColor(MainActivity.this,R.color.signinbg));
                 break;
 
             // search
             case R.id.footer_imgsearch:
                 headerView.setVisibility(View.GONE);
                 fragment = new Search();
-                imgHome.setBackgroundColor(ContextCompat.getColor(MainActivity.this,R.color.askque));
-                imgGeneral.setBackgroundColor(ContextCompat.getColor(MainActivity.this,R.color.askque));
+                imgHome.setBackgroundColor(ContextCompat.getColor(MainActivity.this,R.color.signinbg));
+                imgGeneral.setBackgroundColor(ContextCompat.getColor(MainActivity.this,R.color.signinbg));
                 imgSearch.setBackgroundColor(ContextCompat.getColor(MainActivity.this,R.color.choosefile));
-                imgAdd.setBackgroundColor(ContextCompat.getColor(MainActivity.this,R.color.askque));
-                imgNotification.setBackgroundColor(ContextCompat.getColor(MainActivity.this,R.color.askque));
-                imgUserProfile.setBackgroundColor(ContextCompat.getColor(MainActivity.this,R.color.askque));
+                imgAdd.setBackgroundColor(ContextCompat.getColor(MainActivity.this,R.color.signinbg));
+                imgNotification.setBackgroundColor(ContextCompat.getColor(MainActivity.this,R.color.signinbg));
+                imgUserProfile.setBackgroundColor(ContextCompat.getColor(MainActivity.this,R.color.signinbg));
                 break;
 
             //profile
             case R.id.footer_imguserprofile:
-                headerView.setVisibility(View.GONE);
+                headerView.setVisibility(View.VISIBLE);
                 fragment = new UserProfile();
-                imgHome.setBackgroundColor(ContextCompat.getColor(MainActivity.this,R.color.askque));
-                imgGeneral.setBackgroundColor(ContextCompat.getColor(MainActivity.this,R.color.askque));
-                imgSearch.setBackgroundColor(ContextCompat.getColor(MainActivity.this,R.color.askque));
-                imgAdd.setBackgroundColor(ContextCompat.getColor(MainActivity.this,R.color.askque));
-                imgNotification.setBackgroundColor(ContextCompat.getColor(MainActivity.this,R.color.askque));
+                imgHome.setBackgroundColor(ContextCompat.getColor(MainActivity.this,R.color.signinbg));
+                imgGeneral.setBackgroundColor(ContextCompat.getColor(MainActivity.this,R.color.signinbg));
+                imgSearch.setBackgroundColor(ContextCompat.getColor(MainActivity.this,R.color.signinbg));
+                imgAdd.setBackgroundColor(ContextCompat.getColor(MainActivity.this,R.color.signinbg));
+                imgNotification.setBackgroundColor(ContextCompat.getColor(MainActivity.this,R.color.signinbg));
                 imgUserProfile.setBackgroundColor(ContextCompat.getColor(MainActivity.this,R.color.choosefile));
                 break;
         }
@@ -237,6 +244,43 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             transaction.addToBackStack(null);
             transaction.commit();
         }
+    }
+    public boolean onCreateOptionsMenu(Menu menu) {
+
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.popup, menu);
+        return true;
+    }
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId())
+        {
+            case R.id.menu_item_askque:
+                Intent iask = new Intent(MainActivity.this, AskQuestionActivity.class);
+                iask.putExtra("id", Utils.ReadSharePrefrence(MainActivity.this, Constant.USERID));
+                startActivity(iask);
+                break;
+
+            case  R.id.menu_item_userprofile:
+                Fragment fragment = null;
+                fragmentManager = getSupportFragmentManager();
+                fragment = new UserProfile();
+                if (fragment != null) {
+                    transaction = fragmentManager.beginTransaction();
+                    transaction.replace(R.id.frame_contain_layout, fragment);
+                    transaction.addToBackStack(null);
+                    transaction.commit();
+                }
+                break;
+
+            case R.id.menu_item_logout:
+                Intent ilogout = new Intent(MainActivity.this, LoginActivity.class);
+                ilogout.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                Utils.ClearSharePref(MainActivity.this,Constant.USERID);
+                startActivity(ilogout);
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }
 

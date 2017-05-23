@@ -3,6 +3,7 @@ package com.example.raviarchi.daberny.Activity.Fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,12 +26,17 @@ public class AddQuestions extends Fragment implements View.OnClickListener {
     private static final int REQUEST_CAMERA = 0;
     @BindView(R.id.fragment_add_btnadd)
     TextView btnAdd;
+    public Toolbar toolBar;
+    public TextView txtTitle;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
         View view = inflater.inflate(R.layout.fragment_add, container, false);
         ButterKnife.bind(this, view);
+        toolBar = (Toolbar) getActivity().findViewById(R.id.activity_main_toolbar);
+        txtTitle = (TextView) toolBar.findViewById(R.id.toolbar_title);
+        txtTitle.setText(R.string.question);
         click();
         return view;
     }

@@ -4,244 +4,44 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/blue">
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true">
 
-        <TextView
-            android:id="@+id/fragment_user_profile_txttitle"
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:gravity="center"
-            android:paddingTop="@dimen/_5sdp"
-            android:text="Profile"
-            android:textColor="@color/white"
-            android:textSize="@dimen/_15sdp"
-            android:textStyle="bold" />
+            android:layout_height="match_parent">
 
-    </RelativeLayout>
-
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
-
-            <ImageView
-                android:id="@+id/fragment_user_profile_imgBrowse"
-                android:layout_width="@dimen/_30sdp"
-                android:layout_height="@dimen/_30sdp"
-                android:layout_gravity="center|right"
-                android:layout_marginLeft="@dimen/_270sdp"
-                android:gravity="center|right"
-                android:src="@drawable/ic_blue_dot" />
-
-            <ScrollView
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:orientation="vertical">
 
-                <LinearLayout
+                <!-- <ImageView
+                     android:id="@+id/fragment_user_profile_imgBrowse"
+                     android:layout_width="@dimen/_30sdp"
+                     android:layout_height="@dimen/_30sdp"
+                     android:layout_gravity="center|right"
+                     android:layout_marginLeft="@dimen/_270sdp"
+                     android:gravity="center|right"
+                     android:src="@drawable/ic_logintext_dot" />-->
+
+                <ScrollView
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/_45sdp"
-                    android:orientation="vertical">
+                    android:layout_height="match_parent">
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/_5sdp"
-                        android:orientation="vertical"
-                        android:weightSum="2">
+                        android:orientation="vertical">
 
                         <LinearLayout
                             android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:layout_weight="1"
-                            android:orientation="horizontal"
-                            android:weightSum="2">
-
-                            <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="center"
-                                android:layout_weight="1.5"
-                                android:gravity="center"
-                                android:orientation="vertical"
-                                android:padding="@dimen/_5sdp"
-                                android:weightSum="3">
-
-                                <de.hdodenhof.circleimageview.CircleImageView
-                                    android:id="@+id/fragment_user_profile_imgphoto"
-                                    android:layout_width="80dp"
-                                    android:layout_height="80dp"
-                                    android:layout_gravity="center|left"
-                                    android:layout_weight="2"
-                                    android:gravity="center|left"
-                                    android:padding="@dimen/_10sdp"
-                                    android:src="@drawable/ic_placeholder" />
-
-                                <TextView
-                                    android:id="@+id/fragment_user_profile_txtusername"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_gravity="center|left"
-                                    android:gravity="center|left"
-                                    android:paddingLeft="@dimen/_10sdp"
-                                    android:text="@string/username" />
-                            </LinearLayout>
-
-                            <LinearLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_weight="0.5"
-                                android:orientation="vertical"
-                                android:weightSum="2">
-
-                                <LinearLayout
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:layout_weight="1"
-                                    android:gravity="center"
-                                    android:orientation="horizontal"
-                                    android:padding="@dimen/_5sdp"
-                                    android:weightSum="3">
-
-                                    <LinearLayout
-                                        android:id="@+id/fragment_user_profile_layoutposts"
-                                        android:layout_width="match_parent"
-                                        android:layout_height="match_parent"
-                                        android:layout_weight="1"
-                                        android:orientation="vertical"
-                                        android:weightSum="2">
-
-                                        <TextView
-                                            android:id="@+id/fragment_user_profile_txtposts"
-                                            android:layout_width="match_parent"
-                                            android:layout_height="match_parent"
-                                            android:layout_gravity="center"
-                                            android:layout_weight="1"
-                                            android:gravity="center"
-                                            android:text="0"
-                                            android:textColor="@color/blue"
-                                            android:textSize="@dimen/_12sdp"
-                                            android:textStyle="bold" />
-
-                                        <TextView
-                                            android:layout_width="match_parent"
-                                            android:layout_height="match_parent"
-                                            android:layout_gravity="center"
-                                            android:layout_weight="1"
-                                            android:gravity="center"
-                                            android:text="POSTS"
-                                            android:textColor="@color/blue"
-                                            android:textSize="@dimen/_11sdp" />
-                                    </LinearLayout>
-
-                                    <LinearLayout
-                                        android:id="@+id/fragment_user_profile_layoutfollowers"
-                                        android:layout_width="match_parent"
-                                        android:layout_height="match_parent"
-                                        android:layout_weight="1"
-                                        android:orientation="vertical"
-                                        android:weightSum="2">
-
-                                        <TextView
-                                            android:id="@+id/fragment_user_profile_txtfollowers"
-                                            android:layout_width="match_parent"
-                                            android:layout_height="match_parent"
-                                            android:layout_gravity="center"
-                                            android:layout_weight="1"
-                                            android:gravity="center"
-                                            android:text="0"
-                                            android:textColor="@color/blue"
-                                            android:textSize="@dimen/_12sdp"
-                                            android:textStyle="bold" />
-
-                                        <TextView
-                                            android:layout_width="match_parent"
-                                            android:layout_height="match_parent"
-                                            android:layout_gravity="center"
-                                            android:layout_weight="1"
-                                            android:gravity="center"
-                                            android:text="FOLLOWERS"
-                                            android:textColor="@color/blue"
-                                            android:textSize="@dimen/_11sdp" />
-                                    </LinearLayout>
-
-                                    <LinearLayout
-                                        android:id="@+id/fragment_user_profile_layoutfollowing"
-                                        android:layout_width="match_parent"
-                                        android:layout_height="match_parent"
-                                        android:layout_weight="1"
-                                        android:orientation="vertical"
-                                        android:weightSum="2">
-
-                                        <TextView
-                                            android:id="@+id/fragment_user_profile_txtfollowing"
-                                            android:layout_width="match_parent"
-                                            android:layout_height="match_parent"
-                                            android:layout_gravity="center"
-                                            android:layout_weight="1"
-                                            android:gravity="center"
-                                            android:text="0"
-                                            android:textColor="@color/blue"
-                                            android:textSize="@dimen/_12sdp"
-                                            android:textStyle="bold" />
-
-                                        <TextView
-                                            android:layout_width="match_parent"
-                                            android:layout_height="match_parent"
-                                            android:layout_gravity="center"
-                                            android:layout_weight="1"
-                                            android:gravity="center"
-                                            android:text="FOLLOWING"
-                                            android:textColor="@color/blue"
-                                            android:textSize="@dimen/_11sdp" />
-                                    </LinearLayout>
-
-                                </LinearLayout>
-
-
-                            </LinearLayout>
-                        </LinearLayout>
-
-                        <TextView
-                            android:id="@+id/fragment_user_profile_txteditprofile"
-                            android:layout_width="@dimen/_150sdp"
-                            android:layout_height="@dimen/_30sdp"
-                            android:layout_gravity="center|right"
-                            android:layout_marginTop="@dimen/_5sdp"
-                            android:layout_weight="1"
-                            android:background="@color/blue"
-                            android:gravity="center"
-                            android:text="@string/editprofile"
-                            android:textColor="@color/white"
-                            android:textSize="@dimen/_12sdp"
-                            android:textStyle="bold" />
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_gravity="center"
-                        android:layout_marginTop="@dimen/_5sdp"
-                        android:gravity="center"
-                        android:orientation="vertical"
-                        android:weightSum="4">
-
-                        <View
-                            android:layout_width="match_parent"
-                            android:layout_height="@dimen/_2sdp" />
-
-                        <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
+                            android:layout_height="wrap_content"
                             android:orientation="vertical"
                             android:weightSum="2">
 
@@ -252,328 +52,629 @@
                                 android:orientation="horizontal"
                                 android:weightSum="2">
 
-                                <TextView
-                                    android:layout_width="match_parent"
-                                    android:layout_height="match_parent"
-                                    android:layout_weight="1.5"
-                                    android:text="Interests :"
-                                    android:textSize="@dimen/_15sdp"
-                                    android:textStyle="bold" />
-
                                 <LinearLayout
                                     android:layout_width="match_parent"
                                     android:layout_height="match_parent"
-                                    android:layout_weight="0.5"
-                                    android:orientation="horizontal"
-                                    android:weightSum="1">
+                                    android:layout_weight="1.4"
+                                    android:orientation="vertical">
 
-                                    <TextView
-                                        android:id="@+id/fragment_user_profile_txtinterest1"
+                                    <LinearLayout
+                                        android:layout_width="match_parent"
+                                        android:layout_height="@dimen/_110sdp"
+                                        android:layout_marginBottom="@dimen/_15sdp"
+                                        android:layout_marginLeft="@dimen/_5sdp"
+                                        android:layout_marginTop="@dimen/_10sdp"
+                                        android:background="@drawable/ic_profilepic_bg"
+                                        android:orientation="vertical">
+
+                                        <RelativeLayout
+                                            android:layout_width="match_parent"
+                                            android:layout_height="wrap_content">
+
+                                            <ImageView
+                                                android:id="@+id/fragment_user_profile_imgphoto"
+                                                android:layout_width="match_parent"
+                                                android:layout_height="match_parent"
+                                                android:layout_marginBottom="@dimen/_10sdp"
+                                                android:layout_marginLeft="@dimen/_10sdp"
+                                                android:layout_marginTop="@dimen/_25sdp"
+                                                android:gravity="right"
+                                                android:padding="5dp"
+                                                android:src="@drawable/ic_blue_dot" />
+
+                                            <RelativeLayout
+                                                android:layout_width="match_parent"
+                                                android:layout_height="@dimen/_25sdp"
+                                                android:layout_alignLeft="@+id/fragment_user_profile_imgphoto"
+                                                android:layout_alignParentBottom="true"
+                                                android:layout_alignStart="@+id/fragment_user_profile_imgphoto"
+                                                android:layout_marginLeft="18dp"
+                                                android:layout_marginStart="18dp"
+                                                android:layout_marginTop="@dimen/_10sdp"
+                                                android:orientation="vertical">
+
+                                                <TextView
+                                                    android:id="@+id/fragment_user_profile_txtusername"
+                                                    android:layout_width="match_parent"
+                                                    android:layout_height="match_parent"
+                                                    android:layout_gravity="center|bottom"
+                                                    android:gravity="center|bottom"
+                                                    android:text="@string/username"
+                                                    android:textStyle="bold"
+                                                    android:layout_marginLeft="@dimen/_5sdp"
+                                                    android:textSize="@dimen/_10sdp"
+                                                    android:layout_alignParentLeft="true"
+                                                    android:layout_alignParentStart="true"/>
+
+                                            </RelativeLayout>
+                                        </RelativeLayout>
+                                    </LinearLayout>
+                                </LinearLayout>
+                                <LinearLayout
+                                    android:layout_width="match_parent"
+                                    android:layout_height="match_parent"
+                                    android:layout_weight="0.6"
+                                    android:layout_margin="@dimen/_10sdp"
+                                    android:orientation="vertical"
+                                    android:weightSum="2">
+
+                                    <LinearLayout
                                         android:layout_width="match_parent"
                                         android:layout_height="match_parent"
                                         android:layout_weight="1"
-                                        android:text="interest1"
-                                        android:textSize="@dimen/_15sdp" />
+                                        android:gravity="center"
+                                        android:orientation="horizontal"
+                                        android:weightSum="3">
 
-                                    <!-- <TextView
-                                         android:id="@+id/fragment_user_profile_txtinterest2"
-                                         android:layout_width="match_parent"
-                                         android:layout_height="match_parent"
-                                         android:layout_weight="1"
-                                         android:text="interest2"
-                                         android:textSize="@dimen/_15sdp" />
+                                        <LinearLayout
+                                            android:id="@+id/fragment_user_profile_layoutposts"
+                                            android:layout_width="match_parent"
+                                            android:layout_height="match_parent"
+                                            android:layout_weight="1"
+                                            android:orientation="vertical"
+                                            android:weightSum="2">
 
-                                     <TextView
-                                         android:id="@+id/fragment_user_profile_txtinterest3"
-                                         android:layout_width="match_parent"
-                                         android:layout_height="match_parent"
-                                         android:layout_weight="1"
-                                         android:text="interest3"
-                                         android:textSize="@dimen/_15sdp" />-->
+                                            <TextView
+                                                android:layout_width="match_parent"
+                                                android:layout_height="match_parent"
+                                                android:layout_gravity="center"
+                                                android:layout_weight="1"
+                                                android:gravity="center|bottom"
+                                                android:text="POSTS"
+                                                android:textColor="@color/logintext"
+                                                android:textSize="@dimen/_10sdp" />
+
+                                            <TextView
+                                                android:id="@+id/fragment_user_profile_txtposts"
+                                                android:layout_width="match_parent"
+                                                android:layout_height="match_parent"
+                                                android:layout_gravity="center"
+                                                android:layout_weight="1"
+                                                android:gravity="center|top"
+                                                android:text="0"
+                                                android:textColor="@color/logintext"
+                                                android:textSize="@dimen/_10sdp"
+                                                android:textStyle="bold" />
+                                        </LinearLayout>
+
+                                        <LinearLayout
+                                            android:id="@+id/fragment_user_profile_layoutfollowers"
+                                            android:layout_width="match_parent"
+                                            android:layout_height="match_parent"
+                                            android:layout_weight="1"
+                                            android:orientation="vertical"
+                                            android:weightSum="2">
+
+                                            <TextView
+                                                android:layout_width="match_parent"
+                                                android:layout_height="match_parent"
+                                                android:layout_gravity="center"
+                                                android:layout_weight="1"
+                                                android:gravity="center|bottom"
+                                                android:text="FOLLOWERS"
+                                                android:textColor="@color/logintext"
+                                                android:textSize="@dimen/_10sdp" />
+
+                                            <TextView
+                                                android:id="@+id/fragment_user_profile_txtfollowers"
+                                                android:layout_width="match_parent"
+                                                android:layout_height="match_parent"
+                                                android:layout_gravity="center"
+                                                android:layout_weight="1"
+                                                android:gravity="center|top"
+                                                android:text="0"
+                                                android:textColor="@color/logintext"
+                                                android:textSize="@dimen/_10sdp"
+                                                android:textStyle="bold" />
+                                        </LinearLayout>
+
+                                        <LinearLayout
+                                            android:id="@+id/fragment_user_profile_layoutfollowing"
+                                            android:layout_width="match_parent"
+                                            android:layout_height="match_parent"
+                                            android:layout_weight="1"
+                                            android:orientation="vertical"
+                                            android:weightSum="2">
+
+                                            <TextView
+                                                android:layout_width="match_parent"
+                                                android:layout_height="match_parent"
+                                                android:layout_gravity="center"
+                                                android:layout_weight="1"
+                                                android:gravity="center|bottom"
+                                                android:text="FOLLOWING"
+                                                android:textColor="@color/logintext"
+                                                android:textSize="@dimen/_10sdp" />
+
+                                            <TextView
+                                                android:id="@+id/fragment_user_profile_txtfollowing"
+                                                android:layout_width="match_parent"
+                                                android:layout_height="match_parent"
+                                                android:layout_gravity="center"
+                                                android:layout_weight="1"
+                                                android:gravity="center|top"
+                                                android:text="0"
+                                                android:textColor="@color/logintext"
+                                                android:textSize="@dimen/_10sdp"
+                                                android:textStyle="bold" />
+                                        </LinearLayout>
+
+                                    </LinearLayout>
+
+                                    <LinearLayout
+                                        android:layout_width="match_parent"
+                                        android:layout_height="match_parent"
+                                        android:layout_weight="1"
+                                        android:orientation="horizontal">
+
+                                        <TextView
+                                            android:id="@+id/fragment_user_profile_txteditprofile"
+                                            android:layout_width="match_parent"
+                                            android:layout_height="@dimen/_35sdp"
+                                            android:layout_gravity="center|top"
+                                            android:background="@drawable/loginborder"
+                                            android:gravity="center"
+                                            android:layout_marginLeft="@dimen/_20sdp"
+                                            android:layout_marginRight="@dimen/_10sdp"
+                                            android:text="@string/editprofile"
+                                            android:textColor="@color/logintext"
+                                            android:textSize="@dimen/_12sdp" />
+                                    </LinearLayout>
                                 </LinearLayout>
-                            </LinearLayout>
 
+                            </LinearLayout>
 
                             <LinearLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
-                                android:layout_weight="1"
-                                android:orientation="vertical">
+                                android:layout_gravity="center"
+                                android:layout_marginTop="@dimen/_5sdp"
+                                android:gravity="center"
+                                android:orientation="vertical"
+                                android:weightSum="4">
+
+                                <View
+                                    android:layout_width="match_parent"
+                                    android:layout_height="@dimen/_2sdp" />
 
                                 <LinearLayout
-                                    android:id="@+id/fragment_user_profile_layout_interest_first"
                                     android:layout_width="match_parent"
                                     android:layout_height="match_parent"
-                                    android:layout_marginTop="@dimen/_5sdp"
-                                    android:layout_weight="1"
                                     android:orientation="vertical"
                                     android:weightSum="2">
 
-                                    <TextView
-                                        android:id="@+id/fragment_user_profile_txtinterestchart1"
-                                        android:layout_width="match_parent"
-                                        android:layout_height="match_parent"
-                                        android:layout_weight="1"
-                                        android:text="Interest1 :"
-                                        android:textSize="@dimen/_15sdp"
-                                        android:textStyle="bold" />
-
                                     <LinearLayout
                                         android:layout_width="match_parent"
-                                        android:layout_height="@dimen/_50sdp"
+                                        android:layout_height="@dimen/_40sdp"
+                                        android:layout_weight="1"
+                                        android:background="@color/signinbg"
                                         android:orientation="horizontal"
-                                        android:weightSum="3">
+                                        android:weightSum="2">
+
+                                        <TextView
+                                            android:layout_width="match_parent"
+                                            android:layout_height="match_parent"
+                                            android:layout_gravity="center"
+                                            android:layout_weight="1.4"
+                                            android:gravity="center"
+                                            android:text="Interests"
+                                            android:textColor="@color/white"
+                                            android:textSize="@dimen/_12sdp" />
 
                                         <LinearLayout
-                                            android:layout_width="wrap_content"
+                                            android:layout_width="match_parent"
                                             android:layout_height="match_parent"
-                                            android:orientation="vertical">
+                                            android:layout_weight="0.6"
+                                            android:orientation="horizontal"
+                                            android:weightSum="1">
 
                                             <TextView
-                                                android:id="@+id/fragment_user_profile_txtlevelstart1"
-                                                android:layout_width="wrap_content"
-                                                android:layout_height="match_parent"
-                                                android:layout_gravity="center|left"
-                                                android:layout_weight="0.5"
-                                                android:gravity="center|left"
-                                                android:text="Beginner"
-                                                android:textSize="@dimen/_11sdp" />
-
-                                            <TextView
-                                                android:id="@+id/fragment_user_profile_txtlevelstartpoints1"
-                                                android:layout_width="wrap_content"
+                                                android:id="@+id/fragment_user_profile_txtinterest1"
+                                                android:layout_width="match_parent"
                                                 android:layout_height="match_parent"
                                                 android:layout_gravity="center"
-                                                android:layout_weight="0.5"
-                                                android:gravity="center"
-                                                android:text="0"
-                                                android:textSize="@dimen/_11sdp" />
-
-                                        </LinearLayout>
-
-                                        <com.daimajia.numberprogressbar.NumberProgressBar
-                                            android:id="@+id/fragment_user_profile_progressbar1"
-                                            style="android: attr/progressBarStyleHorizontal"
-                                            android:layout_width="@dimen/_200sdp"
-                                            android:layout_height="match_parent"
-                                            android:layout_weight="2"
-                                            android:background="@color/com_facebook_button_border_color_focused"
-                                            android:padding="@dimen/_5sdp"
-                                            app:progress_max="100" />
-
-                                        <LinearLayout
-                                            android:layout_width="wrap_content"
-                                            android:layout_height="match_parent"
-                                            android:orientation="vertical">
-
-                                            <TextView
-                                                android:id="@+id/fragment_user_profile_txtlevelend1"
-                                                android:layout_width="wrap_content"
-                                                android:layout_height="match_parent"
-                                                android:layout_gravity="center|right"
-                                                android:layout_weight="0.5"
+                                                android:layout_weight="1"
                                                 android:gravity="center|right"
-                                                android:text="Member"
-                                                android:textSize="@dimen/_11sdp" />
-
-                                            <TextView
-                                                android:id="@+id/fragment_user_profile_txtlevelendpoints1"
-                                                android:layout_width="wrap_content"
-                                                android:layout_height="match_parent"
-                                                android:layout_gravity="center"
-                                                android:layout_weight="0.5"
-                                                android:gravity="center"
-                                                android:text="44"
-                                                android:textSize="@dimen/_11sdp" />
+                                                android:layout_marginRight="@dimen/_30sdp"
+                                                android:text="interest1/interest2/interest3"
+                                                android:textColor="@color/white"
+                                                android:textSize="@dimen/_12sdp" />
                                         </LinearLayout>
                                     </LinearLayout>
-                                </LinearLayout>
 
-                                <LinearLayout
-                                    android:id="@+id/fragment_user_profile_layout_interest_second"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="match_parent"
-                                    android:layout_marginTop="@dimen/_5sdp"
-                                    android:layout_weight="1"
-                                    android:orientation="vertical"
-                                    android:weightSum="2">
-
-                                    <TextView
-                                        android:id="@+id/fragment_user_profile_txtinterestchart2"
-                                        android:layout_width="match_parent"
-                                        android:layout_height="match_parent"
-                                        android:layout_weight="1"
-                                        android:text="Interest2 :"
-                                        android:textSize="@dimen/_15sdp"
-                                        android:textStyle="bold" />
 
                                     <LinearLayout
                                         android:layout_width="match_parent"
-                                        android:layout_height="@dimen/_50sdp"
-                                        android:orientation="horizontal"
-                                        android:weightSum="3">
-
-                                        <LinearLayout
-                                            android:layout_width="wrap_content"
-                                            android:layout_height="match_parent"
-                                            android:orientation="vertical">
-
-                                            <TextView
-                                                android:id="@+id/fragment_user_profile_txtlevelstart2"
-                                                android:layout_width="wrap_content"
-                                                android:layout_height="match_parent"
-                                                android:layout_gravity="center|left"
-                                                android:layout_weight="0.5"
-                                                android:gravity="center|left"
-                                                android:text="Beginner"
-                                                android:textSize="@dimen/_11sdp" />
-
-                                            <TextView
-                                                android:id="@+id/fragment_user_profile_txtlevelstartpoints2"
-                                                android:layout_width="wrap_content"
-                                                android:layout_height="match_parent"
-                                                android:layout_gravity="center"
-                                                android:layout_weight="0.5"
-                                                android:gravity="center"
-                                                android:text="0"
-                                                android:textSize="@dimen/_11sdp" />
-                                        </LinearLayout>
-
-
-                                        <com.daimajia.numberprogressbar.NumberProgressBar
-                                            android:id="@+id/fragment_user_profile_progressbar2"
-                                            style="android: attr/progressBarStyleHorizontal"
-                                            android:layout_width="@dimen/_200sdp"
-                                            android:layout_height="match_parent"
-                                            android:layout_weight="2"
-                                            android:background="@color/com_facebook_button_border_color_focused"
-                                            android:padding="@dimen/_5sdp"
-                                            app:progress_max="100" />
-
-                                        <LinearLayout
-                                            android:layout_width="wrap_content"
-                                            android:layout_height="match_parent"
-                                            android:orientation="vertical">
-
-                                            <TextView
-                                                android:id="@+id/fragment_user_profile_txtlevelend2"
-                                                android:layout_width="wrap_content"
-                                                android:layout_height="match_parent"
-                                                android:layout_gravity="center|right"
-                                                android:layout_weight="0.5"
-                                                android:gravity="center|right"
-                                                android:text="Member"
-                                                android:textSize="@dimen/_11sdp" />
-
-                                            <TextView
-                                                android:id="@+id/fragment_user_profile_txtlevelendpoints2"
-                                                android:layout_width="wrap_content"
-                                                android:layout_height="match_parent"
-                                                android:layout_gravity="center"
-                                                android:layout_weight="0.5"
-                                                android:gravity="center"
-                                                android:text="44"
-                                                android:textSize="@dimen/_11sdp" />
-                                        </LinearLayout>
-                                    </LinearLayout>
-                                </LinearLayout>
-
-                                <LinearLayout
-                                    android:id="@+id/fragment_user_profile_layout_interest_third"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="match_parent"
-                                    android:layout_marginTop="@dimen/_5sdp"
-                                    android:layout_weight="1"
-                                    android:orientation="vertical"
-                                    android:weightSum="2">
-
-                                    <TextView
-                                        android:id="@+id/fragment_user_profile_txtinterestchart3"
-                                        android:layout_width="match_parent"
                                         android:layout_height="match_parent"
                                         android:layout_weight="1"
-                                        android:text="Interest3 :"
-                                        android:textSize="@dimen/_15sdp"
-                                        android:textStyle="bold" />
-
-                                    <LinearLayout
-                                        android:layout_width="match_parent"
-                                        android:layout_height="@dimen/_50sdp"
-                                        android:orientation="horizontal"
-                                        android:weightSum="3">
+                                        android:layout_margin="@dimen/_20sdp"
+                                        android:orientation="vertical">
 
                                         <LinearLayout
-                                            android:layout_width="wrap_content"
+                                            android:id="@+id/fragment_user_profile_layout_interest_first"
+                                            android:layout_width="match_parent"
                                             android:layout_height="match_parent"
-                                            android:orientation="vertical">
+                                            android:layout_weight="1"
+                                            android:layout_margin="@dimen/_10sdp"
+                                            android:orientation="vertical"
+                                            android:weightSum="2">
 
                                             <TextView
-                                                android:id="@+id/fragment_user_profile_txtlevelstart3"
-                                                android:layout_width="wrap_content"
+                                                android:id="@+id/fragment_user_profile_txtinterestchart1"
+                                                android:layout_width="match_parent"
                                                 android:layout_height="match_parent"
-                                                android:layout_gravity="center|left"
-                                                android:layout_weight="0.5"
-                                                android:gravity="center|left"
-                                                android:text="Beginner"
-                                                android:textSize="@dimen/_11sdp" />
-
-                                            <TextView
-                                                android:id="@+id/fragment_user_profile_txtlevelstartpoints3"
-                                                android:layout_width="wrap_content"
-                                                android:layout_height="match_parent"
+                                                android:layout_weight="1"
                                                 android:layout_gravity="center"
-                                                android:layout_weight="0.5"
                                                 android:gravity="center"
-                                                android:text="0"
-                                                android:textSize="@dimen/_11sdp" />
+                                                android:text="Interest1 :"
+                                                android:textSize="@dimen/_15sdp"
+                                                />
 
+                                            <LinearLayout
+                                                android:layout_width="match_parent"
+                                                android:layout_height="match_parent"
+                                                android:orientation="vertical"
+                                                android:layout_marginTop="@dimen/_10sdp"
+                                                android:weightSum="2">
+
+                                                <com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar
+                                                    android:id="@+id/fragment_user_profile_progressbar1"
+                                                    android:layout_width="match_parent"
+                                                    android:layout_height="@dimen/_10sdp"
+                                                    android:layout_weight="1"
+                                                    app:progress_max="100" />
+
+                                                <LinearLayout
+                                                    android:layout_width="match_parent"
+                                                    android:layout_height="match_parent"
+                                                    android:layout_weight="1"
+                                                    android:weightSum="3"
+                                                    android:layout_marginTop="@dimen/_5sdp"
+                                                    android:orientation="horizontal">
+
+                                                    <LinearLayout
+                                                        android:layout_width="match_parent"
+                                                        android:layout_height="match_parent"
+                                                        android:layout_weight="1"
+                                                        android:orientation="vertical">
+
+                                                        <TextView
+                                                            android:id="@+id/fragment_user_profile_txtlevelstart1"
+                                                            android:layout_width="match_parent"
+                                                            android:layout_height="match_parent"
+                                                            android:layout_weight="0.5"
+                                                            android:layout_gravity="center|left"
+                                                            android:gravity="center|left"
+                                                            android:paddingLeft="@dimen/_5sdp"
+                                                            android:text="Beginner"
+                                                            android:textSize="@dimen/_11sdp" />
+
+                                                        <TextView
+                                                            android:id="@+id/fragment_user_profile_txtlevelstartpoint1"
+                                                            android:layout_width="match_parent"
+                                                            android:layout_height="match_parent"
+                                                            android:layout_gravity="center|left"
+                                                            android:layout_weight="0.5"
+                                                            android:paddingLeft="@dimen/_5sdp"
+                                                            android:gravity="center|left"
+                                                            android:text="0"
+                                                            android:textSize="@dimen/_11sdp" />
+
+                                                    </LinearLayout>
+
+                                                    <LinearLayout
+                                                        android:layout_width="match_parent"
+                                                        android:layout_height="match_parent"
+                                                        android:layout_weight="1"
+                                                        android:orientation="vertical">
+                                                        <TextView
+                                                            android:id="@+id/fragment_user_profile_txtuserpointlevel1"
+                                                            android:layout_width="match_parent"
+                                                            android:layout_height="match_parent"
+                                                            android:layout_gravity="center|top"
+                                                            android:gravity="center|top"
+                                                            android:text="0 Points"
+                                                            android:textSize="@dimen/_11sdp" />
+
+                                                    </LinearLayout>
+                                                    <LinearLayout
+                                                        android:layout_width="match_parent"
+                                                        android:layout_height="match_parent"
+                                                        android:layout_weight="1"
+                                                        android:orientation="vertical">
+
+                                                        <TextView
+                                                            android:id="@+id/fragment_user_profile_txtlevelend1"
+                                                            android:layout_width="match_parent"
+                                                            android:layout_height="match_parent"
+                                                            android:layout_gravity="center|right"
+                                                            android:layout_weight="0.5"
+                                                            android:gravity="center|right"
+                                                            android:text="Member"
+                                                            android:paddingRight="@dimen/_5sdp"
+                                                            android:textSize="@dimen/_11sdp" />
+
+                                                        <TextView
+                                                            android:id="@+id/fragment_user_profile_txtlevelendpoints1"
+                                                            android:layout_width="wrap_content"
+                                                            android:layout_height="match_parent"
+                                                            android:layout_gravity="center|right"
+                                                            android:layout_weight="0.5"
+                                                            android:gravity="center|right"
+                                                            android:paddingRight="@dimen/_5sdp"
+                                                            android:text="44"
+                                                            android:textSize="@dimen/_11sdp" />
+
+                                                    </LinearLayout>
+                                                </LinearLayout>
+                                            </LinearLayout>
                                         </LinearLayout>
-
-
-                                        <com.daimajia.numberprogressbar.NumberProgressBar
-                                            android:id="@+id/fragment_user_profile_progressbar3"
-                                            style="android: attr/progressBarStyleHorizontal"
-                                            android:layout_width="@dimen/_200sdp"
-                                            android:layout_height="match_parent"
-                                            android:layout_weight="2"
-                                            android:background="@color/com_facebook_button_border_color_focused"
-                                            android:padding="@dimen/_5sdp"
-                                            app:progress_max="100" />
-
                                         <LinearLayout
-                                            android:layout_width="wrap_content"
+                                            android:id="@+id/fragment_user_profile_layout_interest_second"
+                                            android:layout_width="match_parent"
                                             android:layout_height="match_parent"
-                                            android:orientation="vertical">
+                                            android:layout_weight="1"
+                                            android:layout_margin="@dimen/_10sdp"
+                                            android:orientation="vertical"
+                                            android:weightSum="2">
 
                                             <TextView
-                                                android:id="@+id/fragment_user_profile_txtlevelend3"
-                                                android:layout_width="wrap_content"
+                                                android:id="@+id/fragment_user_profile_txtinterestchart2"
+                                                android:layout_width="match_parent"
                                                 android:layout_height="match_parent"
-                                                android:layout_gravity="center|right"
-                                                android:layout_weight="0.5"
-                                                android:gravity="center|right"
-                                                android:text="Member"
-                                                android:textSize="@dimen/_11sdp" />
-
-                                            <TextView
-                                                android:id="@+id/fragment_user_profile_txtlevelendpoints3"
-                                                android:layout_width="wrap_content"
-                                                android:layout_height="match_parent"
+                                                android:layout_weight="1"
                                                 android:layout_gravity="center"
-                                                android:layout_weight="0.5"
                                                 android:gravity="center"
-                                                android:text="44"
-                                                android:textSize="@dimen/_11sdp" />
+                                                android:text="Interest2 :"
+                                                android:textSize="@dimen/_15sdp"
+                                                />
+
+                                            <LinearLayout
+                                                android:layout_width="match_parent"
+                                                android:layout_height="match_parent"
+                                                android:orientation="vertical"
+                                                android:layout_marginTop="@dimen/_10sdp"
+                                                android:weightSum="2">
+
+                                                <com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar
+                                                    android:id="@+id/fragment_user_profile_progressbar2"
+                                                    android:layout_width="match_parent"
+                                                    android:layout_height="@dimen/_10sdp"
+                                                    android:layout_weight="1"
+                                                    app:progress_max="100" />
+
+                                                <LinearLayout
+                                                    android:layout_width="match_parent"
+                                                    android:layout_height="match_parent"
+                                                    android:layout_weight="1"
+                                                    android:weightSum="3"
+                                                    android:layout_marginTop="@dimen/_5sdp"
+                                                    android:orientation="horizontal">
+
+                                                    <LinearLayout
+                                                        android:layout_width="match_parent"
+                                                        android:layout_height="match_parent"
+                                                        android:layout_weight="1"
+                                                        android:orientation="vertical">
+
+                                                        <TextView
+                                                            android:id="@+id/fragment_user_profile_txtlevelstart2"
+                                                            android:layout_width="match_parent"
+                                                            android:layout_height="match_parent"
+                                                            android:layout_weight="0.5"
+                                                            android:layout_gravity="center|left"
+                                                            android:gravity="center|left"
+                                                            android:paddingLeft="@dimen/_5sdp"
+                                                            android:text="Beginner"
+                                                            android:textSize="@dimen/_11sdp" />
+
+                                                        <TextView
+                                                            android:id="@+id/fragment_user_profile_txtlevelstartpoint2"
+                                                            android:layout_width="match_parent"
+                                                            android:layout_height="match_parent"
+                                                            android:layout_gravity="center|left"
+                                                            android:layout_weight="0.5"
+                                                            android:paddingLeft="@dimen/_5sdp"
+                                                            android:gravity="center|left"
+                                                            android:text="0"
+                                                            android:textSize="@dimen/_11sdp" />
+
+                                                    </LinearLayout>
+                                                    <LinearLayout
+                                                        android:layout_width="match_parent"
+                                                        android:layout_height="match_parent"
+                                                        android:layout_weight="1"
+                                                        android:orientation="vertical">
+
+                                                        <TextView
+                                                            android:id="@+id/fragment_user_profile_txtuserpointlevel2"
+                                                            android:layout_width="match_parent"
+                                                            android:layout_height="match_parent"
+                                                            android:layout_gravity="center|top"
+                                                            android:gravity="center|top"
+                                                            android:text="0 Points"
+                                                            android:textSize="@dimen/_11sdp" />
+
+                                                    </LinearLayout>
+                                                    <LinearLayout
+                                                        android:layout_width="match_parent"
+                                                        android:layout_height="match_parent"
+                                                        android:layout_weight="1"
+                                                        android:orientation="vertical">
+
+                                                        <TextView
+                                                            android:id="@+id/fragment_user_profile_txtlevelend2"
+                                                            android:layout_width="match_parent"
+                                                            android:layout_height="match_parent"
+                                                            android:layout_gravity="center|right"
+                                                            android:layout_weight="0.5"
+                                                            android:gravity="center|right"
+                                                            android:text="Member"
+                                                            android:paddingRight="@dimen/_5sdp"
+                                                            android:textSize="@dimen/_11sdp" />
+
+                                                        <TextView
+                                                            android:id="@+id/fragment_user_profile_txtlevelendpoints2"
+                                                            android:layout_width="wrap_content"
+                                                            android:layout_height="match_parent"
+                                                            android:layout_gravity="center|right"
+                                                            android:layout_weight="0.5"
+                                                            android:gravity="center|right"
+                                                            android:paddingRight="@dimen/_5sdp"
+                                                            android:text="44"
+                                                            android:textSize="@dimen/_11sdp" />
+
+                                                    </LinearLayout>
+                                                </LinearLayout>
+                                            </LinearLayout>
+                                        </LinearLayout>
+                                        <LinearLayout
+                                            android:id="@+id/fragment_user_profile_layout_interest_third"
+                                            android:layout_width="match_parent"
+                                            android:layout_height="match_parent"
+                                            android:layout_weight="1"
+                                            android:layout_margin="@dimen/_10sdp"
+                                            android:orientation="vertical"
+                                            android:weightSum="2">
+
+                                            <TextView
+                                                android:id="@+id/fragment_user_profile_txtinterestchart3"
+                                                android:layout_width="match_parent"
+                                                android:layout_height="match_parent"
+                                                android:layout_weight="1"
+                                                android:layout_gravity="center"
+                                                android:gravity="center"
+                                                android:text="Interest1 :"
+                                                android:textSize="@dimen/_15sdp"
+                                                />
+
+                                            <LinearLayout
+                                                android:layout_width="match_parent"
+                                                android:layout_height="match_parent"
+                                                android:orientation="vertical"
+                                                android:layout_marginTop="@dimen/_10sdp"
+                                                android:weightSum="2">
+
+                                                <com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar
+                                                    android:id="@+id/fragment_user_profile_progressbar3"
+                                                    android:layout_width="match_parent"
+                                                    android:layout_height="@dimen/_10sdp"
+                                                    android:layout_weight="1"
+                                                    app:progress_max="100" />
+
+                                                <LinearLayout
+                                                    android:layout_width="match_parent"
+                                                    android:layout_height="match_parent"
+                                                    android:layout_weight="1"
+                                                    android:weightSum="3"
+                                                    android:layout_marginTop="@dimen/_5sdp"
+                                                    android:orientation="horizontal">
+
+                                                    <LinearLayout
+                                                        android:layout_width="match_parent"
+                                                        android:layout_height="match_parent"
+                                                        android:layout_weight="1"
+                                                        android:orientation="vertical">
+
+                                                        <TextView
+                                                            android:id="@+id/fragment_user_profile_txtlevelstart3"
+                                                            android:layout_width="match_parent"
+                                                            android:layout_height="match_parent"
+                                                            android:layout_weight="0.5"
+                                                            android:layout_gravity="center|left"
+                                                            android:gravity="center|left"
+                                                            android:paddingLeft="@dimen/_5sdp"
+                                                            android:text="Beginner"
+                                                            android:textSize="@dimen/_11sdp" />
+
+                                                        <TextView
+                                                            android:id="@+id/fragment_user_profile_txtlevelstartpoint3"
+                                                            android:layout_width="match_parent"
+                                                            android:layout_height="match_parent"
+                                                            android:layout_gravity="center|left"
+                                                            android:layout_weight="0.5"
+                                                            android:paddingLeft="@dimen/_5sdp"
+                                                            android:gravity="center|left"
+                                                            android:text="0"
+                                                            android:textSize="@dimen/_11sdp" />
+
+                                                    </LinearLayout>
+                                                    <LinearLayout
+                                                        android:layout_width="match_parent"
+                                                        android:layout_height="match_parent"
+                                                        android:layout_weight="1"
+                                                        android:orientation="vertical">
+                                                        <TextView
+                                                            android:id="@+id/fragment_user_profile_txtuserpointlevel3"
+                                                            android:layout_width="match_parent"
+                                                            android:layout_height="match_parent"
+                                                            android:layout_gravity="center|top"
+                                                            android:gravity="center|top"
+                                                            android:text="0 Points"
+                                                            android:textSize="@dimen/_11sdp" />
+
+                                                    </LinearLayout>
+                                                    <LinearLayout
+                                                        android:layout_width="match_parent"
+                                                        android:layout_height="match_parent"
+                                                        android:layout_weight="1"
+                                                        android:orientation="vertical">
+
+                                                        <TextView
+                                                            android:id="@+id/fragment_user_profile_txtlevelend3"
+                                                            android:layout_width="match_parent"
+                                                            android:layout_height="match_parent"
+                                                            android:layout_gravity="center|right"
+                                                            android:layout_weight="0.5"
+                                                            android:gravity="center|right"
+                                                            android:text="Member"
+                                                            android:paddingRight="@dimen/_5sdp"
+                                                            android:textSize="@dimen/_11sdp" />
+
+                                                        <TextView
+                                                            android:id="@+id/fragment_user_profile_txtlevelendpoints3"
+                                                            android:layout_width="wrap_content"
+                                                            android:layout_height="match_parent"
+                                                            android:layout_gravity="center|right"
+                                                            android:layout_weight="0.5"
+                                                            android:gravity="center|right"
+                                                            android:paddingRight="@dimen/_5sdp"
+                                                            android:text="44"
+                                                            android:textSize="@dimen/_11sdp" />
+
+                                                    </LinearLayout>
+                                                </LinearLayout>
+                                            </LinearLayout>
                                         </LinearLayout>
                                     </LinearLayout>
                                 </LinearLayout>
                             </LinearLayout>
                         </LinearLayout>
                     </LinearLayout>
-                </LinearLayout>
-            </ScrollView>
-        </LinearLayout>
-    </ScrollView>
+                </ScrollView>
+            </LinearLayout>
+        </ScrollView>
+    </LinearLayout>
 </RelativeLayout>
 
 

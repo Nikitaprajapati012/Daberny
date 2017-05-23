@@ -93,6 +93,15 @@
     <string name="choosefile">Choose file</string>
     <string name="chooseinterest">Choose your interest</string>
     <string name="addtime">Add Time</string>
+    <string name="send">Send</string>
+    <string name="close">Close</string>
+    <string name="reason">Reason :</string>
+    <string name="home">Home</string>
+    <string name="askque">Ask Question</string>
+    <string name="question">Question</string>
+    <string name="search">Search</string>
+    <string name="notification">Notification</string>
+    <string name="profile">Profile</string>
 
     <string-array name="time">
 

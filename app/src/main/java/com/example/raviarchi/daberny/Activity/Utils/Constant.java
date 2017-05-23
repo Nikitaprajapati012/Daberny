@@ -18,6 +18,7 @@ public class Constant {
     public static final String USER_USERNAME = "userUserName";
     public static final String USER_PASSWORD = "userPassword";
     public static final String REMEMBER_ME = "rememberme";
+    public static final String USER_INTERESTS = "userInterests";
 
 
     public static class SHRED_PR {

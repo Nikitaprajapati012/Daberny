@@ -7,10 +7,13 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.raviarchi.daberny.Activity.Adapter.HomeAdapter;
@@ -51,6 +54,8 @@ public class Home extends Fragment {
     private ArrayList<String> arrayFollowingIDList;
     private int ival = 1;
     private int loadLimit = 20;
+    public Toolbar toolBar;
+    public TextView txtTitle;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -65,6 +70,9 @@ public class Home extends Fragment {
     // TODO: 2/22/2017 bind data with field
     private void findViewId(View view) {
         recyclerViewHome = (RecyclerView) view.findViewById(R.id.fragment_home_recyclermainlist);
+        toolBar = (Toolbar) getActivity().findViewById(R.id.activity_main_toolbar);
+        txtTitle = (TextView) toolBar.findViewById(R.id.toolbar_title);
+        txtTitle.setText(R.string.home);
     }
 
     // TODO: 2/21/2017 initilization

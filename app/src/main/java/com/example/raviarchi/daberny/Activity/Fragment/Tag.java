@@ -690,8 +690,7 @@ public class Tag extends Fragment implements View.OnClickListener {
 
         @Override
         protected String doInBackground(String... strings) {
-            //http://181.224.157.105/~hirepeop/host2/surveys/api/question_tag_data/181
-            //new==>  http://localhost/surveys/api/question_tag_data/864/709
+            //http://181.224.157.105/~hirepeop/host2/surveys/api/question_tag_data/752/181
             return utils.getResponseofGet(Constant.QUESTION_BASE_URL + "question_tag_data/" + userId + "/" + ID);
         }
 

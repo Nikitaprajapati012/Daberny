@@ -47,7 +47,6 @@ public class RegistrationActivity extends AppCompatActivity implements View.OnCl
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registration);
-        getSupportActionBar().hide();
         init();
         findViewId();
         click();
@@ -73,7 +72,7 @@ public class RegistrationActivity extends AppCompatActivity implements View.OnCl
         imgIcon = (ImageView) findViewById(R.id.header_icon);
         txtHeaderTitle = (TextView) findViewById(R.id.header_title);
         imgIcon.setVisibility(View.INVISIBLE);
-        txtHeaderTitle.setText(R.string.login);
+        txtHeaderTitle.setText(R.string.signup);
     }
 
     // TODO: 2/21/2017 click perform

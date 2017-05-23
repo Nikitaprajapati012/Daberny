@@ -67,4 +67,5 @@
     <!--ask que screen-->
     <color name="askque">#064a8a</color>
     <color name="choosefile">#1083dc</color>
+    <color name="progress">#afafaf</color>
 </resources>

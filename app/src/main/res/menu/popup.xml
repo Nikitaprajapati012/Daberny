@@ -1,20 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:myapp="http://schemas.android.com/apk/res-auto">
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
         android:id="@+id/menu_item_askque"
-        android:title="Ask Question"
-        myapp:showAsAction="ifRoom" />
+        android:title="Ask Question"/>
 
-    <item
+        <item
         android:id="@+id/menu_item_userprofile"
-        android:title="User Profile"
-        myapp:showAsAction="ifRoom" />
+        android:title="User Profile"/>
 
     <item
         android:id="@+id/menu_item_logout"
         android:title="Log out"
-        myapp:showAsAction="ifRoom" />
+        />
 
 </menu>
