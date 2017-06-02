@@ -88,6 +88,7 @@
                     android:background="@android:color/transparent"
                     android:gravity="center|left"
                     android:hint="@string/password"
+                    android:inputType="textPassword"
                     android:textColor="@color/signin_text"
                     android:textColorHint="@color/logintext"
                     android:textSize="@dimen/_12sdp" />

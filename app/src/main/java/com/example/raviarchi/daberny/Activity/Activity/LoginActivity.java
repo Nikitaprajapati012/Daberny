@@ -8,6 +8,7 @@ import android.content.pm.PackageManager;
 import android.content.pm.Signature;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Base64;
 import android.util.Log;
@@ -53,6 +54,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     public RelativeLayout headerview;
     public ImageView imgIcon;
     public CheckBox ckRememberMe;
+    private ProgressDialog mDialog;
 
 
     @Override
@@ -63,6 +65,11 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         setContentView(R.layout.activity_login);
         hashKey();
         init();
+        if (android.os.Build.VERSION.SDK_INT > 9) {
+            StrictMode.ThreadPolicy policy =
+                    new StrictMode.ThreadPolicy.Builder().permitAll().build();
+            StrictMode.setThreadPolicy(policy);
+        }
         findViewId();
         click();
     }
@@ -265,10 +272,18 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         }
     }*/
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+       mDialog = null;
+                   if ((mDialog != null) && mDialog.isShowing())
+                mDialog.dismiss();
+            mDialog = null;
+        }
+
 
     // TODO: 2/21/2017 make user login
     private class SignIn extends AsyncTask<String, String, String> {
-        ProgressDialog pd;
         String email, password;
 
         public SignIn(String email, String password) {
@@ -279,46 +294,53 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            pd = new ProgressDialog(LoginActivity.this);
-            pd.setMessage("please wait...");
-            pd.show();
+            mDialog = new ProgressDialog(LoginActivity.this);
+            mDialog.setMessage("please wait...");
+            mDialog.show();
         }
 
         @Override
         protected String doInBackground(String... strings) {
             //http://181.224.157.105/~hirepeop/host2/surveys/api/login/archirayan40%40gmail.com/archirayan40
             try {
-                return utils.getResponseofGet(Constant.QUESTION_BASE_URL + "login/" + URLEncoder.encode(email, "UTF-8") + "/" + password);
+                return Utils.getResponseofGet(Constant.QUESTION_BASE_URL + "login1/" + URLEncoder.encode(email, "UTF-8") + "/" + password);
 
             } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();
                 return "";
             }
         }
-
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
-            pd.dismiss();
+            if ((mDialog != null) && mDialog.isShowing()) {
+                mDialog.cancel();
+            }
             try {
                 Log.d("RESPONSE" + "LOGIN", "" + s);
                 JSONObject jsonObject = new JSONObject(s);
                 JSONObject jsonSecondOnject = jsonObject.getJSONObject("user_details");
                 if (jsonObject.getString("status").equalsIgnoreCase("true")) {
+                    Toast.makeText(LoginActivity.this, jsonObject.getString("msg"), Toast.LENGTH_SHORT).show();
                     Utils.WriteSharePrefrence(LoginActivity.this, Constant.USERID, jsonSecondOnject.getString("id"));
                     Utils.WriteSharePrefrence(LoginActivity.this, Constant.USER_EMAIL, jsonSecondOnject.getString("email"));
-                    //String interest = Utils.ReadSharePrefrence(LoginActivity.this, Constant.INTERESTID);
-                    //if (interest.length() > 0) {
-                    Intent i = new Intent(LoginActivity.this, MainActivity.class);
-                    i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                    startActivity(i);
-                    finish();
-                    /*} else {
+                    JSONObject userObject = jsonObject.getJSONObject("user_details");
+                    JSONArray jsonArray =userObject.getJSONArray("ranks");
+                    if (jsonArray.length() > 0) {
+                        for (int i = 0; i < jsonArray.length(); i++) {
+                            JSONObject interestObject = jsonArray.getJSONObject(i);
+                            String interest = interestObject.getString("int_name");
+                            Utils.WriteSharePrefrence(LoginActivity.this, Constant.USER_INTERESTS, interest);
+                            Intent imain = new Intent(LoginActivity.this, MainActivity.class);
+                            imain.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                            startActivity(imain);
+                            //finish();
+                        }
+                    }else {
                         Intent i = new Intent(LoginActivity.this, InterestActivity.class);
                         startActivity(i);
-                        finish();
-                    }*/
-
+                        //finish();
+                    }
                 } else {
                     Toast.makeText(LoginActivity.this, jsonObject.getString("msg"), Toast.LENGTH_SHORT).show();
                 }

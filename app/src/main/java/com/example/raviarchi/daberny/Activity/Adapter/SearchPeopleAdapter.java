@@ -16,6 +16,7 @@ import android.widget.TextView;
 
 import com.example.raviarchi.daberny.Activity.Fragment.OtherUserProfile;
 import com.example.raviarchi.daberny.Activity.Model.UserProfileDetails;
+import com.example.raviarchi.daberny.Activity.Utils.RoundedTransformation;
 import com.example.raviarchi.daberny.Activity.Utils.Utils;
 import com.example.raviarchi.daberny.R;
 import com.squareup.picasso.Picasso;
@@ -56,10 +57,14 @@ public class SearchPeopleAdapter extends RecyclerView.Adapter<SearchPeopleAdapte
         holder.txtUsername.setText(userdetails.getUserUserName());
         holder.txtFullname.setText(userdetails.getUserFullName());
         if (userdetails.getUserImage().length() > 0) {
-            Picasso.with(context).load(userdetails.getUserImage()).placeholder(R.drawable.ic_placeholder).into(holder.imgProfile);
-        } /*else {
-            Picasso.with(context).load(R.mipmap.ic_launcher).placeholder(R.drawable.ic_placeholder).into(holder.imgProfile);
-        }*/
+            Picasso.with(context).load(userdetails.getUserImage()).
+                    transform(new RoundedTransformation(120,2)).
+                    placeholder(R.drawable.ic_placeholder).into(holder.imgProfile);
+        } else {
+            Picasso.with(context).load(R.drawable.ic_placeholder).
+            transform(new RoundedTransformation(120,2)).
+            placeholder(R.drawable.ic_placeholder).into(holder.imgProfile);
+        }
 
         holder.linearLayoutPeople.setOnClickListener(new View.OnClickListener() {
             @Override

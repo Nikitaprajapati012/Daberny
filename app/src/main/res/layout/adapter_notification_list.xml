@@ -17,9 +17,9 @@
             android:text="@string/notification"
             android:gravity="center|left"
             android:paddingLeft="@dimen/_15sdp"
-            android:textColor="@color/white"
-            android:background="@color/signinbg"
-            android:textSize="@dimen/_15sdp" />
+            android:textColor="@color/black"
+            android:background="@color/home_bg"
+            android:textSize="@dimen/_12sdp" />
 
     </LinearLayout>
 </LinearLayout>

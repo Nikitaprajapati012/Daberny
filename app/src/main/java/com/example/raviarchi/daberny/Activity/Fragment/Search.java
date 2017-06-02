@@ -34,7 +34,6 @@ public class Search extends Fragment implements TabLayout.OnTabSelectedListener 
         tabLayout.addTab(tabLayout.newTab().setText("Latest"));
         tabLayout.addTab(tabLayout.newTab().setText("People"));
         tabLayout.addTab(tabLayout.newTab().setText("Tags"));
-        tabLayout.addTab(tabLayout.newTab().setText("Location"));
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
 
         // TODO: 3/22/2017 set view pager

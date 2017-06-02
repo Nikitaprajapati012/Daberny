@@ -57,7 +57,7 @@ public class CommentPeopleAdapter extends RecyclerView.Adapter<CommentPeopleAdap
         Id = userdetails.getUserId();
 
         holder.txtUsername.setText(userdetails.getQueCommentUser());
-        holder.txtComment.setText(userdetails.getQueComment());
+        holder.txtComment.setText(userdetails.getQueComment().replaceAll("%20"," "));
 
         if (userdetails.getUserImage().length() > 0) {
             Picasso.with(context).load(userdetails.getUserImage()).placeholder(R.drawable.ic_placeholder).into(holder.imgProfile);

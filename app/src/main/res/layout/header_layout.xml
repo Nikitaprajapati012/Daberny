@@ -4,33 +4,40 @@
     android:layout_height="@dimen/_40sdp"
     android:orientation="vertical">
 
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/signinbg"
         android:orientation="horizontal"
-        android:weightSum="2">
+        android:weightSum="3">
 
         <ImageView
             android:id="@+id/header_icon"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="1.8"
-            android:padding="5dp"
-            android:visibility="invisible"
-            android:src="@drawable/back_arrow" />
+            android:layout_weight="1.3"
+            android:padding="@dimen/_10sdp"
+            android:visibility="visible"
+            android:src="@drawable/ic_back" />
 
         <TextView
             android:id="@+id/header_title"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="center"
-            android:layout_weight="0.3"
+            android:layout_weight="0.4"
             android:text="@string/daberny"
             android:textColor="@android:color/white"
             android:textSize="@dimen/_16sdp" />
 
+        <ImageView
+            android:id="@+id/header_iconplus"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1.3"
+            android:padding="@dimen/_13sdp"
+            android:visibility="invisible"
+            android:src="@drawable/ic_add_white" />
     </LinearLayout>
 
 </LinearLayout>

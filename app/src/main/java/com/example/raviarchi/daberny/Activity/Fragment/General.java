@@ -43,7 +43,6 @@ public class General extends Fragment {
     public Utils utils;
     public UserProfileDetails details;
     public RecyclerView recyclerViewHome;
-    public String ID;
     private ArrayList<String> arrayInterestList;
     private ArrayList<String> arrayFollowingNameList;
     private ArrayList<String> arrayFollowingIdList;
@@ -82,12 +81,6 @@ public class General extends Fragment {
     private void init() {
         utils = new Utils(getActivity());
         arrayUserList = new ArrayList<>();
-        if (getArguments() != null) {
-            Gson gson = new Gson();
-            String strObj = getArguments().getString("userprofiledetails");
-            details = gson.fromJson(strObj, UserProfileDetails.class);
-            ID = details.getUserId();
-        }
     }
 
     private void openQuetionList() {
@@ -118,8 +111,8 @@ public class General extends Fragment {
 
         @Override
         protected String doInBackground(String... strings) {
-            //  http://181.224.157.105/~hirepeop/host2/surveys/api/all_questions/669/
-            return utils.getResponseofGet(Constant.QUESTION_BASE_URL + "all_questions/0");
+            //http://181.224.157.105/~hirepeop/host2/surveys/api/all_questions/669/0
+            return utils.getResponseofGet(Constant.QUESTION_BASE_URL + "all_questions/" + Utils.ReadSharePrefrence(getActivity(),Constant.USERID) +"/0");
         }
 
         @Override

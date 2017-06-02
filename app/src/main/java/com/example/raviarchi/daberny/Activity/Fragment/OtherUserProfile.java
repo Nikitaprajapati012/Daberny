@@ -23,7 +23,6 @@ import android.widget.Toast;
 
 import com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar;
 import com.daimajia.numberprogressbar.NumberProgressBar;
-import com.example.raviarchi.daberny.Activity.Activity.AskQuestionActivity;
 import com.example.raviarchi.daberny.Activity.Activity.LoginActivity;
 import com.example.raviarchi.daberny.Activity.Model.UserProfileDetails;
 import com.example.raviarchi.daberny.Activity.Utils.Constant;
@@ -89,7 +88,7 @@ public class OtherUserProfile extends Fragment implements View.OnClickListener {
     LinearLayout layoutFollowers;
     @BindView(R.id.fragment_other_user_profile_layoutfollowing)
     LinearLayout layoutFollowing;
-       @BindView(R.id.fragment_other_user_profile_layout_interest_third)
+    @BindView(R.id.fragment_other_user_profile_layout_interest_third)
     LinearLayout layoutInterestChart3;
     @BindView(R.id.fragment_other_user_profile_layout_interest_second)
     LinearLayout layoutInterestChart2;
@@ -189,7 +188,6 @@ public class OtherUserProfile extends Fragment implements View.OnClickListener {
             case R.id.fragment_other_user_profile_txtfollow:
                 // TODO: 2/24/2017 follow and unfollow user
                 task = "";
-                Log.d("follow_status", details.getUserFollowStatus());
                 isInFollowList = details.getUserFollowStatus();
                 if (isInFollowList.equalsIgnoreCase("Unfollow")) {
                     details.setUserFollowStatus("follow");
@@ -198,7 +196,6 @@ public class OtherUserProfile extends Fragment implements View.OnClickListener {
                 }
                 task = isInFollowList.equalsIgnoreCase("Unfollow") ? "add" : "remove";
                 new GetFollowUnFollow(Utils.ReadSharePrefrence(getActivity(), Constant.USERID), ID, task).execute();
-                //new GetFollowUnFollow().execute();
                 break;
 
            /* case R.id.fragment_other_user_profile_imgBrowse:
@@ -270,70 +267,8 @@ public class OtherUserProfile extends Fragment implements View.OnClickListener {
         });
     }
 
-    // TODO: 2/24/2017 open dialog
-    private void openDialog() {
-        dialog = new Dialog(getActivity());
-        dialog.setContentView(R.layout.dialog_option);
-        dialog.setTitle("");
-        btnAskQue = (Button) dialog.findViewById(R.id.dialog_askque);
-        btnUserProfile = (Button) dialog.findViewById(R.id.dialog_userprofile);
-        btnLogout = (Button) dialog.findViewById(R.id.dialog_logout);
-        btnSetting = (Button) dialog.findViewById(R.id.dialog_setting);
-        dialog.show();
-        btnSetting.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-               /* Intent isetting = new Intent(getActivity(), LoginActivity.class);
-                startActivity(isetting);
-                dialog.dismiss();*/
-            }
-        });
-
-        btnLogout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent ilogout = new Intent(getActivity(), LoginActivity.class);
-                startActivity(ilogout);
-                dialog.dismiss();
-            }
-        });
-
-        btnAskQue.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                Intent iask = new Intent(getActivity(), AskQuestionActivity.class);
-                iask.putExtra("uId", ID);
-                startActivity(iask);
-                dialog.dismiss();
-            }
-        });
-
-        btnUserProfile.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-               /* Intent iuser = new Intent(getActivity(), AskQuestion.class);
-                startfragment(iuser);*/
-                dialog.dismiss();
-            }
-        });
-    }
-
     private void openUserProfileDetailsList() {
-        // TODO: 5/19/2017 set first progress
-        progressbar1.setProgress(Float.parseFloat(details.getUserRankPercentage().get(0)));
-        progressbar1.setBackgroundColor(getResources().getColor(R.color.progress));
-        progressbar1.setProgressColor(R.color.signinbg);
-
-        // TODO: 5/19/2017 set second progress
-        progressbar2.setProgress(Float.parseFloat(details.getUserRankPercentage().get(1)));
-        progressbar2.setProgressColor(R.color.signinbg);
-
-        // TODO: 5/19/2017 set third progress
-        progressbar3.setProgress(Float.parseFloat(details.getUserRankPercentage().get(2)));
-        progressbar3.setProgressColor(R.color.signinbg);
-
-        // TODO: 4/5/2017 show follow & unfollow status 
+               // TODO: 4/5/2017 show follow & unfollow status
         if (details.getUserFollowStatus().equalsIgnoreCase("follow")) {
             txtFollow.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.login_bg));
             txtFollow.setTextColor(ContextCompat.getColor(getActivity(), R.color.signinbg));
@@ -392,6 +327,9 @@ public class OtherUserProfile extends Fragment implements View.OnClickListener {
             txtInterestChartEndLevel2.setText(""+details.getStartRankName().get(0));
             txtInterestChartEndLevel3.setText(""+details.getStartRankName().get(0));
             txtInterestChartUserPoints1.setText(""+details.getUserRankPoints().get(0) + " Points");
+            // TODO: 5/19/2017 set first progress
+            progressbar1.setProgress(Float.parseFloat(details.getUserRankPercentage().get(0)));
+
         } else {
             txtInterestChart1.setText(" ");
             layoutInterestChart1.setVisibility(View.GONE);
@@ -408,6 +346,9 @@ public class OtherUserProfile extends Fragment implements View.OnClickListener {
             txtInterestChartEndLevel2.setText(""+details.getStartRankName().get(1));
             txtInterestChartEndLevel3.setText(""+details.getStartRankName().get(1));
             txtInterestChartUserPoints2.setText(""+details.getUserRankPoints().get(1)+ " Points");
+            // TODO: 5/19/2017 set second progress
+            progressbar2.setProgress(Float.parseFloat(details.getUserRankPercentage().get(1)));
+
         } else {
             txtInterestChart2.setText(" ");
             layoutInterestChart2.setVisibility(View.GONE);
@@ -424,6 +365,9 @@ public class OtherUserProfile extends Fragment implements View.OnClickListener {
             txtInterestChartEndLevel2.setText(""+details.getStartRankName().get(2));
             txtInterestChartEndLevel3.setText(""+details.getStartRankName().get(2));
             txtInterestChartUserPoints3.setText(""+details.getUserRankPoints().get(2)+ " Points");
+            // TODO: 5/19/2017 set third progress
+            progressbar3.setProgress(Float.parseFloat(details.getUserRankPercentage().get(2)));
+
         } else {
             txtInterestChart3.setText(" ");
             layoutInterestChart3.setVisibility(View.GONE);
@@ -581,7 +525,7 @@ public class OtherUserProfile extends Fragment implements View.OnClickListener {
         @Override
         protected String doInBackground(String... strings) {
             //http://181.224.157.105/~hirepeop/host2/surveys/api/follow_un_follow/805/708
-            return utils.getResponseofGet(Constant.QUESTION_BASE_URL + "follow_un_follow/" + userId + "/" + otherUserId);
+            return Utils.getResponseofGet(Constant.QUESTION_BASE_URL + "follow_un_follow/" + userId + "/" + otherUserId);
         }
 
         @Override
@@ -595,7 +539,6 @@ public class OtherUserProfile extends Fragment implements View.OnClickListener {
                     JSONObject userObject = jsonObject.getJSONObject("inserted_data");
                     details = new UserProfileDetails();
                     details.setUserFollowStatus(userObject.getString("type"));
-                    Log.d("user_type", userObject.getString("type"));
                     boolean isSucess = task.equalsIgnoreCase("add") ? false : true;
                     if (isSucess) {
                         details.setUserFollowStatus("Unfollow");

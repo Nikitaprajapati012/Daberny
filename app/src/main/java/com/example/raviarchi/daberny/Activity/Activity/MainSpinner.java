@@ -25,7 +25,6 @@ public class MainSpinner extends AppCompatActivity {
         /**
          * Getting array of String to Bind in Spinner
          */
-
       //  final List<String> list = Arrays.asList(getResources().getStringArray(R.array.sports_array));
 
         // TODO: 3/10/2017 add in list

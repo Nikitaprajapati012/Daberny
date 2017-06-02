@@ -75,7 +75,8 @@ public class Utils {
         data = preferences.getString(key, "");
         editor.apply();
         return data;
-    }  public static String ReadSharePref(Context context, String key) {
+    }
+    public static String ReadSharePref(Context context, String key) {
         String data;
         final SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
         final SharedPreferences.Editor editor = preferences.edit();
@@ -162,7 +163,7 @@ public class Utils {
 
     }
 
-    public String getResponseofPost(String URL, HashMap<String, String> postDataParams) {
+    public static String getResponseofPost(String URL, HashMap<String, String> postDataParams) {
         URL url;
         String response = "";
         try {
@@ -199,7 +200,7 @@ public class Utils {
         return response;
     }
 
-    public String getResponseofGet(String URL) {
+    public static String getResponseofGet(String URL) {
         URL url;
         String response = "";
         try {
@@ -256,7 +257,7 @@ public class Utils {
     }
 
 
-    private String getPostDataString(HashMap<String, String> params) throws
+    private static String getPostDataString(HashMap<String, String> params) throws
             UnsupportedEncodingException {
         StringBuilder result = new StringBuilder();
         boolean first = true;

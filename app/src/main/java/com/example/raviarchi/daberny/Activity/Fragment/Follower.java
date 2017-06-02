@@ -7,11 +7,13 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -48,12 +50,18 @@ public class Follower extends Fragment implements View.OnClickListener {
     @BindView(R.id.fragment_follower_imgback)
     ImageView imgBack;
     private ArrayList<UserProfileDetails> arrayUserList;
+    public Toolbar toolBar;
+    public TextView txtTitle;
+    public RelativeLayout headerView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
         View view = inflater.inflate(R.layout.fragment_follower, container, false);
         ButterKnife.bind(this, view);
+        headerView = (RelativeLayout) getActivity().findViewById(R.id.mainview);
+        toolBar = (Toolbar) getActivity().findViewById(R.id.activity_main_toolbar);
+        headerView.setVisibility(View.GONE);
         init();
         new GetFollowerPeopleDetails().execute();
         click();
@@ -62,7 +70,8 @@ public class Follower extends Fragment implements View.OnClickListener {
 
     // TODO: 2/21/2017 initilization
     private void init() {
-        utils = new Utils(getActivity());
+     utils = new Utils(getActivity());
+        arrayUserList = new ArrayList<>();
         if (getArguments() != null) {
             Gson gson = new Gson();
             String strObj = getArguments().getString("userprofiledetails");
@@ -112,25 +121,26 @@ public class Follower extends Fragment implements View.OnClickListener {
         @Override
         protected String doInBackground(String... strings) {
             //http://hire-people.com/host2/surveys/api/followers_list/669
-            return utils.getResponseofGet(Constant.QUESTION_BASE_URL + "followers_list/" + ID);
+            Log.d("URL" , Constant.QUESTION_BASE_URL + "followers_list/" + ID);
+            return Utils.getResponseofGet(Constant.QUESTION_BASE_URL + "followers_list/" + ID);
         }
 
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
+            arrayInterestList = new ArrayList<>();
             Log.d("RESPONSE", "Follower People details..." + s);
             pd.dismiss();
             try {
                 JSONObject jsonObject = new JSONObject(s);
                 if (jsonObject.getString("status").equalsIgnoreCase("true")) {
-                    JSONObject dataObject = jsonObject.getJSONObject("data");
-                    JSONArray followerArray = dataObject.getJSONArray("followers");
+                   // JSONObject dataObject = jsonObject.getJSONObject("data");
+                    JSONArray followerArray = jsonObject.getJSONArray("followers");
                     for (int i = 0; i < followerArray.length(); i++) {
                         JSONObject followerObject = followerArray.getJSONObject(i);
                         details = new UserProfileDetails();
-                        arrayInterestList = new ArrayList<>();
-                        details.setUserId(followerObject.getString("id"));
                         details.setUserUserName(followerObject.getString("username"));
+                        details.setUserId(followerObject.getString("id"));
                         details.setUserFullName(followerObject.getString("fullname"));
                         details.setUserEmail(followerObject.getString("email"));
                         details.setUserCountryId(followerObject.getString("country_id"));
@@ -156,12 +166,10 @@ public class Follower extends Fragment implements View.OnClickListener {
                         Toast.makeText(getActivity(), "No Follower People Found, Please Try Again.", Toast.LENGTH_SHORT).show();
                     }
                 }
-
             } catch (JSONException e) {
                 e.printStackTrace();
+                Toast.makeText(getActivity(), "JSON Exception"+e.toString(), Toast.LENGTH_SHORT).show();
             }
-
-
         }
     }
 }

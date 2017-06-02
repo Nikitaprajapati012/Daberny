@@ -38,7 +38,7 @@ public class SearchTag extends Fragment {
     public RecyclerView recyclerViewtag;
     public Utils utils;
     public UserProfileDetails details;
-    public String ID;
+    public String userId;
     public SearchTagAdapter adapter;
     public String SearchTag;
     private ArrayList<UserProfileDetails> arrayUserList;
@@ -78,6 +78,7 @@ public class SearchTag extends Fragment {
     private void init() {
         utils = new Utils(getActivity());
         arrayUserList = new ArrayList<>();
+        userId = Utils.ReadSharePrefrence(getActivity(),Constant.USERID);
     }
 
     private void openTagList() {
@@ -111,8 +112,8 @@ public class SearchTag extends Fragment {
 
         @Override
         protected String doInBackground(String... strings) {
-            //http://181.224.157.105/~hirepeop/host2/surveys/api/searched_question/How many glass of water do you
-            String response = utils.getResponseofGet(Constant.QUESTION_BASE_URL + "searched_question/" + searchtag);
+            //http://181.224.157.105/~hirepeop/host2/surveys/api/searched_question/752/How many glass of water do you
+            String response = Utils.getResponseofGet(Constant.QUESTION_BASE_URL + "searched_question/" +userId + "/" + searchtag);
             Log.d("RESPONSE", "Search Tag List..." + response);
             try {
                 JSONObject jsonObject = new JSONObject(response);

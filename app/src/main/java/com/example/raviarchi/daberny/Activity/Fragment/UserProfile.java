@@ -22,7 +22,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar;
-import com.example.raviarchi.daberny.Activity.Activity.AskQuestionActivity;
 import com.example.raviarchi.daberny.Activity.Activity.LoginActivity;
 import com.example.raviarchi.daberny.Activity.Model.UserProfileDetails;
 import com.example.raviarchi.daberny.Activity.Utils.Constant;
@@ -41,15 +40,12 @@ import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-/**
- * Created by Ravi archi on 1/10/2017.
+/*** Created by Ravi archi on 1/10/2017.
  */
 
 public class UserProfile extends Fragment implements View.OnClickListener {
     public Utils utils;
     public UserProfileDetails details;
-    public Dialog dialog;
-    public Button btnAskQue, btnUserProfile, btnLogout;
     public String ID, Interest;
     public ArrayList<String> arrayInterestList, arrayInterestIdList, interestList,
     arrayInterestStartNameList,arrayInterestStartPointsList,
@@ -202,64 +198,12 @@ public class UserProfile extends Fragment implements View.OnClickListener {
         }
     }
 
-    // TODO: 2/24/2017 open dialog
-    private void openDialog() {
-        dialog = new Dialog(getActivity());
-        dialog.setContentView(R.layout.dialog_option);
-        dialog.setTitle("");
-        btnAskQue = (Button) dialog.findViewById(R.id.dialog_askque);
-        btnUserProfile = (Button) dialog.findViewById(R.id.dialog_userprofile);
-        btnLogout = (Button) dialog.findViewById(R.id.dialog_logout);
-        dialog.show();
-        btnLogout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent ilogout = new Intent(getActivity(), LoginActivity.class);
-                ilogout.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                Utils.ClearSharePref(getActivity(),Constant.USERID);
-                startActivity(ilogout);
-                dialog.dismiss();
-            }
-        });
-
-        btnAskQue.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent iask = new Intent(getActivity(), AskQuestionActivity.class);
-                iask.putExtra("id", Utils.ReadSharePrefrence(getActivity(), Constant.USERID));
-                startActivity(iask);
-                dialog.dismiss();
-            }
-        });
-
-        btnUserProfile.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dialog.dismiss();
-            }
-        });
-    }
-
     private void openUserProfileDetailsList() {
         // TODO: 2/27/2017 user details
         txtUserName.setText(details.getUserUserName());
         txtPosts.setText(details.getUserPosts());
         txtFollowers.setText(details.getUserFollowers());
         txtFollowing.setText(details.getUserFollowing());
-
-        // TODO: 5/19/2017 set first progress
-        progressbar1.setProgress(Float.parseFloat(details.getUserRankPercentage().get(0)));
-        progressbar1.setBackgroundColor(getResources().getColor(R.color.progress));
-        progressbar1.setProgressColor(R.color.signinbg);
-
-        // TODO: 5/19/2017 set second progress
-        progressbar2.setProgress(Float.parseFloat(details.getUserRankPercentage().get(1)));
-        progressbar2.setProgressColor(R.color.signinbg);
-
-        // TODO: 5/19/2017 set third progress
-        progressbar3.setProgress(Float.parseFloat(details.getUserRankPercentage().get(2)));
-        progressbar3.setProgressColor(R.color.signinbg);
-
         //TODO: 3/15/2017 get interest at this screen
         interestList = new ArrayList<>();
         if (arrayInterestList.size() > 0) {
@@ -296,6 +240,9 @@ public class UserProfile extends Fragment implements View.OnClickListener {
             txtInterestChartEndLevel2.setText(""+details.getStartRankName().get(0));
             txtInterestChartEndLevel3.setText(""+details.getStartRankName().get(0));
             txtInterestChartUserPoints1.setText(""+details.getUserRankPoints().get(0) + " Points");
+            // TODO: 5/19/2017 set first progress
+            progressbar1.setProgress(Float.parseFloat(details.getUserRankPercentage().get(0)));
+
         } else {
             txtInterestChart1.setText(" ");
             layoutInterestChart1.setVisibility(View.GONE);
@@ -312,6 +259,8 @@ public class UserProfile extends Fragment implements View.OnClickListener {
             txtInterestChartEndLevel2.setText(""+details.getStartRankName().get(1));
             txtInterestChartEndLevel3.setText(""+details.getStartRankName().get(1));
             txtInterestChartUserPoints2.setText(""+details.getUserRankPoints().get(1)+ " Points");
+            // TODO: 5/19/2017 set second progress
+            progressbar2.setProgress(Float.parseFloat(details.getUserRankPercentage().get(1)));
         } else {
             txtInterestChart2.setText(" ");
             layoutInterestChart2.setVisibility(View.GONE);
@@ -328,6 +277,8 @@ public class UserProfile extends Fragment implements View.OnClickListener {
             txtInterestChartEndLevel2.setText(""+details.getStartRankName().get(2));
             txtInterestChartEndLevel3.setText(""+details.getStartRankName().get(2));
             txtInterestChartUserPoints3.setText(""+details.getUserRankPoints().get(2)+ " Points");
+            // TODO: 5/19/2017 set third progress
+            progressbar3.setProgress(Float.parseFloat(details.getUserRankPercentage().get(2)));
 
         } else {
             txtInterestChart3.setText(" ");

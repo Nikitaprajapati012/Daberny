@@ -30,17 +30,15 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:padding="5dp"
-            android:src="@mipmap/ic_general" />
+            android:src="@mipmap/ic_general_category" />
 
         <ImageView
-
             android:id="@+id/footer_imgaddquestion"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:padding="5dp"
-            android:src="@mipmap/ic_askque" />
-
+            android:padding="3dp"
+            android:src="@mipmap/ic_que" />
 
         <ImageView
             android:id="@+id/footer_imgnotification"

@@ -9,6 +9,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.Toolbar;
 import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -18,12 +19,16 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.raviarchi.daberny.Activity.Activity.ChangePasswordActivity;
 import com.example.raviarchi.daberny.Activity.Model.UserProfileDetails;
 import com.example.raviarchi.daberny.Activity.Utils.Constant;
+import com.example.raviarchi.daberny.Activity.Utils.RoundedTransformation;
 import com.example.raviarchi.daberny.Activity.Utils.Utils;
 import com.example.raviarchi.daberny.R;
 import com.example.raviarchi.multiplespinner.MultiSelectionSpinner;
@@ -51,15 +56,12 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import de.hdodenhof.circleimageview.CircleImageView;
 
 import static android.app.Activity.RESULT_OK;
 import static com.example.raviarchi.daberny.Activity.Utils.DbBitmapUtility.getBytes;
 import static com.facebook.FacebookSdk.getApplicationContext;
 
-
-/**
- * Created by Ravi archi on 1/10/2017.
+/*** Created by Ravi archi on 1/10/2017.
  */
 
 public class EditUserProfile extends Fragment implements View.OnClickListener, MultiSelectionSpinner.OnMultipleItemsSelectedListener {
@@ -75,6 +77,8 @@ public class EditUserProfile extends Fragment implements View.OnClickListener, M
     public ArrayList<String> arrayCountryList, arrayCountryIDList, arrayInterestList, arrayInterestIdList, interestID;
     public Object[] getinterestidspinner;
     public File file;
+    public RelativeLayout headerView;
+    public Toolbar toolBar;
     @BindView(R.id.fragment_edit_user_profile_edfullname)
     EditText edFullName;
     @BindView(R.id.fragment_edit_user_profile_edusername)
@@ -82,7 +86,7 @@ public class EditUserProfile extends Fragment implements View.OnClickListener, M
     @BindView(R.id.fragment_edit_user_profile_edemail)
     EditText edEmail;
     @BindView(R.id.fragment_edit_user_profile_imgprofilepic)
-    CircleImageView imgProfilePic;
+    ImageView imgProfilePic;
     @BindView(R.id.fragment_edit_user_profile_btnsubmit)
     Button btnSubmit;
     @BindView(R.id.fragment_edit_user_profile_spinnercountry)
@@ -91,8 +95,14 @@ public class EditUserProfile extends Fragment implements View.OnClickListener, M
     MultiSelectionSpinner spinnerIntererst;
     @BindView(R.id.fragment_edit_user_profile_txtchangepic)
     TextView txtChangePic;
-    @BindView(R.id.fragment_edit_user_profile_edback)
-    TextView txtBack;
+    @BindView(R.id.fragment_edit_user_profile_txtchangepwd)
+    TextView txtChangePassword;
+    @BindView(R.id.headerview_edit)
+    RelativeLayout layoutHeader;
+    @BindView(R.id.header_icon)
+    ImageView imgBack;
+    @BindView(R.id.header_title)
+    TextView txtTitle;
     private Bitmap bitmap;
 
     public static String convertStreamToString(FileOutputStream is) throws Exception {
@@ -109,8 +119,13 @@ public class EditUserProfile extends Fragment implements View.OnClickListener, M
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
-        View view = inflater.inflate(R.layout.fragment_edit_user_profile, container, false);
+        View view = inflater.inflate(R.layout.test_edit_user_profile, container, false);
         ButterKnife.bind(this, view);
+        headerView = (RelativeLayout) getActivity().findViewById(R.id.mainview);
+        toolBar = (Toolbar) getActivity().findViewById(R.id.activity_main_toolbar);
+        headerView.setVisibility(View.GONE);
+        txtTitle.setText(R.string.editprofile);
+        imgBack.setVisibility(View.VISIBLE);
         init();
         click();
         return view;
@@ -135,7 +150,6 @@ public class EditUserProfile extends Fragment implements View.OnClickListener, M
             details = gson.fromJson(strObj, UserProfileDetails.class);
             StrInterest = Utils.ReadSharePrefrence(getActivity(), Constant.USER_INTERESTID);
             //spinnerIntererst.setSelection(new String[]{StrInterest});
-
             // TODO: 3/3/2017  get data from previous screen
             ID = Utils.ReadSharePrefrence(getActivity(), Constant.USERID);
             FullName = details.getUserFullName();
@@ -147,13 +161,14 @@ public class EditUserProfile extends Fragment implements View.OnClickListener, M
             edUserName.setText(UserName);
             edEmail.setText(Email);
             arrayCountryList.add(Country);
-
-         /*   File imgFile = new File(ProfilePic);
+         /* File imgFile = new File(ProfilePic);
             Bitmap myBitmap = BitmapFactory.decodeFile(ProfilePic);
             Log.d("profilepic_name", "" +myBitmap);
             imgProfilePic.setImageBitmap(myBitmap);
 */
-            Picasso.with(getActivity()).load(ProfilePic).placeholder(R.drawable.ic_placeholder).into(imgProfilePic);
+            Picasso.with(getActivity()).load(ProfilePic).
+                    transform(new RoundedTransformation(120, 2)).
+                    placeholder(R.drawable.ic_placeholder).into(imgProfilePic);
 
           /*  // TODO: 3/16/2017 get list from previous activity
             arrayInterestList = new ArrayList<String>(enums);
@@ -249,6 +264,8 @@ public class EditUserProfile extends Fragment implements View.OnClickListener, M
     }
 
     private void click() {
+        txtChangePassword.setOnClickListener(this);
+        imgBack.setOnClickListener(this);
         txtChangePic.setOnClickListener(this);
         btnSubmit.setOnClickListener(this);
         spinnerIntererst.setListener(this);
@@ -280,8 +297,14 @@ public class EditUserProfile extends Fragment implements View.OnClickListener, M
                 Intent intentPickImage = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                 startActivityForResult(intentPickImage, SELECT_FILE);
                 break;
+            case R.id.fragment_edit_user_profile_txtchangepwd:
+                Gson gson = new Gson();
+                Intent ichange = new Intent(getActivity(), ChangePasswordActivity.class);
+                ichange.putExtra("userprofiledetails", gson.toJson(details));
+                getActivity().startActivity(ichange);
+                break;
 
-            case R.id.fragment_edit_user_profile_edback:
+            case R.id.header_icon:
                 getActivity().onBackPressed();
                 break;
 
@@ -303,8 +326,7 @@ public class EditUserProfile extends Fragment implements View.OnClickListener, M
                 InterestId = interestID.get(i);
             }
         }
-        Log.d("interest_id", InterestId);
-        Toast.makeText(getActivity(), "interest id =" + InterestId + "\n" + "interest name" + InterestName, Toast.LENGTH_SHORT).show();
+        Log.d("interest_id@@", "interest id =" + InterestId + "\n" + "interest name" + InterestName);
         // if (FullName.equalsIgnoreCase("")) {
         //   if (UserName.equalsIgnoreCase("")) {
         //  if (Email.equalsIgnoreCase("")) {

@@ -342,7 +342,10 @@
                                                     android:layout_width="match_parent"
                                                     android:layout_height="@dimen/_10sdp"
                                                     android:layout_weight="1"
-                                                    app:progress_max="100" />
+                                                    app:progress_max="100"
+                                                    app:rcProgressColor="@color/signinbg"
+                                                    app:rcReverse="false"
+                                                    app:rcSecondaryProgressColor="@color/background_color"/>
 
                                                 <LinearLayout
                                                     android:layout_width="match_parent"
@@ -461,7 +464,10 @@
                                                     android:layout_width="match_parent"
                                                     android:layout_height="@dimen/_10sdp"
                                                     android:layout_weight="1"
-                                                    app:progress_max="100" />
+                                                    app:progress_max="100"
+                                                    app:rcProgressColor="@color/signinbg"
+                                                    app:rcReverse="false"
+                                                    app:rcSecondaryProgressColor="@color/background_color"/>
 
                                                 <LinearLayout
                                                     android:layout_width="match_parent"
@@ -580,7 +586,10 @@
                                                     android:layout_width="match_parent"
                                                     android:layout_height="@dimen/_10sdp"
                                                     android:layout_weight="1"
-                                                    app:progress_max="100" />
+                                                    app:progress_max="100"
+                                                    app:rcProgressColor="@color/signinbg"
+                                                    app:rcReverse="false"
+                                                    app:rcSecondaryProgressColor="@color/background_color"/>
 
                                                 <LinearLayout
                                                     android:layout_width="match_parent"

@@ -4,6 +4,8 @@
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
     <color name="green">#8bad74</color>
+    <color name="light_green">#9fdf99</color>
+    <color name="dark_green">#9aac63</color>
     <color name="yellow">#eab05c</color>
     <color name="blue">#110739</color>
     <color name="dark">#525051</color>
@@ -20,6 +22,7 @@
     <color name="countdownred">#ff0404</color>
     <color name="bluebgcolor">#6d86af</color>
     <color name="yesno">#55628f</color>
+    <color name="changepwd">#064a8a</color>
     <color name="yesnobg">#d8deec</color>
 
 
@@ -63,6 +66,9 @@
     <color name="otheruserprofile_pink">@color/pink</color>
     <color name="otheruserprofile_light_blue">@color/light_blue</color>
     <color name="otheruserprofile_sky_blue">@color/yesno</color>
+
+    <!--chat screen-->
+    <color name="chat_bg">#efefef</color>
 
     <!--ask que screen-->
     <color name="askque">#064a8a</color>

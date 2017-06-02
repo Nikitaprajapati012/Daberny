@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -52,10 +53,9 @@ public class Home extends Fragment {
     private ArrayList<String> arrayStartNameList;
     private ArrayList<String> arrayEndNameList;
     private ArrayList<String> arrayFollowingIDList;
-    private int ival = 1;
-    private int loadLimit = 20;
     public Toolbar toolBar;
     public TextView txtTitle;
+    public RelativeLayout layoutHeader;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -70,6 +70,8 @@ public class Home extends Fragment {
     // TODO: 2/22/2017 bind data with field
     private void findViewId(View view) {
         recyclerViewHome = (RecyclerView) view.findViewById(R.id.fragment_home_recyclermainlist);
+        layoutHeader = (RelativeLayout) getActivity().findViewById(R.id.mainview);
+        layoutHeader.setVisibility(View.VISIBLE);
         toolBar = (Toolbar) getActivity().findViewById(R.id.activity_main_toolbar);
         txtTitle = (TextView) toolBar.findViewById(R.id.toolbar_title);
         txtTitle.setText(R.string.home);
@@ -83,10 +85,7 @@ public class Home extends Fragment {
     }
 
     private void openQuetionList() {
-
         // TODO: 2/21/2017 bind list and show in adapter
-        Collections.reverse(arrayUserList);
-        //recyclerViewHome.setHasFixedSize(true);
         adapter = new HomeAdapter(getActivity(), arrayUserList);
         layoutManager = new LinearLayoutManager(getActivity());
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
@@ -94,22 +93,6 @@ public class Home extends Fragment {
         recyclerViewHome.setItemAnimator(new DefaultItemAnimator());
         recyclerViewHome.setAdapter(adapter);
         adapter.notifyDataSetChanged();
-       /* recyclerViewHome.setOnScrollListener(new EndlessRecyclerOnScrollListener(layoutManager) {
-            @Override
-            public void onLoadMore(int current_page) {
-                loadMoreData(current_page);
-            }
-        });*/
-    }
-
-    private void loadMoreData(int current_page) {
-        loadLimit = ival + 10;//loadlimit=1+10=11
-        for (int i = ival; i <= loadLimit; i++) {
-            //new GetQuetionList().execute();
-            /*details = new UserProfileDetails("Student " + i, false);
-            arrayUserList.add(details);*/
-            ival++;
-        }
     }
 
     // TODO: 2/21/2017 get list of Question from URL
@@ -131,9 +114,8 @@ public class Home extends Fragment {
 
         @Override
         protected String doInBackground(String... s) {
-
-            //NEW API== >  http://181.224.157.105/~hirepeop/host2/surveys/api/home_que/805
-            String response = utils.getResponseofGet(Constant.QUESTION_BASE_URL + "home_que/" + userId);
+            //NEW API== >   http://181.224.157.105/~hirepeop/host2/surveys/api/home_que_api/752
+            String response = Utils.getResponseofGet(Constant.QUESTION_BASE_URL + "home_que_api/" + userId);
             Log.d("RESPONSE", "All Question..." + response);
             try {
                 JSONObject jsonObject = new JSONObject(response);
@@ -144,6 +126,7 @@ public class Home extends Fragment {
                         details = new UserProfileDetails();
                         details.setQueId(questionObject.getString("id"));
                         details.setQueTitle(questionObject.getString("title"));
+                        details.setQueTag(questionObject.getString("tags"));
                         details.setQuePostDate(questionObject.getString("post_date"));
                         details.setQueOptionFirst(questionObject.getString("option1"));
                         details.setQueOptionSecond(questionObject.getString("option2"));
@@ -154,7 +137,6 @@ public class Home extends Fragment {
                         details.setQueVoteStatus(questionObject.getString("vote_status"));
                         details.setUserCanVote(questionObject.getString("can_vote"));
                         // TODO: 3/29/2017 get remaining  time
-
                         details.setQueCategory(questionObject.getString("name"));
                         details.setQueType(questionObject.getString("type"));
                         details.setQueImageName(questionObject.getString("picture"));
@@ -171,7 +153,22 @@ public class Home extends Fragment {
                         details.setQueVoteTotalCount(answerObj.getInt("total_count"));
                         details.setQueLikeStatus(answerObj.getString("liked"));
                         details.setQueLikeTotalCount(answerObj.getInt("likes_count"));
-                        // TODO: 3/25/2017 get like object
+
+                        // TODO: 5/26/2017 set vote count of particular question
+                        JSONObject answerCountObj = answerObj.getJSONObject("answers_count");
+                        details.setQueVoteCount1(answerCountObj.getString("1"));
+                        details.setQueVoteCount2(answerCountObj.getString("2"));
+                        details.setQueVoteCount3(answerCountObj.getString("3"));
+                        details.setQueVoteCount4(answerCountObj.getString("4"));
+
+                        // TODO: 5/26/2017 set vote percentage of particular question
+                        JSONObject percentageCountObj = answerObj.getJSONObject("percentage_count");
+                         details.setQueVotePercentage1(percentageCountObj.getString("1"));
+                         details.setQueVotePercentage2(percentageCountObj.getString("2"));
+                         details.setQueVotePercentage3(percentageCountObj.getString("3"));
+                         details.setQueVotePercentage4(percentageCountObj.getString("4"));
+
+                            // TODO: 3/25/2017 get like object
                         // JSONObject userlike = answerObj.getJSONObject("likes");
                         // TODO: 3/22/2017 get user details
                         JSONObject userObject = questionObject.getJSONObject("user");
@@ -187,6 +184,7 @@ public class Home extends Fragment {
                                 details.setQueCommentId(countcommentObject.getString("id"));
                                 details.setQueId(countcommentObject.getString("qid"));
                                 details.setQueCommentUser(countcommentObject.getString("username"));
+                                details.setQueCommentUserProfilePic(countcommentObject.getString("image"));
                                 details.setQueCommentUserId(countcommentObject.getString("uid"));
                             }
                         }

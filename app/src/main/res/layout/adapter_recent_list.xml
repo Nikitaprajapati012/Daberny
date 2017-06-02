@@ -27,7 +27,7 @@
             android:layout_height="@dimen/_60sdp"
             android:layout_gravity="center"
             android:layout_margin="@dimen/_5sdp"
-            android:background="@drawable/loginbtn_bg"
+            android:background="@drawable/loginborder"
             android:gravity="center"
             android:orientation="horizontal"
             android:weightSum="2">
@@ -104,7 +104,7 @@
             android:layout_height="@dimen/_40sdp"
             android:layout_gravity="center|left"
             android:layout_marginLeft="@dimen/_5sdp"
-            android:background="@drawable/loginbtn_bg"
+            android:background="@drawable/loginborder"
             android:gravity="center|left"
             android:text="@string/username"
             android:textColor="@color/black"

@@ -5,16 +5,10 @@
     android:orientation="vertical">
 
     <RelativeLayout
+        android:id="@+id/headerview_edit"
         android:layout_width="match_parent"
         android:layout_height="@dimen/_40sdp">
-
-        <ImageView
-            android:id="@+id/adapter_comment_people_list_imgback"
-            android:layout_width="@dimen/_30sdp"
-            android:layout_height="match_parent"
-            android:layout_gravity="center"
-            android:background="@drawable/back_arrow"
-            android:padding="@dimen/_5sdp" />
+       <include layout="@layout/header_layout" />
     </RelativeLayout>
 
     <RelativeLayout

@@ -140,8 +140,8 @@ public class Tag extends Fragment implements View.OnClickListener {
     MultiSelectionSpinner multiSelectionSpinnerFollowing;
     float progress, remainingProgress;
     RelativeLayout relativeProgress, relativeRemaining;
-    @BindView(R.id.linear)
-    LinearLayout layoutProgressController;
+    /*@BindView(R.id.linear)
+    LinearLayout layoutProgressController;*/
     private ArrayList<String> arrayInterestList;
     private ArrayList<String> arrayStartNameList;
     private ArrayList<String> arrayEndNameList;
@@ -171,7 +171,6 @@ public class Tag extends Fragment implements View.OnClickListener {
         rdAnswer4.setVisibility(View.VISIBLE);
         txtCommentUser.setOnClickListener(this);
         txtUserName.setOnClickListener(this);
-        imgLike.setOnClickListener(this);
         layoutFacebook.setOnClickListener(this);
         layoutTwitter.setOnClickListener(this);
         txtVote.setOnClickListener(this);
@@ -224,20 +223,20 @@ public class Tag extends Fragment implements View.OnClickListener {
         queId = details.getQueId();
 
         // TODO: 4/11/2017 dynamic controller
-        setProgress(20f);
-        LayoutInflater li = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        // TODO: 4/11/2017 view for done progress layout
-        View view = li.inflate(R.layout.linear_progress, null);
-        relativeProgress = (RelativeLayout) view.findViewById(R.id.linear_progress_relative);
-        relativeProgress.setLayoutParams(new LinearLayout.LayoutParams(
-                0, LinearLayout.LayoutParams.WRAP_CONTENT, progress));
-        layoutProgressController.addView(view);
-        // TODO: 4/11/2017 view for remaining progress layout
-        View view1 = li.inflate(R.layout.linear_remaining, null);
-        relativeRemaining = (RelativeLayout) view1.findViewById(R.id.linear_remaining_relative);
-        relativeRemaining.setLayoutParams(new LinearLayout.LayoutParams(
-                0, LinearLayout.LayoutParams.WRAP_CONTENT, remainingProgress));
-        layoutProgressController.addView(view1);
+//        setProgress(20f);
+//        LayoutInflater li = (LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+//        // TODO: 4/11/2017 view for done progress layout
+//        View view = li.inflate(R.layout.linear_progress, null);
+//        relativeProgress = (RelativeLayout) view.findViewById(R.id.linear_progress_relative);
+//        relativeProgress.setLayoutParams(new LinearLayout.LayoutParams(
+//                0, LinearLayout.LayoutParams.WRAP_CONTENT, progress));
+//        layoutProgressController.addView(view);
+//        // TODO: 4/11/2017 view for remaining progress layout
+//        View view1 = li.inflate(R.layout.linear_remaining, null);
+//        relativeRemaining = (RelativeLayout) view1.findViewById(R.id.linear_remaining_relative);
+//        relativeRemaining.setLayoutParams(new LinearLayout.LayoutParams(
+//                0, LinearLayout.LayoutParams.WRAP_CONTENT, remainingProgress));
+//        layoutProgressController.addView(view1);
 
         // TODO: 3/21/2017 countdown timer
         Long timimg = details.getQueTiming();

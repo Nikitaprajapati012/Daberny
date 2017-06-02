@@ -7,10 +7,13 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.raviarchi.daberny.Activity.Adapter.PostsAdapter;
@@ -41,19 +44,26 @@ public class Posts extends Fragment {
     public RecyclerView recyclerViewposts;
     public Utils utils;
     public UserProfileDetails details;
-    public String ID;
-    private ArrayList<UserProfileDetails> arrayUserList;
-    private ArrayList<String> arrayInterestList;
-    private ArrayList<String> arrayFollowingNameList;
-    private ArrayList<String> arrayFollowingIdList;
-    private ArrayList<String> arrayStartNameList;
-    private ArrayList<String> arrayEndNameList;
-    String timing;
+    public String ID,timing;
+    public ArrayList<UserProfileDetails> arrayUserList;
+    public ArrayList<String> arrayInterestList;
+    public ArrayList<String> arrayFollowingNameList;
+    public ArrayList<String> arrayFollowingIdList;
+    public ArrayList<String> arrayStartNameList;
+    public ArrayList<String> arrayEndNameList;
+    public Toolbar toolBar;
+    public TextView txtTitle;
+    public RelativeLayout layoutHeader;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
         View view = inflater.inflate(R.layout.fragment_posts, container, false);
+        layoutHeader = (RelativeLayout) getActivity().findViewById(R.id.mainview);
+        layoutHeader.setVisibility(View.VISIBLE);
+        toolBar = (Toolbar) getActivity().findViewById(R.id.activity_main_toolbar);
+        txtTitle = (TextView) toolBar.findViewById(R.id.toolbar_title);
+        txtTitle.setText("Posts");
         init();
         findViewId(view);
         new GetQuetionList().execute();
@@ -112,7 +122,7 @@ public class Posts extends Fragment {
         @Override
         protected String doInBackground(String... strings) {
             //  http://181.224.157.105/~hirepeop/host2/surveys/api/questions/669/
-            return utils.getResponseofGet(Constant.QUESTION_BASE_URL + "questions/" + ID);
+            return Utils.getResponseofGet(Constant.QUESTION_BASE_URL + "questions/" + ID);
         }
 
         @Override

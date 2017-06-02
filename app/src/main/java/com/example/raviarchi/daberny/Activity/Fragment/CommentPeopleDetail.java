@@ -7,12 +7,14 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.raviarchi.daberny.Activity.Adapter.CommentPeopleAdapter;
@@ -27,6 +29,9 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 import static com.facebook.FacebookSdk.getApplicationContext;
 
 
@@ -40,17 +45,21 @@ public class CommentPeopleDetail extends Fragment {
     public UserProfileDetails details;
     public String queId;
     public CommentPeopleAdapter adapter;
-    public String commentPeople;
-    public ImageView imgBack;
-    public RelativeLayout headerView;
+    @BindView(R.id.headerview_edit)
+    RelativeLayout layoutHeader;
+    @BindView(R.id.header_icon)
+    ImageView imgBack;
+    @BindView(R.id.header_title)
+    TextView txtTitle;
     private ArrayList<UserProfileDetails> arrayUserList;
+    public Toolbar toolBar;
+    public RelativeLayout headerView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
         View view = inflater.inflate(R.layout.fragment_comment_peopledetail, container, false);
-        headerView = (RelativeLayout) getActivity().findViewById(R.id.headerview);
-        headerView.setVisibility(View.GONE);
+        ButterKnife.bind(this,view);
         init();
         findViewId(view);
         new GetPeopleList().execute();
@@ -66,14 +75,15 @@ public class CommentPeopleDetail extends Fragment {
                 getActivity().onBackPressed();
             }
         });
-
     }
-
 
     // TODO: 2/22/2017 bind data with field
     private void findViewId(View view) {
-        recyclerViewPeople = (RecyclerView) view.findViewById(R.id.fragment_comment_recyclerpeoplelist);
-        imgBack = (ImageView) view.findViewById(R.id.adapter_comment_people_list_imgback);
+        recyclerViewPeople = (RecyclerView) view.findViewById(R.id.fragment_comment_recyclerpeoplelist);headerView = (RelativeLayout) getActivity().findViewById(R.id.mainview);
+        toolBar = (Toolbar) getActivity().findViewById(R.id.activity_main_toolbar);
+        headerView.setVisibility(View.GONE);
+        txtTitle.setText(R.string.comments);
+        imgBack.setVisibility(View.VISIBLE);
     }
 
     // TODO: 2/21/2017 initilization

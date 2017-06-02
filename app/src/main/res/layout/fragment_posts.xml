@@ -5,51 +5,11 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <RelativeLayout
-        android:id="@+id/fragment_posts_serach"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/_50sdp">
-
-        <LinearLayout
-            android:id="@+id/fragment_posts_serachlayout"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:weightSum="2">
-
-            <ImageView
-                android:id="@+id/fragment_posts_imgsearch"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1.8"
-                android:padding="@dimen/_5sdp"
-                android:src="@mipmap/ic_search" />
-
-            <EditText
-                android:id="@+id/fragment_posts_edsearch"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="0.2" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_below="@+id/fragment_posts_serachlayout"
-            android:layout_marginTop="@dimen/_5sdp">
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/_2sdp"
-                android:background="@color/blue" />
-        </LinearLayout>
-    </RelativeLayout>
-
-    <android.support.v7.widget.RecyclerView
+       <android.support.v7.widget.RecyclerView
         android:id="@+id/fragment_posts_recyclermainlist"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/fragment_posts_serach">
+        >
 
     </android.support.v7.widget.RecyclerView>
 </RelativeLayout>

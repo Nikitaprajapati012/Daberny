@@ -37,7 +37,7 @@ public class SearchPeople extends Fragment {
     public RecyclerView recyclerViewPeople;
     public Utils utils;
     public UserProfileDetails details;
-    public String ID;
+    public String userId;
     public SearchPeopleAdapter adapter;
     public String SearchPeople;
     private ArrayList<UserProfileDetails> arrayUserList;
@@ -77,6 +77,7 @@ public class SearchPeople extends Fragment {
     private void init() {
         utils = new Utils(getActivity());
         arrayUserList = new ArrayList<>();
+        userId = Utils.ReadSharePrefrence(getActivity(),Constant.USERID);
     }
 
     private void openPeopleList() {
@@ -111,8 +112,8 @@ public class SearchPeople extends Fragment {
         @Override
         protected String doInBackground(String... strings) {
 
-            //181.224.157.105/~hirepeop/host2/surveys/api/searched_user/nikita
-            String response = utils.getResponseofGet(Constant.QUESTION_BASE_URL + "searched_user/" + searchpeople);
+            //http://181.224.157.105/~hirepeop/host2/surveys/api/searched_user/752/nikita
+            String response = Utils.getResponseofGet(Constant.QUESTION_BASE_URL + "searched_user/" +userId + "/" + searchpeople);
             Log.d("RESPONSE", "Search People List..." + response);
             try {
                 JSONObject jsonObject = new JSONObject(response);

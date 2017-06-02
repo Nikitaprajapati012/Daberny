@@ -6,6 +6,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.TextView;
 
+import com.example.raviarchi.daberny.Activity.Utils.BitUtility;
+import com.example.raviarchi.daberny.Activity.Utils.Constant;
+import com.example.raviarchi.daberny.Activity.Utils.Utils;
 import com.example.raviarchi.daberny.R;
 
 
@@ -16,6 +19,8 @@ public class SplashActivity extends AppCompatActivity implements View.OnClickLis
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
+        boolean result = BitUtility.checkPermission(SplashActivity.this);
+        Utils.WriteSharePre(SplashActivity.this, Constant.PERMISSION, String.valueOf(result));
         findById();
         click();
     }

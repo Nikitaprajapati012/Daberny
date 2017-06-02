@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <item
+   <!-- <item
         android:id="@+id/menu_item_askque"
         android:title="Ask Question"/>
+-->
 
         <item
         android:id="@+id/menu_item_userprofile"

@@ -1,6 +1,5 @@
 package com.example.raviarchi.daberny.Activity.Activity;
 
-import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
@@ -22,9 +21,10 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.raviarchi.daberny.Activity.Fragment.AddQuestions;
+import com.example.raviarchi.daberny.Activity.Fragment.AskQuestionFragment;
 import com.example.raviarchi.daberny.Activity.Fragment.General;
 import com.example.raviarchi.daberny.Activity.Fragment.Home;
+import com.example.raviarchi.daberny.Activity.Fragment.InboxUsers;
 import com.example.raviarchi.daberny.Activity.Fragment.Notification;
 import com.example.raviarchi.daberny.Activity.Fragment.Search;
 import com.example.raviarchi.daberny.Activity.Fragment.UserProfile;
@@ -40,7 +40,7 @@ import static com.example.raviarchi.daberny.Activity.Utils.Utils.ReadSharePrefre
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     public Utils utils;
     public RelativeLayout headerView, footerView;
-    public ImageView imgUserAdd,imgInbox,imgOption,imgHome, imgGeneral, imgSearch, imgAdd, imgNotification, imgUserProfile/*, imgCamera*/;
+    public ImageView imgUserAdd, imgInbox, imgOption, imgHome, imgGeneral, imgSearch, imgAdd, imgNotification, imgUserProfile/*, imgCamera*/;
     public FragmentManager fragmentManager;
     public FragmentTransaction transaction;
     public String Email, userId, InterestId;
@@ -54,7 +54,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         // TODO: 2/21/2017 if user is login then redirect on relevant screen
         // TODO: 3/6/2017 utils intialize
         utils = new Utils(MainActivity.this);
@@ -62,7 +61,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         String interest = ReadSharePrefrence(this, Constant.INTERESTID);
         Boolean isFirstTimeReg = utils.getReadSharedPrefrenceIsFirstTime();
         if (userId.equals("")) {
-            Intent i = new Intent(MainActivity.this, LoginActivity.class);
+            Intent i = new Intent(MainActivity.this, SplashActivity.class);
             startActivity(i);
         } else {
             if (interest.length() < 0) {
@@ -88,7 +87,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     // TODO: 2/23/2017 get id from previous account
 
     private void click() {
-       //imgCamera.setOnClickListener(this);
+        //imgCamera.setOnClickListener(this);
         imgUserAdd.setOnClickListener(this);
         imgInbox.setOnClickListener(this);
         imgHome.setOnClickListener(this);
@@ -114,10 +113,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         footerView.setVisibility(View.VISIBLE);
         toolBar = (Toolbar) findViewById(R.id.activity_main_toolbar);
         setSupportActionBar(toolBar);
-        imgUserAdd= (ImageView) findViewById(R.id.toolbar_useradd);
-        imgInbox= (ImageView) findViewById(R.id.toolbar_inbox);
-      //  imgOption= (ImageView) findViewById(R.id.toolbar_option);
-        txtTitle= (TextView) findViewById(R.id.toolbar_title);
+        imgUserAdd = (ImageView) findViewById(R.id.toolbar_useradd);
+        imgInbox = (ImageView) findViewById(R.id.toolbar_inbox);
+        txtTitle = (TextView) findViewById(R.id.toolbar_title);
+        imgInbox.setOnClickListener(this);
     }
 
   /*  @Override
@@ -148,7 +147,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View v) {
         Fragment fragment = null;
         fragmentManager = getSupportFragmentManager();
-
+        Bundle bundle = new Bundle();
         switch (v.getId()) {
            /* case R.id.header_camera:
                 Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
@@ -165,103 +164,104 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 }
                 break;
 */
+
+            case R.id.toolbar_inbox:
+                fragment = new InboxUsers();
+                break;
+
             //home
             case R.id.footer_imghome:
                 headerView.setVisibility(View.VISIBLE);
                 fragment = new Home();
-                imgHome.setBackgroundColor(ContextCompat.getColor(MainActivity.this,R.color.choosefile));
-                imgGeneral.setBackgroundColor(ContextCompat.getColor(MainActivity.this,R.color.signinbg));
-                imgSearch.setBackgroundColor(ContextCompat.getColor(MainActivity.this,R.color.signinbg));
-                imgAdd.setBackgroundColor(ContextCompat.getColor(MainActivity.this,R.color.signinbg));
-                imgNotification.setBackgroundColor(ContextCompat.getColor(MainActivity.this,R.color.signinbg));
-                imgUserProfile.setBackgroundColor(ContextCompat.getColor(MainActivity.this,R.color.signinbg));
+                imgHome.setBackgroundColor(ContextCompat.getColor(MainActivity.this, R.color.choosefile));
+                imgGeneral.setBackgroundColor(ContextCompat.getColor(MainActivity.this, R.color.signinbg));
+                imgSearch.setBackgroundColor(ContextCompat.getColor(MainActivity.this, R.color.signinbg));
+                imgAdd.setBackgroundColor(ContextCompat.getColor(MainActivity.this, R.color.signinbg));
+                imgNotification.setBackgroundColor(ContextCompat.getColor(MainActivity.this, R.color.signinbg));
+                imgUserProfile.setBackgroundColor(ContextCompat.getColor(MainActivity.this, R.color.signinbg));
                 break;
 
             //general
             case R.id.footer_imggeneral:
                 headerView.setVisibility(View.VISIBLE);
                 fragment = new General();
-                imgHome.setBackgroundColor(ContextCompat.getColor(MainActivity.this,R.color.signinbg));
-                imgGeneral.setBackgroundColor(ContextCompat.getColor(MainActivity.this,R.color.choosefile));
-                imgSearch.setBackgroundColor(ContextCompat.getColor(MainActivity.this,R.color.signinbg));
-                imgAdd.setBackgroundColor(ContextCompat.getColor(MainActivity.this,R.color.signinbg));
-                imgNotification.setBackgroundColor(ContextCompat.getColor(MainActivity.this,R.color.signinbg));
-                imgUserProfile.setBackgroundColor(ContextCompat.getColor(MainActivity.this,R.color.signinbg));
+                imgHome.setBackgroundColor(ContextCompat.getColor(MainActivity.this, R.color.signinbg));
+                imgGeneral.setBackgroundColor(ContextCompat.getColor(MainActivity.this, R.color.choosefile));
+                imgSearch.setBackgroundColor(ContextCompat.getColor(MainActivity.this, R.color.signinbg));
+                imgAdd.setBackgroundColor(ContextCompat.getColor(MainActivity.this, R.color.signinbg));
+                imgNotification.setBackgroundColor(ContextCompat.getColor(MainActivity.this, R.color.signinbg));
+                imgUserProfile.setBackgroundColor(ContextCompat.getColor(MainActivity.this, R.color.signinbg));
                 break;
 
             //add question
             case R.id.footer_imgaddquestion:
                 headerView.setVisibility(View.VISIBLE);
-                fragment = new AddQuestions();
-                imgHome.setBackgroundColor(ContextCompat.getColor(MainActivity.this,R.color.signinbg));
-                imgGeneral.setBackgroundColor(ContextCompat.getColor(MainActivity.this,R.color.signinbg));
-                imgSearch.setBackgroundColor(ContextCompat.getColor(MainActivity.this,R.color.signinbg));
-                imgAdd.setBackgroundColor(ContextCompat.getColor(MainActivity.this,R.color.choosefile));
-                imgNotification.setBackgroundColor(ContextCompat.getColor(MainActivity.this,R.color.signinbg));
-                imgUserProfile.setBackgroundColor(ContextCompat.getColor(MainActivity.this,R.color.signinbg));
+                fragment = new AskQuestionFragment();
+                imgHome.setBackgroundColor(ContextCompat.getColor(MainActivity.this, R.color.signinbg));
+                imgGeneral.setBackgroundColor(ContextCompat.getColor(MainActivity.this, R.color.signinbg));
+                imgSearch.setBackgroundColor(ContextCompat.getColor(MainActivity.this, R.color.signinbg));
+                imgAdd.setBackgroundColor(ContextCompat.getColor(MainActivity.this, R.color.choosefile));
+                imgNotification.setBackgroundColor(ContextCompat.getColor(MainActivity.this, R.color.signinbg));
+                imgUserProfile.setBackgroundColor(ContextCompat.getColor(MainActivity.this, R.color.signinbg));
                 break;
 
             //notification
             case R.id.footer_imgnotification:
                 headerView.setVisibility(View.VISIBLE);
                 fragment = new Notification();
-                imgHome.setBackgroundColor(ContextCompat.getColor(MainActivity.this,R.color.signinbg));
-                imgGeneral.setBackgroundColor(ContextCompat.getColor(MainActivity.this,R.color.signinbg));
-                imgSearch.setBackgroundColor(ContextCompat.getColor(MainActivity.this,R.color.signinbg));
-                imgAdd.setBackgroundColor(ContextCompat.getColor(MainActivity.this,R.color.signinbg));
-                imgNotification.setBackgroundColor(ContextCompat.getColor(MainActivity.this,R.color.choosefile));
-                imgUserProfile.setBackgroundColor(ContextCompat.getColor(MainActivity.this,R.color.signinbg));
+                imgHome.setBackgroundColor(ContextCompat.getColor(MainActivity.this, R.color.signinbg));
+                imgGeneral.setBackgroundColor(ContextCompat.getColor(MainActivity.this, R.color.signinbg));
+                imgSearch.setBackgroundColor(ContextCompat.getColor(MainActivity.this, R.color.signinbg));
+                imgAdd.setBackgroundColor(ContextCompat.getColor(MainActivity.this, R.color.signinbg));
+                imgNotification.setBackgroundColor(ContextCompat.getColor(MainActivity.this, R.color.choosefile));
+                imgUserProfile.setBackgroundColor(ContextCompat.getColor(MainActivity.this, R.color.signinbg));
                 break;
 
             // search
             case R.id.footer_imgsearch:
                 headerView.setVisibility(View.GONE);
                 fragment = new Search();
-                imgHome.setBackgroundColor(ContextCompat.getColor(MainActivity.this,R.color.signinbg));
-                imgGeneral.setBackgroundColor(ContextCompat.getColor(MainActivity.this,R.color.signinbg));
-                imgSearch.setBackgroundColor(ContextCompat.getColor(MainActivity.this,R.color.choosefile));
-                imgAdd.setBackgroundColor(ContextCompat.getColor(MainActivity.this,R.color.signinbg));
-                imgNotification.setBackgroundColor(ContextCompat.getColor(MainActivity.this,R.color.signinbg));
-                imgUserProfile.setBackgroundColor(ContextCompat.getColor(MainActivity.this,R.color.signinbg));
+                imgHome.setBackgroundColor(ContextCompat.getColor(MainActivity.this, R.color.signinbg));
+                imgGeneral.setBackgroundColor(ContextCompat.getColor(MainActivity.this, R.color.signinbg));
+                imgSearch.setBackgroundColor(ContextCompat.getColor(MainActivity.this, R.color.choosefile));
+                imgAdd.setBackgroundColor(ContextCompat.getColor(MainActivity.this, R.color.signinbg));
+                imgNotification.setBackgroundColor(ContextCompat.getColor(MainActivity.this, R.color.signinbg));
+                imgUserProfile.setBackgroundColor(ContextCompat.getColor(MainActivity.this, R.color.signinbg));
                 break;
 
             //profile
             case R.id.footer_imguserprofile:
                 headerView.setVisibility(View.VISIBLE);
                 fragment = new UserProfile();
-                imgHome.setBackgroundColor(ContextCompat.getColor(MainActivity.this,R.color.signinbg));
-                imgGeneral.setBackgroundColor(ContextCompat.getColor(MainActivity.this,R.color.signinbg));
-                imgSearch.setBackgroundColor(ContextCompat.getColor(MainActivity.this,R.color.signinbg));
-                imgAdd.setBackgroundColor(ContextCompat.getColor(MainActivity.this,R.color.signinbg));
-                imgNotification.setBackgroundColor(ContextCompat.getColor(MainActivity.this,R.color.signinbg));
-                imgUserProfile.setBackgroundColor(ContextCompat.getColor(MainActivity.this,R.color.choosefile));
+                imgHome.setBackgroundColor(ContextCompat.getColor(MainActivity.this, R.color.signinbg));
+                imgGeneral.setBackgroundColor(ContextCompat.getColor(MainActivity.this, R.color.signinbg));
+                imgSearch.setBackgroundColor(ContextCompat.getColor(MainActivity.this, R.color.signinbg));
+                imgAdd.setBackgroundColor(ContextCompat.getColor(MainActivity.this, R.color.signinbg));
+                imgNotification.setBackgroundColor(ContextCompat.getColor(MainActivity.this, R.color.signinbg));
+                imgUserProfile.setBackgroundColor(ContextCompat.getColor(MainActivity.this, R.color.choosefile));
                 break;
         }
 
         if (fragment != null) {
+            fragment.setArguments(bundle);
             transaction = fragmentManager.beginTransaction();
             transaction.replace(R.id.frame_contain_layout, fragment);
             transaction.addToBackStack(null);
             transaction.commit();
         }
     }
+
     public boolean onCreateOptionsMenu(Menu menu) {
 
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.popup, menu);
         return true;
     }
+
     public boolean onOptionsItemSelected(MenuItem item) {
 
-        switch (item.getItemId())
-        {
-            case R.id.menu_item_askque:
-                Intent iask = new Intent(MainActivity.this, AskQuestionActivity.class);
-                iask.putExtra("id", Utils.ReadSharePrefrence(MainActivity.this, Constant.USERID));
-                startActivity(iask);
-                break;
-
-            case  R.id.menu_item_userprofile:
+        switch (item.getItemId()) {
+            case R.id.menu_item_userprofile:
                 Fragment fragment = null;
                 fragmentManager = getSupportFragmentManager();
                 fragment = new UserProfile();
@@ -276,7 +276,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.menu_item_logout:
                 Intent ilogout = new Intent(MainActivity.this, LoginActivity.class);
                 ilogout.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                Utils.ClearSharePref(MainActivity.this,Constant.USERID);
+                Utils.ClearSharePref(MainActivity.this, Constant.USERID);
                 startActivity(ilogout);
                 break;
         }

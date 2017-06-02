@@ -7,11 +7,13 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -34,8 +36,7 @@ import butterknife.ButterKnife;
 import static com.facebook.FacebookSdk.getApplicationContext;
 
 
-/**
- * Created by Ravi archi on 1/10/2017.
+/** * Created by Ravi archi on 1/10/2017.
  */
 
 public class Following extends Fragment implements View.OnClickListener {
@@ -48,6 +49,9 @@ public class Following extends Fragment implements View.OnClickListener {
     @BindView(R.id.fragment_following_imgback)
     ImageView imgback;
     private ArrayList<UserProfileDetails> arrayUserList;
+    public Toolbar toolBar;
+    public TextView txtTitle;
+    public RelativeLayout headerView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -55,6 +59,9 @@ public class Following extends Fragment implements View.OnClickListener {
         View view = inflater.inflate(R.layout.fragment_following, container, false);
         ButterKnife.bind(this, view);
         init();
+        headerView = (RelativeLayout) getActivity().findViewById(R.id.mainview);
+        toolBar = (Toolbar) getActivity().findViewById(R.id.activity_main_toolbar);
+        headerView.setVisibility(View.GONE);
         new GetFollowingPeopleDetails().execute();
         click();
         return view;
@@ -64,7 +71,6 @@ public class Following extends Fragment implements View.OnClickListener {
     private void init() {
         utils = new Utils(getActivity());
         arrayUserList = new ArrayList<>();
-
         if (getArguments() != null) {
             Gson gson = new Gson();
             String strObj = getArguments().getString("userprofiledetails");

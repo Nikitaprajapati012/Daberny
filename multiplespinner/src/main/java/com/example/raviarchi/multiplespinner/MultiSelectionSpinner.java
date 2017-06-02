@@ -117,7 +117,6 @@ public class MultiSelectionSpinner extends Spinner implements
             throw new IllegalArgumentException("Index " + index
                     + " is  of bounds.");
         }*/
-
         simple_adapter.clear();
         simple_adapter.notifyDataSetChanged();
         simple_adapter.add(buildSelectedItemString());
@@ -150,7 +149,7 @@ public class MultiSelectionSpinner extends Spinner implements
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                searchItems = new ArrayList<String>();
+               /* searchItems = new ArrayList<String>();
                 for (int i = 0; i < _items.length; i++) {
                     if (_items[i].toLowerCase().contains(s.toString().toLowerCase())) {
                         searchItems.add(_items[i]);
@@ -158,7 +157,7 @@ public class MultiSelectionSpinner extends Spinner implements
                 }
                 _search_items = new String[searchItems.size()];
                 searchItems.toArray(_search_items);
-                Log.d("Array", searchItems.toString());
+                Log.d("Array", searchItems.toString());*/
                 //setItems(_search_items);
                 // buildDialogue();
             }
@@ -169,6 +168,14 @@ public class MultiSelectionSpinner extends Spinner implements
 
             @Override
             public void afterTextChanged(Editable s) {
+                searchItems = new ArrayList<>();
+                for (int i = 0; i < _items.length; i++) {
+                    if (_items[i].toLowerCase().contains(s.toString().toLowerCase())) {
+                        searchItems.add(_items[i]);
+                    }
+                }
+                simple_adapter = new ArrayAdapter<String>(getContext(), Integer.parseInt(String.valueOf(searchItems)));
+                listView.setAdapter(simple_adapter);
             }
         });
 

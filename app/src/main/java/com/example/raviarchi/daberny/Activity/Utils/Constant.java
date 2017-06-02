@@ -3,10 +3,10 @@ package com.example.raviarchi.daberny.Activity.Utils;
 
 public class Constant {
     public static final String AppName = "Team On";
-    public static final String BASE_URL = "http://web-medico.com/web2/surveys/api/";
     public static final String QUESTION_BASE_URL = "http://181.224.157.105/~hirepeop/host2/surveys/api/";
     public static final String Prefrence = "prefrence";
     public static final String USERID = "userId";
+    public static final String OTHER_USERID = "otherUserId";
     public static final String ANSWER = "answer";
     public static final String ALLQUESTION = "allQuestion";
     public static final String TAGQUE = "tagQue";
@@ -19,6 +19,8 @@ public class Constant {
     public static final String USER_PASSWORD = "userPassword";
     public static final String REMEMBER_ME = "rememberme";
     public static final String USER_INTERESTS = "userInterests";
+    public static final String LIKEPOST= "likePost";
+    public static final String PERMISSION = "permission";
 
 
     public static class SHRED_PR {

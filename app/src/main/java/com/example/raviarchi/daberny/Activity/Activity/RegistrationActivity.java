@@ -228,14 +228,17 @@ public class RegistrationActivity extends AppCompatActivity implements View.OnCl
             try {
                 JSONObject jsonObject = new JSONObject(s);
                 if (jsonObject.getString("status").equalsIgnoreCase("true")) {
-
+                    Toast.makeText(RegistrationActivity.this, jsonObject.getString("msg"), Toast.LENGTH_SHORT).show();
                     JSONArray userArray = jsonObject.getJSONArray("data");
                     for (int i = 0; i < userArray.length(); i++) {
-
                         JSONObject interestObject = userArray.getJSONObject(i);
                         arrayCountryList.add(interestObject.getString("country_name"));
                         arrayCountryIDList.add(interestObject.getString("country_id"));
                     }
+                }
+                else
+                {
+                    Toast.makeText(RegistrationActivity.this, jsonObject.getString("msg"), Toast.LENGTH_SHORT).show();
                 }
 
             } catch (JSONException e) {

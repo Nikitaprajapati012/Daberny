@@ -95,7 +95,7 @@ public class InterestActivity extends AppCompatActivity implements View.OnClickL
                     Log.d("interest_write", InterestId);
                     startActivity(isave);
                 } else {
-                    Toast.makeText(this, "Interest not Stored,Please try again", Toast.LENGTH_SHORT).show();
+                  //  Toast.makeText(this, "Interest not Stored,Please try again", Toast.LENGTH_SHORT).show();
                 }
                 break;
         }
@@ -227,12 +227,10 @@ public class InterestActivity extends AppCompatActivity implements View.OnClickL
             }
 
             if (arrayInterestNameList.size() > 0) {
-                //Gson gson = new Gson();
-                // String interestlist = gson.toJson(arrayList);
                 spinnerInterest.setItems(arrayInterestNameList);
 
             } else {
-                Toast.makeText(InterestActivity.this, "No Interest Stored, Please Try Again.", Toast.LENGTH_SHORT).show();
+               // Toast.makeText(InterestActivity.this, "No Interest Stored, Please Try Again.", Toast.LENGTH_SHORT).show();
             }
         }
     }

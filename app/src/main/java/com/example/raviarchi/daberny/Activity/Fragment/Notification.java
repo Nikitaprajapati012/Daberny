@@ -100,7 +100,7 @@ public class Notification extends Fragment {
                         UserProfileDetails details = new UserProfileDetails();
                         details.setQueNotificationId(notifyObject.getString("id"));
                         details.setQueNotificationType(notifyObject.getString("type"));
-                        details.setQueNotificationStatus(notifyObject.getString("status"));
+                        details.setQueNotificationStatus(notifyObject.getString("notifications_status"));
                         String contentId = notifyObject.getString("content_id");
                         if (!notifyObject.getString("type").equalsIgnoreCase("follow")){
                             details.setQueId(contentId);

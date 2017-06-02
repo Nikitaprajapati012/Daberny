@@ -1,8 +1,6 @@
 <resources>
     <string name="app_name">Daberny</string>
     <string name="daberny">Daberny</string>
-    <string name="fb">Lets Choose the Way for Join.</string>
-    <string name="votingdesc">Its Quiz time.</string>
     <string name="usernameoremail">Username or Email</string>
     <string name="username">Username</string>
     <string name="fullname">Full Name</string>
@@ -12,11 +10,7 @@
     <string name="block">Block</string>
     <string name="unfollow">UnFollow</string>
     <string name="unblock">UnBlock</string>
-    <string name="phone">Phone</string>
-    <string name="male">Male</string>
-    <string name="female">Female</string>
     <string name="language">Select Language</string>
-
 
     <string name="repassword">RePassword</string>
 
@@ -31,12 +25,6 @@
     <string name="gmaillogin">Log In With Gmail.</string>
     <string name="term_and_condition">I have read the Terms</string>
 
-    <!-- Subject select dialog -->
-    <string-array name="subject_select">
-        <item></item>
-        <item></item>
-
-    </string-array>
 
     <!-- Subject select reason for block -->
     <string-array name="reason_select">
@@ -63,7 +51,6 @@
     <string name="rememberme">Remember me</string>
     <string name="facebooklogin">Login in with facebook</string>
 
-
     <!-- Facebook Login screen-->
     <string name="facebook_app_id">1303556883000422</string>
 
@@ -89,9 +76,9 @@
     <string name="option3">Option3</string>
     <string name="option4">Option4</string>
     <string name="tag">Tags</string>
-    <string name="file">File (media file)</string>
+    <string name="file">File</string>
     <string name="choosefile">Choose file</string>
-    <string name="chooseinterest">Choose your interest</string>
+    <string name="chooseinterest">Choose interest</string>
     <string name="addtime">Add Time</string>
     <string name="send">Send</string>
     <string name="close">Close</string>
@@ -102,6 +89,28 @@
     <string name="search">Search</string>
     <string name="notification">Notification</string>
     <string name="profile">Profile</string>
+    <string name="oldpassword">Old Password</string>
+    <string name="confirmpassword">Confirm Password</string>
+    <string name="allcomments">Click on View All Comments...</string>
+    <string name="totalcount">Total vote counts :</string>
+    <string name="changepwd">Click to Change Password</string>
+    <string name="changethepwd">Change Password</string>
+    <string name="commnentlist">Comment User List</string>
+    <string name="comments">Comments</string>
+    <string name="selectinterest">Select your interested area</string>
+    <string name="vote">Vote:</string>
+    <string name="votecount">Vote Count:</string>
+    <string name="votesucess">Sucess! Thanks for vote</string>
+    <string name="message">Message</string>
+    <string name="postdate">Post Date</string>
+    <string name="writemessage">Write a Message...</string>
+    <string name="to">To :</string>
+    <string name="newmsg">New Message</string>
+    <string name="option1req">Option 1 (Required)</string>
+    <string name="option2req">Option 2 (Required)</string>
+    <string name="option3optional">Option 3 (Optional)</string>
+    <string name="option4optional">Option 4 (Optional)</string>
+    <string name="uploadfile">Upload image or video with maximum 30 second</string>
 
     <string-array name="time">
 
@@ -153,53 +162,7 @@
         <item>22:30:00</item>
         <item>23:00:00</item>
         <item>23:30:00</item>
+        <item>24:00:00</item>
 
-    </string-array>
-
-    <string-array name="sports_array">
-        <item>Shuttle Badminton</item>
-        <item>Tennis</item>
-        <item>Table Tennis</item>
-        <item>Basket Ball</item>
-        <item>Foot Ball</item>
-        <item>Volley Ball</item>
-        <item>Hockey</item>
-        <item>Swimming</item>
-
-        <item>Shuttle Badminton 2</item>
-        <item>Tennis 2</item>
-        <item>Table Tennis 2</item>
-        <item>Basket Ball 2</item>
-        <item>Foot Ball 2</item>
-        <item>Volley Ball 2</item>
-        <item>Hockey 2</item>
-        <item>Swimming 2</item>
-
-        <item>Shuttle Badminton 3</item>
-        <item>Tennis 3</item>
-        <item>Table Tennis 3</item>
-        <item>Basket Ball 3</item>
-        <item>Foot Ball 3</item>
-        <item>Volley Ball 3</item>
-        <item>Hockey 3</item>
-        <item>Swimming 3</item>
-
-        <item>Shuttle Badminton 4</item>
-        <item>Tennis 4</item>
-        <item>Table Tennis 4</item>
-        <item>Basket Ball 4</item>
-        <item>Foot Ball 4</item>
-        <item>Volley Ball 4</item>
-        <item>Hockey 4</item>
-        <item>Swimming 4</item>
-
-        <item>Shuttle Badminton 5</item>
-        <item>Tennis 5</item>
-        <item>Table Tennis 5</item>
-        <item>Basket Ball 5</item>
-        <item>Foot Ball 5</item>
-        <item>Volley Ball 5</item>
-        <item>Hockey 5</item>
-        <item>Swimming 5</item>
     </string-array>
 </resources>

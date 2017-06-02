@@ -18,6 +18,7 @@ android {
         }
     }
 }
+
 ext {
     supportLibVersion = '25.0.1'  // variable that can be referenced to keep support libs consistent
 }
@@ -31,10 +32,11 @@ dependencies {
     compile 'com.android.support:appcompat-v7:25.0.1'
     testCompile 'junit:junit:4.12'
     compile 'com.intuit.sdp:sdp-android:1.0.3'
-    compile 'com.android.support:recyclerview-v7:25.0.1'
+    compile 'com.android.support:recyclerview-v7:25.3.1'
     compile "com.android.support:design:${supportLibVersion}"
     compile 'com.facebook.android:facebook-android-sdk:[4,5)'
     compile 'com.jakewharton:butterknife:8.4.0'
+    compile 'life.knowledge4:k4l-video-trimmer:1.0'
     compile 'com.squareup.picasso:picasso:2.5.2'
     compile 'de.hdodenhof:circleimageview:2.1.0'
     compile 'com.google.code.gson:gson:2.4'
