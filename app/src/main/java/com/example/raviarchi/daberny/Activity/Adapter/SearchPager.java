@@ -5,8 +5,8 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
 import com.example.raviarchi.daberny.Activity.Fragment.Notification;
+import com.example.raviarchi.daberny.Activity.Fragment.SearchLatest;
 import com.example.raviarchi.daberny.Activity.Fragment.SearchPeople;
-import com.example.raviarchi.daberny.Activity.Fragment.SearchRecent;
 import com.example.raviarchi.daberny.Activity.Fragment.SearchTag;
 
 
@@ -25,7 +25,7 @@ public class SearchPager extends FragmentStatePagerAdapter {
 
         switch (position) {
             case 0:
-                fragment = new SearchRecent();
+                fragment = new SearchLatest();
                 break;
             case 1:
                 fragment = new SearchPeople();

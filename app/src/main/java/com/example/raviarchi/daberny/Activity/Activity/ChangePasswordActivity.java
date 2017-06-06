@@ -34,6 +34,7 @@ import com.example.raviarchi.daberny.Activity.Utils.Constant;
 import com.example.raviarchi.daberny.Activity.Utils.Utils;
 import com.example.raviarchi.daberny.R;
 import com.google.gson.Gson;
+import com.koushikdutta.ion.Ion;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -92,7 +93,6 @@ public class ChangePasswordActivity extends AppCompatActivity implements View.On
         init();
         click();
     }
-
 
     // TODO: 2/21/2017 initilization
     private void init() {

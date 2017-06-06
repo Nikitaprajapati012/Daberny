@@ -124,12 +124,16 @@ public class UserProfile extends Fragment implements View.OnClickListener {
     RoundCornerProgressBar progressbar2;
     @BindView(R.id.fragment_user_profile_progressbar3)
     RoundCornerProgressBar progressbar3;
+    public RelativeLayout layoutHeader;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
         View view = inflater.inflate(R.layout.fragment_user_profile, container, false);
         ButterKnife.bind(this, view);
+        layoutHeader = (RelativeLayout) getActivity().findViewById(R.id.mainview);
+        layoutHeader.setVisibility(View.VISIBLE);
         toolBar = (Toolbar) getActivity().findViewById(R.id.activity_main_toolbar);
         txtTitle = (TextView) toolBar.findViewById(R.id.toolbar_title);
         txtTitle.setText(R.string.profile);

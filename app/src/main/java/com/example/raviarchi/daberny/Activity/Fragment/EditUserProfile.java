@@ -4,6 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -56,6 +57,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import de.hdodenhof.circleimageview.CircleImageView;
 
 import static android.app.Activity.RESULT_OK;
 import static com.example.raviarchi.daberny.Activity.Utils.DbBitmapUtility.getBytes;
@@ -68,7 +70,7 @@ public class EditUserProfile extends Fragment implements View.OnClickListener, M
     private static final String TAG = "EditUserProfile";
     public Utils utils;
     public UserProfileDetails details;
-    public String ID, FullName, UserName, ProfilePic, Email, Country, InterestId, ImagePath, InterestName, StrInterest;
+    public String ID, FullName, UserName, Email, Country, InterestId, ImagePath, InterestName, StrInterest;
     public byte[] inputData;
     public ArrayAdapter<String> spinnerAdapter;
     public ArrayList<UserProfileDetails> arrayList;
@@ -93,8 +95,8 @@ public class EditUserProfile extends Fragment implements View.OnClickListener, M
     Spinner spinnerCountry;
     @BindView(R.id.fragment_edit_user_profile_spinnerinterest)
     MultiSelectionSpinner spinnerIntererst;
-    @BindView(R.id.fragment_edit_user_profile_txtchangepic)
-    TextView txtChangePic;
+    @BindView(R.id.fragment_edit_user_profile_imgchangepic)
+    ImageView imgChangePic;
     @BindView(R.id.fragment_edit_user_profile_txtchangepwd)
     TextView txtChangePassword;
     @BindView(R.id.headerview_edit)
@@ -161,12 +163,11 @@ public class EditUserProfile extends Fragment implements View.OnClickListener, M
             edUserName.setText(UserName);
             edEmail.setText(Email);
             arrayCountryList.add(Country);
-         /* File imgFile = new File(ProfilePic);
-            Bitmap myBitmap = BitmapFactory.decodeFile(ProfilePic);
+            File imgFile = new File(ImagePath);
+            Bitmap myBitmap = BitmapFactory.decodeFile(ImagePath);
             Log.d("profilepic_name", "" +myBitmap);
             imgProfilePic.setImageBitmap(myBitmap);
-*/
-            Picasso.with(getActivity()).load(ProfilePic).
+            Picasso.with(getActivity()).load(ImagePath).
                     transform(new RoundedTransformation(120, 2)).
                     placeholder(R.drawable.ic_placeholder).into(imgProfilePic);
 
@@ -193,6 +194,7 @@ public class EditUserProfile extends Fragment implements View.OnClickListener, M
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
+
                 imgProfilePic.setImageBitmap(bitmap);
                 onSelectFromGalleryResult(data);
             } else {
@@ -214,16 +216,12 @@ public class EditUserProfile extends Fragment implements View.OnClickListener, M
                 cursor.moveToFirst();
                 int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
 
-                if (saveImageInDB(uri)) {
-                    Toast.makeText(getActivity(), "GalleryImage Saved in Database...", Toast.LENGTH_SHORT).show();
-                    imgProfilePic.setVisibility(View.VISIBLE);
-                    imgProfilePic.setImageURI(uri);
-                }
-                ImagePath = cursor.getString(columnIndex);
+               ImagePath = cursor.getString(columnIndex);
                 Log.d("image@@", ImagePath);
                 if (columnIndex < 0) // no column index
                     return; // DO YOUR ERROR HANDLING
                 String image = getStringImage(bitmap);
+
                /* ProfilePic = cursor.getString(columnIndex);
                 file = new File(ProfilePic);
                 file = new File(file.getAbsolutePath());
@@ -251,22 +249,11 @@ public class EditUserProfile extends Fragment implements View.OnClickListener, M
         return encodedImage;
     }
 
-    private boolean saveImageInDB(Uri selectedImageUri) {
-        try {
-            InputStream iStream = getActivity().getContentResolver().openInputStream(selectedImageUri);
-            inputData = getBytes(iStream);
-            Log.d("save", "" + inputData);
-            return true;
-        } catch (IOException ioe) {
-            Log.e(TAG, "<saveImageInDB> Error : " + ioe.getLocalizedMessage());
-            return false;
-        }
-    }
 
     private void click() {
         txtChangePassword.setOnClickListener(this);
         imgBack.setOnClickListener(this);
-        txtChangePic.setOnClickListener(this);
+        imgChangePic.setOnClickListener(this);
         btnSubmit.setOnClickListener(this);
         spinnerIntererst.setListener(this);
         spinnerCountry.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -293,10 +280,11 @@ public class EditUserProfile extends Fragment implements View.OnClickListener, M
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.fragment_edit_user_profile_txtchangepic:
+            case R.id.fragment_edit_user_profile_imgchangepic:
                 Intent intentPickImage = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
                 startActivityForResult(intentPickImage, SELECT_FILE);
                 break;
+
             case R.id.fragment_edit_user_profile_txtchangepwd:
                 Gson gson = new Gson();
                 Intent ichange = new Intent(getActivity(), ChangePasswordActivity.class);

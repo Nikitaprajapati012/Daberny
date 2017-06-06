@@ -47,6 +47,7 @@ public class Notification extends Fragment {
     @BindView(R.id.fragment_recycler_noficationlist)
     RecyclerView recyclerView;
     public NotificationAdapter adapter;
+    public UserProfileDetails details;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -89,25 +90,29 @@ public class Notification extends Fragment {
         @Override
         protected String doInBackground(String... strings) {
             //http://181.224.157.105/~hirepeop/host2/surveys/api/user_notification/752
-            String response = utils.getResponseofGet(Constant.QUESTION_BASE_URL + "user_notification/" + user_id);
+            String response = Utils.getResponseofGet(Constant.QUESTION_BASE_URL + "user_notification/" + user_id);
             Log.d("RESPONSE", "Notification List..." + response);
             try {
                 JSONObject jsonObject = new JSONObject(response);
                 if (jsonObject.getString("status").equalsIgnoreCase("true")) {
-                    JSONArray dateArray = jsonObject.getJSONArray("data");
-                    for (int i = 0; i < dateArray.length(); i++) {
-                        JSONObject notifyObject = dateArray.getJSONObject(i);
-                        UserProfileDetails details = new UserProfileDetails();
-                        details.setQueNotificationId(notifyObject.getString("id"));
-                        details.setQueNotificationType(notifyObject.getString("type"));
-                        details.setQueNotificationStatus(notifyObject.getString("notifications_status"));
-                        String contentId = notifyObject.getString("content_id");
-                        if (!notifyObject.getString("type").equalsIgnoreCase("follow")){
+                    JSONObject notifyObj = jsonObject.getJSONObject("notification_detail");
+                    JSONObject userObject = notifyObj.getJSONObject("Login_user_detail");
+                    JSONArray dataArray = notifyObj.getJSONArray("data");
+                    for (int i = 0; i < dataArray.length(); i++) {
+                        JSONObject notifyObjectdetails = dataArray.getJSONObject(i);
+                        details = new UserProfileDetails();
+                        details.setQueNotificationId(notifyObjectdetails.getString("id"));
+                        details.setQueNotificationType(notifyObjectdetails.getString("type"));
+                        details.setQueNotificationStatus(notifyObjectdetails.getString("notifications_status"));
+                        String contentId = notifyObjectdetails.getString("content_id");
+                        if (!notifyObjectdetails.getString("type").equalsIgnoreCase("follow")){
                             details.setQueId(contentId);
                         }
-                        JSONObject userObject = notifyObject.getJSONObject("user_detail");
-                        details.setUserUserName(userObject.getString("username"));
-                        details.setUserId(userObject.getString("user_id"));
+                        JSONObject userObjectdetails = notifyObjectdetails.getJSONObject("user_detail");
+                        details.setUserUserName(userObjectdetails.getString("username"));
+                        details.setUserFullName(userObjectdetails.getString("fullname"));
+                        details.setUserId(userObjectdetails.getString("user_id"));
+                        details.setUserImage(userObjectdetails.getString("user_image"));
                         arrayUserList.add(details);
                     }
                 }

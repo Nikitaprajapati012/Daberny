@@ -154,6 +154,7 @@ public class InboxUsers extends Fragment implements View.OnClickListener {
                         details.setOtherUserImage(followingObject.getString("r_image"));
                         details.setUserMsgReceiver(followingObject.getString("recipient_msg"));
                         details.setUserMsgSender(followingObject.getString("sender_msg"));
+                        details.setUserMsgPostDate(followingObject.getString("post_date"));
                         arrayUserList.add(details);
                     }
                     if (arrayUserList.size() > 0) {

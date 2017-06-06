@@ -3,6 +3,7 @@ package com.example.raviarchi.daberny.Activity.Fragment;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.ContentValues;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
@@ -38,6 +39,7 @@ import com.example.raviarchi.daberny.Activity.Utils.Constant;
 import com.example.raviarchi.daberny.Activity.Utils.Utils;
 import com.example.raviarchi.daberny.R;
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
 
@@ -110,7 +112,7 @@ public class AskQuestionFragment extends Fragment implements View.OnClickListene
         super.onCreateView(inflater, container, savedInstanceState);
         View view = inflater.inflate(R.layout.activity_ask_quetion, container, false);
         ButterKnife.bind(this, view);
-                init();
+        init();
         new GetInterest().execute();
         click();
         return view;
@@ -124,7 +126,6 @@ public class AskQuestionFragment extends Fragment implements View.OnClickListene
         utils = new Utils(getActivity());
         userId = Utils.ReadSharePrefrence(getActivity(), Constant.USERID);
         result = Boolean.parseBoolean(Utils.ReadSharePref(getActivity(), Constant.PERMISSION));
-
     }
 
     private void click() {
@@ -361,7 +362,6 @@ public class AskQuestionFragment extends Fragment implements View.OnClickListene
         Option3 = edOption3.getText().toString().trim();
         Option4 = edOption4.getText().toString().trim();
 
-
         // TODO: 2/27/2017 for spinner data of time
         spinnerTimeList = getResources().getStringArray(R.array.time);
         if (Question.length() > 0) {
@@ -390,67 +390,134 @@ public class AskQuestionFragment extends Fragment implements View.OnClickListene
            private void AddAskQuestionDetails(String userId,String question, String tags, String option1, String option2, String option3, String option4, String picturePath, String interest, String time) {
              Log.d("IMAGE","@@@@"+picturePath);
              Log.d("interest","@@@@"+interest);
-               //http://hire-people.com/host2/surveys/api/add_questions/669/hello/df/fd/fdf/fd/imagesss1.png/1/03:25:05/
-               try {
-                   Ion.with(getContext())
-                           .load(Constant.QUESTION_BASE_URL + "add_questions")
-                           .setMultipartParameter("user_id", userId)
-                           .setMultipartParameter("title", URLEncoder.encode(question, "utf-8"))
-                           .setMultipartParameter("tags", URLEncoder.encode(tags, "utf-8"))
-                           .setMultipartParameter("option1", URLEncoder.encode(option1, "utf-8"))
-                           .setMultipartParameter("option2", URLEncoder.encode(option2, "utf-8"))
-                           .setMultipartParameter("option3", URLEncoder.encode(option3, "utf-8"))
-                           .setMultipartParameter("option4", URLEncoder.encode(option4, "utf-8"))
-                           .setMultipartParameter("timing", time)
-                           .setMultipartParameter("in_id", interest)
-                           .setMultipartFile("picture", new File(picturePath))
-                           .asString()
-                           .setCallback(new FutureCallback<String>() {
-                               @Override
-                               public void onCompleted(Exception e, String result) {
-                                   Log.d("JSONRESULT","@@@@"+result);
-                                   if (result != null && result.length() > 0) {
-                                       try {
-                                           JSONObject jsonObject= new JSONObject(result);
-                                           if (jsonObject.getString("status").equalsIgnoreCase("true")) {
-                                               Toast.makeText(getActivity(), jsonObject.getString("msg"), Toast.LENGTH_SHORT).show();
-                                               JSONArray queArray = jsonObject.getJSONArray("inserted_data");
-                                               if (queArray.length() > 0 ) {
-                                                   for (int i = 0; i < queArray.length(); i++) {
-                                                       JSONObject queObject = queArray.getJSONObject(i);
-                                                       arrayList = new ArrayList<>();
-                                                       details = new UserProfileDetails();
-                                                       details.setUserId(queObject.getString("user_id"));
-                                                       arrayList.add(details);
+               if (picturePath != null){
+                   //http://hire-people.com/host2/surveys/api/add_questions/669/hello/df/fd/fdf/fd/imagesss1.png/1/03:25:05/
+                   try {
+                       Ion.with(getContext())
+                               .load(Constant.QUESTION_BASE_URL + "add_questions")
+                               .setMultipartParameter("user_id", userId)
+                               .setMultipartParameter("title", URLEncoder.encode(question, "utf-8"))
+                               .setMultipartParameter("tags", URLEncoder.encode(tags, "utf-8"))
+                               .setMultipartParameter("option1", URLEncoder.encode(option1, "utf-8"))
+                               .setMultipartParameter("option2", URLEncoder.encode(option2, "utf-8"))
+                               .setMultipartParameter("option3", URLEncoder.encode(option3, "utf-8"))
+                               .setMultipartParameter("option4", URLEncoder.encode(option4, "utf-8"))
+                               .setMultipartParameter("timing", time)
+                               .setMultipartParameter("in_id", interest)
+                               .setMultipartFile("picture", new File(picturePath))
+                               .asString()
+                               .setCallback(new FutureCallback<String>() {
+                                   @Override
+                                   public void onCompleted(Exception e, String result) {
+                                       Log.d("JSONRESULT","@@@@"+result);
+                                       if (result != null && result.length() > 0) {
+                                           try {
+                                               JSONObject jsonObject= new JSONObject(result);
+                                               if (jsonObject.getString("status").equalsIgnoreCase("true")) {
+                                                   Toast.makeText(getActivity(), jsonObject.getString("msg"), Toast.LENGTH_SHORT).show();
+                                                   JSONArray queArray = jsonObject.getJSONArray("inserted_data");
+                                                   if (queArray.length() > 0 ) {
+                                                       for (int i = 0; i < queArray.length(); i++) {
+                                                           JSONObject queObject = queArray.getJSONObject(i);
+                                                           arrayList = new ArrayList<>();
+                                                           details = new UserProfileDetails();
+                                                           details.setUserId(queObject.getString("user_id"));
+                                                           arrayList.add(details);
+                                                       }
                                                    }
+                                                   if (arrayList.size() > 0) {
+                                                       Fragment fragment = new Posts();
+                                                       Bundle bundle = new Bundle();
+                                                       Gson gson = new Gson();
+                                                       bundle.putString("userprofiledetails", gson.toJson(details));
+                                                       fragment.setArguments(bundle);
+                                                       FragmentManager fm = getActivity().getSupportFragmentManager();
+                                                       FragmentTransaction transaction = fm.beginTransaction();
+                                                       transaction.replace(R.id.frame_contain_layout, fragment);
+                                                       transaction.commit();
+                                                   }
+                                               } else {
+                                                   Toast.makeText(getActivity(), jsonObject.getString("msg"), Toast.LENGTH_SHORT).show();
                                                }
-                                               if (arrayList.size() > 0) {
-                                                   Fragment fragment = new Posts();
-                                                   Bundle bundle = new Bundle();
-                                                   Gson gson = new Gson();
-                                                   bundle.putString("userprofiledetails", gson.toJson(details));
-                                                   fragment.setArguments(bundle);
-                                                   FragmentManager fm = getActivity().getSupportFragmentManager();
-                                                   FragmentTransaction transaction = fm.beginTransaction();
-                                                   transaction.replace(R.id.frame_contain_layout, fragment);
-                                                   transaction.commit();
-                                               }
-                                           } else {
-                                               Toast.makeText(getActivity(), jsonObject.getString("msg"), Toast.LENGTH_SHORT).show();
+
+                                           } catch (JSONException e1) {
+                                               e1.printStackTrace();
                                            }
 
-                                       } catch (JSONException e1) {
-                                           e1.printStackTrace();
                                        }
-
                                    }
-                               }
-                           });
+                               });
 
+                   } catch (UnsupportedEncodingException e1) {
+                       e1.printStackTrace();
+                   }
 
-               } catch (UnsupportedEncodingException e1) {
-                   e1.printStackTrace();
                }
+               else{
+                   //http://hire-people.com/host2/surveys/api/add_questions/669/hello/df/fd/fdf/fd/imagesss1.png/1/03:25:05/
+                   try {
+                       Ion.with(getContext())
+                               .load(Constant.QUESTION_BASE_URL + "add_questions")
+                               .setMultipartParameter("user_id", userId)
+                               .setMultipartParameter("title", URLEncoder.encode(question, "utf-8"))
+                               .setMultipartParameter("tags", URLEncoder.encode(tags, "utf-8"))
+                               .setMultipartParameter("option1", URLEncoder.encode(option1, "utf-8"))
+                               .setMultipartParameter("option2", URLEncoder.encode(option2, "utf-8"))
+                               .setMultipartParameter("option3", URLEncoder.encode(option3, "utf-8"))
+                               .setMultipartParameter("option4", URLEncoder.encode(option4, "utf-8"))
+                               .setMultipartParameter("timing", time)
+                               .setMultipartParameter("in_id", interest)
+                               //.setMultipartFile("picture", new File(image))
+                               .asString()
+                               .setCallback(new FutureCallback<String>() {
+                                   @Override
+                                   public void onCompleted(Exception e, String result) {
+                                       Log.d("JSONRESULT","@@@@"+result);
+                                       if (result != null && result.length() > 0) {
+                                           try {
+                                               JSONObject jsonObject= new JSONObject(result);
+                                               if (jsonObject.getString("status").equalsIgnoreCase("true")) {
+                                                   Toast.makeText(getActivity(), jsonObject.getString("msg"), Toast.LENGTH_SHORT).show();
+                                                   JSONArray queArray = jsonObject.getJSONArray("inserted_data");
+                                                   if (queArray.length() > 0 ) {
+                                                       for (int i = 0; i < queArray.length(); i++) {
+                                                           JSONObject queObject = queArray.getJSONObject(i);
+                                                           arrayList = new ArrayList<>();
+                                                           details = new UserProfileDetails();
+                                                           details.setUserId(queObject.getString("user_id"));
+                                                           arrayList.add(details);
+                                                       }
+                                                   }
+                                                   if (arrayList.size() > 0) {
+                                                       Fragment fragment = new Posts();
+                                                       Bundle bundle = new Bundle();
+                                                       Gson gson = new Gson();
+                                                       bundle.putString("userprofiledetails", gson.toJson(details));
+                                                       fragment.setArguments(bundle);
+                                                       FragmentManager fm = getActivity().getSupportFragmentManager();
+                                                       FragmentTransaction transaction = fm.beginTransaction();
+                                                       transaction.replace(R.id.frame_contain_layout, fragment);
+                                                       transaction.commit();
+                                                   }
+                                               } else {
+                                                   Toast.makeText(getActivity(), jsonObject.getString("msg"), Toast.LENGTH_SHORT).show();
+                                               }
+
+                                           } catch (JSONException e1) {
+                                               e1.printStackTrace();
+                                           }
+
+                                       }
+                                   }
+                               });
+
+
+                   } catch (UnsupportedEncodingException e1) {
+                       e1.printStackTrace();
+                   }
+               }
+
+
            }
 
 

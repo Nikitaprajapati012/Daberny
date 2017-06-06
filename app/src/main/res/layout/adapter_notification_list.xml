@@ -8,17 +8,29 @@
         android:id="@+id/adapter_notification_list_layout"
         android:layout_width="match_parent"
         android:layout_height="@dimen/_40sdp"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:background="@color/home_bg"
+        android:weightSum="2">
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/adapter_notification_list_imgprofilepic"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_40sdp"
+            android:text="@string/notification"
+            android:gravity="center|left"
+            android:padding="@dimen/_2sdp"
+            android:layout_weight="1.7"
+            android:src="@drawable/ic_placeholder"/>
 
         <TextView
             android:id="@+id/adapter_notification_list_txtnotification"
             android:layout_width="match_parent"
             android:layout_height="@dimen/_40sdp"
             android:text="@string/notification"
+            android:layout_weight="0.3"
             android:gravity="center|left"
             android:paddingLeft="@dimen/_15sdp"
             android:textColor="@color/black"
-            android:background="@color/home_bg"
             android:textSize="@dimen/_12sdp" />
 
     </LinearLayout>

@@ -14,7 +14,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.raviarchi.daberny.Activity.Adapter.SearchRecentAdapter;
+import com.example.raviarchi.daberny.Activity.Adapter.SearchLatestAdapter;
+import com.example.raviarchi.daberny.Activity.Adapter.SearchPeopleAdapter;
 import com.example.raviarchi.daberny.Activity.Model.UserProfileDetails;
 import com.example.raviarchi.daberny.Activity.Utils.Constant;
 import com.example.raviarchi.daberny.Activity.Utils.Utils;
@@ -29,18 +30,17 @@ import java.util.ArrayList;
 import static com.example.raviarchi.daberny.Activity.Fragment.Search.edSearch;
 import static com.facebook.FacebookSdk.getApplicationContext;
 
-
 /**
  * Created by Ravi archi on 1/10/2017.
  */
 
-public class SearchRecent extends Fragment {
-    public RecyclerView recyclerViewRecent;
+public class SearchLatest extends Fragment {
+    public RecyclerView recyclerViewPeople;
     public Utils utils;
     public UserProfileDetails details;
-    public String ID;
-    public SearchRecentAdapter adapter;
-    public String SearchRecent;
+    public String userId;
+    public SearchLatestAdapter adapter;
+    public String SearchLatest;
     private ArrayList<UserProfileDetails> arrayUserList;
 
     @Override
@@ -54,7 +54,7 @@ public class SearchRecent extends Fragment {
 
     // TODO: 2/22/2017 bind data with field
     private void findViewId(View view) {
-        /*recyclerViewRecent = (RecyclerView) view.findViewById(R.id.fragment_search_recyclerrecentlist);
+        recyclerViewPeople = (RecyclerView) view.findViewById(R.id.fragment_search_recyclerrecentlist);
 
         edSearch.addTextChangedListener(new TextWatcher() {
             @Override
@@ -64,63 +64,60 @@ public class SearchRecent extends Fragment {
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                SearchRecent = edSearch.getText().toString().trim();
-                new GetRecentList(SearchRecent).execute();
+                SearchLatest = edSearch.getText().toString().trim();
+                new GetPeopleList(SearchLatest).execute();
             }
 
             @Override
             public void afterTextChanged(Editable editable) {
             }
-        });*/
+        });
     }
 
     // TODO: 2/21/2017 initilization
     private void init() {
         utils = new Utils(getActivity());
         arrayUserList = new ArrayList<>();
+        userId = Utils.ReadSharePrefrence(getActivity(),Constant.USERID);
     }
 
-    private void openRecentList() {
-      /*  // TODO: 2/21/2017 bind list and show in adapter
-        adapter = new SearchRecentAdapter(getActivity(), arrayUserList);
+    private void openLatestList() {
+        // TODO: 2/21/2017 bind list and show in adapter
+        adapter = new SearchLatestAdapter(getActivity(), arrayUserList);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
-        recyclerViewRecent.setLayoutManager(mLayoutManager);
-        recyclerViewRecent.setItemAnimator(new DefaultItemAnimator());
-        recyclerViewRecent.setAdapter(adapter);
-        adapter.notifyDataSetChanged();*/
+        recyclerViewPeople.setLayoutManager(mLayoutManager);
+        recyclerViewPeople.setItemAnimator(new DefaultItemAnimator());
+        recyclerViewPeople.setAdapter(adapter);
+        adapter.notifyDataSetChanged();
     }
+
 
     // TODO: 2/21/2017 get list of Question from URL
-    private class GetRecentList extends AsyncTask<String, String, String> {
+    private class GetPeopleList extends AsyncTask<String, String, String> {
         ProgressDialog pd;
-        String searchRecent;
+        String searchlatest;
 
-        public GetRecentList(String searchRecent) {
-            this.searchRecent = searchRecent;
+        public GetPeopleList(String searchPeople) {
+            this.searchlatest = searchPeople;
         }
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            pd = new ProgressDialog(getActivity());
-            pd.setMessage("Loading");
-            pd.setCancelable(false);
-            pd.show();
+//            pd = new ProgressDialog(getActivity());
+//            pd.setMessage("Loading");
+//            pd.setCancelable(false);
+//            pd.show();
         }
 
         @Override
         protected String doInBackground(String... strings) {
-            //http://181.224.157.105/~hirepeop/host2/surveys/api/searched_question/How many glass of water do you
-            return utils.getResponseofGet(Constant.QUESTION_BASE_URL + "searched_question/" + searchRecent);
-        }
 
-        @Override
-        protected void onPostExecute(String s) {
-            super.onPostExecute(s);
-            Log.d("RESPONSE", "Search Recent List..." + s);
-            pd.dismiss();
+            //http://181.224.157.105/~hirepeop/host2/surveys/api/searched_question/752/How many
+            String response = Utils.getResponseofGet(Constant.QUESTION_BASE_URL + "searched_question/" +userId + "/" + searchlatest);
+            Log.d("RESPONSE", "Search latest List..." + response);
             try {
-                JSONObject jsonObject = new JSONObject(s);
+                JSONObject jsonObject = new JSONObject(response);
                 if (jsonObject.getString("status").equalsIgnoreCase("true")) {
                     JSONArray searchArray = jsonObject.getJSONArray("searchd result");
                     for (int i = 0; i < searchArray.length(); i++) {
@@ -130,22 +127,26 @@ public class SearchRecent extends Fragment {
                         details.setQueId(userObject.getString("id"));
                         arrayUserList.add(details);
                     }
+                } else {
+                    if (jsonObject.getString("status").equalsIgnoreCase("FALSE")) {
+                        arrayUserList.clear();
+                    }
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+            return response;
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+//            pd.dismiss();
             if (arrayUserList.size() > 0) {
-                // if (searchRecent.equalsIgnoreCase(details.getQueTitle())) {
-                openRecentList();
-               /* } else {
-                    arrayUserList.clear();
-                    Toast.makeText(getActivity(), "No Result Found", Toast.LENGTH_SHORT).show();
-                }*/
-
+                openLatestList();
             } else {
-
-                //Toast.makeText(getActivity(), "No Data Found,Please Try Again", Toast.LENGTH_SHORT).show();
-
+                arrayUserList.clear();
+                //Toast.makeText(getActivity(), "No Result Found", Toast.LENGTH_SHORT).show();
             }
 
         }

@@ -56,6 +56,7 @@ public class InboxUsersAdapter extends RecyclerView.Adapter<InboxUsersAdapter.My
     public void onBindViewHolder(MyViewHolder holder, final int position) {
         final UserProfileDetails userdetails = arrayUserList.get(position);
         Id = userdetails.getUserId();
+        holder.txtMessageTime.setText(userdetails.getUserMsgPostDate());
         loginUserId = Utils.ReadSharePrefrence(context, Constant.USERID);
         if (userdetails.getUserId().equalsIgnoreCase(loginUserId)) {
             Utils.WriteSharePrefrence(context,Constant.OTHER_USERID,userdetails.getOtherUserId());
@@ -80,20 +81,15 @@ public class InboxUsersAdapter extends RecyclerView.Adapter<InboxUsersAdapter.My
                 Picasso.with(context).load(R.mipmap.ic_launcher).transform(new RoundedTransformation(120, 2))
                         .placeholder(R.drawable.ic_placeholder).into(holder.imgProfile);
             }
-
         }
-
-
 
         holder.layoutInbox.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 Gson gson = new Gson();
                 Intent ichat =new Intent(context,ChatActivity.class);
                 ichat.putExtra("userprofiledetails", gson.toJson(userdetails));
                 context.startActivity(ichat);
-
                 }
         });
     }

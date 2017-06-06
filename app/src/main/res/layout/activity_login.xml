@@ -59,7 +59,7 @@
                     android:layout_toRightOf="@+id/activity_login_user"
                     android:background="@android:color/transparent"
                     android:gravity="center|left"
-                    android:hint="@string/username"
+                    android:hint="@string/email"
                     android:textColor="@color/signin_text"
                     android:textColorHint="@color/logintext"
                     android:textSize="@dimen/_12sdp" />
@@ -98,6 +98,7 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/_45sdp"
+                android:visibility="gone"
                 android:layout_marginTop="@dimen/_10sdp"
                 android:gravity="center_vertical">
 

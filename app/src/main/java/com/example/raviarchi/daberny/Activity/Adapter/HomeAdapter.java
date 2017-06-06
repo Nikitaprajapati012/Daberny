@@ -350,6 +350,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.MyViewHolder> 
                 }
             }
         });
+
         holder.txtCommentUser.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -365,6 +366,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.MyViewHolder> 
                 }
             }
         });
+
         // TODO: 3/24/2017 vote status
         holder.rdAnswer1.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -432,6 +434,10 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.MyViewHolder> 
             }
         }.start();
 
+        // TODO: 6/5/2017 stop counter
+        if (details.getQueVoteStatus().equalsIgnoreCase("0")){
+            countdowntimer.cancel();
+        }
         // TODO: 3/20/2017 get list of following people
         // holder.spinnnerFollowing.setListener(this);
 

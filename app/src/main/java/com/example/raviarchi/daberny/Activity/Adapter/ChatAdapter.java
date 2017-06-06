@@ -20,24 +20,25 @@ import java.util.List;
  */
 
 public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-
     private static final int SENDERVIEW = 0;
     private static final int RECEIVERVIEW = 1;
-    private Context context;
+    private Context mContext;
     private Utils utils;
     private ArrayList<UserProfileDetails> arrayList;
     private UserProfileDetails details;
     private String loginuserId,senderId,strMessageSender,strMessageReceiver;
 
        public ChatAdapter(ChatActivity context, ArrayList<UserProfileDetails> arrayUserList) {
-        this.context = context;
+        this.mContext = context;
         utils = new Utils(context);
         this.arrayList = arrayUserList;
+        Log.d("userid","@"+Utils.ReadSharePrefrence(mContext, Constant.USERID));
     }
 
     @Override
-    public int getItemViewType(int position) {
-        if (arrayList.get(position).getUserId().equalsIgnoreCase(Utils.ReadSharePrefrence(context, Constant.USERID))) {
+    public int getItemViewType(final int position) {
+        Log.d("id","@"+arrayList.get(position).getUserId());
+        if (arrayList.get(position).getUserId().equalsIgnoreCase(Utils.ReadSharePrefrence(mContext, Constant.USERID))) {
             return SENDERVIEW;
         } else {
             return RECEIVERVIEW;
@@ -65,7 +66,7 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     @Override
     public void onBindViewHolder(final RecyclerView.ViewHolder holder, final int position) {
         details =arrayList.get(position);
-        loginuserId = Utils.ReadSharePrefrence(context,Constant.USERID);
+        loginuserId = Utils.ReadSharePrefrence(mContext,Constant.USERID);
         if (loginuserId.equalsIgnoreCase(details.getUserId())){
             senderId=details.getOtherUserId();
             strMessageReceiver=details.getUserMsgReceiver();

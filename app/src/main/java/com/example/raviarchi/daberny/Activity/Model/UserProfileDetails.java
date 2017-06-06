@@ -110,6 +110,16 @@ public class UserProfileDetails {
     private String userMsgSender;
     private String userMsgReceiver;
     private String userMsgPostDate;
+
+    public String getUserMsgType() {
+        return userMsgType;
+    }
+
+    public void setUserMsgType(String userMsgType) {
+        this.userMsgType = userMsgType;
+    }
+
+    private String userMsgType;
     public UserProfileDetails() {
     }
     public UserProfileDetails(String quename, boolean isSelected) {

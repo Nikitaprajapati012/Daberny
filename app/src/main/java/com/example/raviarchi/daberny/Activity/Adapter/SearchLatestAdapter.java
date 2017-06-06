@@ -13,10 +13,11 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.example.raviarchi.daberny.Activity.Fragment.Home;
+import com.example.raviarchi.daberny.Activity.Fragment.Tag;
 import com.example.raviarchi.daberny.Activity.Model.UserProfileDetails;
 import com.example.raviarchi.daberny.Activity.Utils.Utils;
 import com.example.raviarchi.daberny.R;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,13 +29,13 @@ import butterknife.ButterKnife;
  * Created by Ravi archi on 2/21/2017.
  */
 
-public class SearchRecentAdapter extends RecyclerView.Adapter<SearchRecentAdapter.MyViewHolder> {
+public class SearchLatestAdapter extends RecyclerView.Adapter<SearchLatestAdapter.MyViewHolder> {
     public String Id, interest;
     public Utils utils;
     private List<UserProfileDetails> arrayUserList;
     private Context context;
 
-    public SearchRecentAdapter(Context context, ArrayList<UserProfileDetails> arraylist) {
+    public SearchLatestAdapter(Context context, ArrayList<UserProfileDetails> arraylist) {
         this.context = context;
         this.arrayUserList = arraylist;
         notifyDataSetChanged();
@@ -43,25 +44,22 @@ public class SearchRecentAdapter extends RecyclerView.Adapter<SearchRecentAdapte
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.adapter_tag_list, parent, false);
+                .inflate(R.layout.adapter_latest_list, parent, false);
         return new MyViewHolder(itemView);
     }
 
     @Override
     public void onBindViewHolder(MyViewHolder holder, final int position) {
-
         final UserProfileDetails userdetails = arrayUserList.get(position);
-        Id = userdetails.getUserId();
-
+        Id = userdetails.getQueId();
         holder.txtQuestion.setText(userdetails.getQueTitle());
-
-
         holder.linearLayoutTag.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Fragment fragment = new Home();
+                Gson gson = new Gson();
                 Bundle bundle = new Bundle();
-                bundle.putString("id", userdetails.getQueId());
+                bundle.putString("userprofiledetails", gson.toJson(userdetails));
+                Fragment fragment = new Tag();
 
                 if (fragment != null) {
                     fragment.setArguments(bundle);
@@ -79,7 +77,6 @@ public class SearchRecentAdapter extends RecyclerView.Adapter<SearchRecentAdapte
     public int getItemCount() {
         return arrayUserList.size();
     }
-
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
 

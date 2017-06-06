@@ -31,35 +31,51 @@
                 android:layout_weight="1"
                 android:orientation="vertical">
 
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="right"
+                    android:gravity="right" >
+
+                    <ImageView
+                        android:id="@+id/fragment_edit_user_profile_imgchangepic"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_gravity="right"
+                        android:background="@drawable/roundborder_bluebg"
+                        android:padding="@dimen/_10sdp"
+                        android:src="@mipmap/ic_pencil" />
+                </RelativeLayout>
+
                 <LinearLayout
-                    android:layout_width="@dimen/_110sdp"
-                    android:layout_height="@dimen/_110sdp"
+                    android:layout_width="@dimen/_120sdp"
+                    android:layout_height="@dimen/_120sdp"
                     android:layout_marginBottom="@dimen/_15sdp"
-                    android:layout_marginLeft="@dimen/_5sdp"
                     android:layout_gravity="center"
+                    android:gravity="left"
                     android:layout_marginTop="@dimen/_10sdp"
-                    android:background="@drawable/ic_profilepic_bg"
+                    android:background="@mipmap/ic_daberny_mainicon"
                     android:orientation="vertical">
 
                     <RelativeLayout
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content">
+
                         <ImageView
                             android:id="@+id/fragment_edit_user_profile_imgprofilepic"
                             android:layout_width="110dp"
-                            android:layout_height="110dp"
+                            android:layout_height="95dp"
                             android:layout_gravity="center"
-                            android:layout_marginBottom="@dimen/_10sdp"
-                            android:layout_marginLeft="@dimen/_25sdp"
-                            android:layout_marginTop="@dimen/_25sdp"
-                            android:gravity="center"
+                            android:layout_marginBottom="@dimen/_5sdp"
+                            android:layout_marginLeft="@dimen/_43sdp"
+                            android:layout_marginTop="@dimen/_35sdp"
+                            android:gravity="center|right"
                             android:padding="@dimen/_3sdp"
                             android:src="@drawable/ic_placeholder" />
-
                     </RelativeLayout>
                 </LinearLayout>
 
-                <TextView
+                <!-- <TextView
                     android:id="@+id/fragment_edit_user_profile_txtchangepic"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
@@ -68,7 +84,7 @@
                     android:text="Change Photo"
                     android:textColor="@color/logintext"
                     android:textSize="@dimen/_13sdp"
-                    android:textStyle="bold" />
+                    android:textStyle="bold" />-->
             </LinearLayout>
 
             <LinearLayout

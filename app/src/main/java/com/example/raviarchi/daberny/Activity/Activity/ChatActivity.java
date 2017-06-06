@@ -1,14 +1,23 @@
 package com.example.raviarchi.daberny.Activity.Activity;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.ContentValues;
+import android.content.Context;
+import android.content.Intent;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
@@ -22,13 +31,22 @@ import android.widget.Toast;
 import com.example.raviarchi.daberny.Activity.Adapter.ChatAdapter;
 import com.example.raviarchi.daberny.Activity.Model.UserProfileDetails;
 import com.example.raviarchi.daberny.Activity.Utils.Constant;
+import com.example.raviarchi.daberny.Activity.Utils.RoundedTransformation;
 import com.example.raviarchi.daberny.Activity.Utils.Utils;
 import com.example.raviarchi.daberny.R;
 import com.google.gson.Gson;
+import com.koushikdutta.async.future.FutureCallback;
+import com.koushikdutta.ion.Ion;
+import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 
 import butterknife.BindView;
@@ -38,7 +56,8 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
     public ChatAdapter chatAdapter;
     public ArrayList<UserProfileDetails> arrayUserList;
     public UserProfileDetails details;
-    public String strMsg;
+    public String strMsg, picturepath;
+    public Uri uri;
     @BindView(R.id.activity_chat_msg_edmsg)
     EditText edMessage;
     @BindView(R.id.activity_chat_txtsend)
@@ -59,6 +78,8 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
     Utils utils;
     @BindView(R.id.activity_chat_msg_recycler)
     RecyclerView recyclerView;
+    public int REQUEST_CAMERA = 0, SELECT_FILE = 1;
+    private Bitmap bitmap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,28 +92,85 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
 
     // TODO: 5/29/2017 perform click event
     //git
-     private void click() {
+    private void click() {
         txtSend.setOnClickListener(this);
         imgBack.setOnClickListener(this);
         imgGallery.setOnClickListener(this);
         edMessage.addTextChangedListener(new TextWatcher() {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                layoutAttachment.setVisibility(View.GONE);
-                txtSend.setVisibility(View.VISIBLE);
+                if (edMessage.getText().toString().length() > 0) {
+                    layoutAttachment.setVisibility(View.GONE);
+                    txtSend.setVisibility(View.VISIBLE);
+                } else {
+                    layoutAttachment.setVisibility(View.VISIBLE);
+                    txtSend.setVisibility(View.GONE);
+                }
             }
 
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
             }
 
             @Override
             public void afterTextChanged(Editable s) {
             }
         });
-        //  layoutAttachment.setVisibility(View.VISIBLE);
-        //  txtSend.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == Activity.RESULT_OK) {
+            if (requestCode == SELECT_FILE) {
+                Uri uri = data.getData();
+                try {
+                    bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                onSelectFromGalleryResult(data);
+            } else {
+                Toast.makeText(this, "You haven't picked Image", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    // TODO: 6/2/2017 image pic from gallery
+    private void onSelectFromGalleryResult(Intent data) {
+        if (data != null) {
+            try {
+                Uri uri = data.getData();
+                String[] filePathColumn = {MediaStore.Images.Media.DATA};
+                Cursor cursor = getContentResolver().query(uri,
+                        filePathColumn, null, null, null);
+
+                if (cursor == null || cursor.getCount() < 1) {
+                    return; // no cursor or no record. DO YOUR ERROR HANDLING
+                }
+                cursor.moveToFirst();
+                int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+                picturepath = cursor.getString(columnIndex);
+                if (columnIndex < 0) // no column index
+                    return; // DO YOUR ERROR HANDLING
+                String image = getStringImage(bitmap);
+                picturepath = cursor.getString(columnIndex);
+                // TODO: 6/2/2017 send image in chat
+                sendmessage(loginUserId, receiverId,strMsg,picturepath);
+                cursor.close(); // close cursor
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } else {
+            Toast.makeText(this, "No Data Found", Toast.LENGTH_SHORT).show();
+        }
+    }
+    public String getStringImage(Bitmap bmp) {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bmp.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+        byte[] imageBytes = baos.toByteArray();
+        String encodedImage = Base64.encodeToString(imageBytes, Base64.DEFAULT);
+        return encodedImage;
     }
 
     // TODO: 5/29/2017 initilization
@@ -123,16 +201,31 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     @Override
-    public void onClick(View v) {
+    protected void onResume() {
+        super.onResume();
+        new GetChat(loginUserId, receiverId).execute();
+    }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        new GetChat(loginUserId, receiverId).execute();
+    }
+
+    @Override
+    public void onClick(View v) {
         switch (v.getId()) {
             case R.id.activity_chat_imggallery:
-
+                galleryIntent();
                 break;
 
             case R.id.activity_chat_txtsend:
                 strMsg = edMessage.getText().toString().replaceAll(" ", "%20");
-                new SendMessage(loginUserId, receiverId, strMsg).execute();
+                //sendmessage(loginUserId, receiverId,strMsg,picturepath);
+                if (!strMsg.equalsIgnoreCase("")){
+                    new SendMessage(loginUserId, receiverId, strMsg).execute();
+                }
+                ////new GetChat(loginUserId, receiverId).execute();
                 break;
 
             case R.id.header_icon:
@@ -140,6 +233,36 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
                 break;
         }
     }
+
+
+    // TODO: 6/2/2017 image from gallery intent
+    private void galleryIntent() {
+        Intent intentPickImage = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        startActivityForResult(intentPickImage, SELECT_FILE);
+    }
+
+    // TODO: 6/2/2017 send the message as well as image in chat
+    private void sendmessage(String loginUserId, String receiverId, String strMsg, String picturepath) {
+        //http://181.224.157.105/~hirepeop/host2/surveys/api/insert_chat_msg/677/669/hello
+        Log.d("id","##"+ "send"+loginUserId+"----------rec" +receiverId);
+        Log.d("msg","##"+strMsg);
+        Log.d("picture","##"+picturepath);
+
+        Ion.with(this)
+                .load(Constant.QUESTION_BASE_URL + "insert_chat_msg")
+                .setMultipartParameter("sender_id", "752")
+                .setMultipartParameter("recipient_id", "677")
+                .setMultipartParameter("msg",strMsg)
+                .setMultipartFile("picture", new File(picturepath))
+                .asString()
+                .setCallback(new FutureCallback<String>() {
+                    @Override
+                    public void onCompleted(Exception e, String result) {
+                        Log.d("JSONRESULTChat", "#@@@@" + result);
+                    }
+                });
+    }
+
 
     // TODO: 5/30/2017 bind the list with adapter
     private void openChatDetailsList() {
@@ -198,6 +321,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
                         JSONObject followingObject = jsonArray.getJSONObject(i);
                         details = new UserProfileDetails();
                         details.setUserId(followingObject.getString("sender_id"));
+                        Log.d("@@","sender"+followingObject.getString("sender_id"));
                         details.setUserUserName(followingObject.getString("sender_username"));
                         details.setUserFullName(followingObject.getString("sender_fullname"));
                         details.setUserImage(followingObject.getString("sender_image"));
@@ -207,6 +331,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
                         details.setOtherUserImage(followingObject.getString("recipient_image"));
                         details.setUserMsgReceiver(followingObject.getString("receiver_msg"));
                         details.setUserMsgSender(followingObject.getString("sender_msg"));
+                        //details.setUserMsgType(followingObject.getString("sender_msg"));
                         arrayUserList.add(details);
                     }
                     if (arrayUserList.size() > 0) {
@@ -220,11 +345,11 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private class SendMessage extends AsyncTask<String, String, String> {
-        String strMessage, userId, receiverId;
+        String strMessage, userId, receiver_Id;
 
         private SendMessage(String user_id, String receipt_id, String strMsg) {
             this.userId = user_id;
-            this.receiverId = receipt_id;
+            this.receiver_Id = receipt_id;
             this.strMessage = strMsg;
         }
 
@@ -236,35 +361,46 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
         @Override
         protected String doInBackground(String... params) {
             //http://181.224.157.105/~hirepeop/host2/surveys/api/insert_chat_msg/677/669/hello
-            String sendmessage = Constant.QUESTION_BASE_URL + "insert_chat_msg" + loginUserId + "/" + userId + "/" + strMessage;
+            String sendmessage = Constant.QUESTION_BASE_URL + "insert_chat_msg/" + loginUserId + "/" + receiver_Id + "/" + strMessage;
             Log.d("URL", "" + sendmessage);
             return Utils.getResponseofGet(sendmessage);
         }
 
         @Override
         protected void onPostExecute(String s) {
-            Log.d("POST EXECUTE", "" + s);
+            super.onPostExecute(s);
+            Log.d("RESPONSE", "" + s);
             try {
                 JSONObject jsonObject = new JSONObject(s);
                 if (jsonObject.getString("status").equalsIgnoreCase("true")) {
-                    Toast.makeText(ChatActivity.this, "Message Sent Successfully....", Toast.LENGTH_SHORT).show();
-                   /* MessageDetails details = new MessageDetails();
-                    details.setRecipient(user_id_img);
-                    details.setSender(user_id);
-                    details.setName("archi");
-                    details.setSubject("Archirayan");
-                    details.setText(msgEdt.getText().toString());
-                    listmsgdetails.add(details);*/
-                    edMessage.setText("");
-                    chatAdapter.notifyDataSetChanged();
+                    JSONObject object = jsonObject.getJSONObject("inserted_data");
+                    arrayUserList = new ArrayList<>();
+                    details = new UserProfileDetails();
+                    details.setUserMsgType(object.getString("type"));
+                    details.setUserMessage(object.getString("msg"));
 
-                } else {
-                    Toast.makeText(ChatActivity.this, "Message Sent Failed", Toast.LENGTH_SHORT).show();
+                    // TODO: 6/5/2017 sender details
+                    JSONObject senderobject = object.getJSONObject("sender_detail");
+                    details.setUserId(senderobject.getString("id"));
+                    details.setUserUserName(senderobject.getString("username"));
+                    details.setUserImage(senderobject.getString("user_image"));
+
+                    // TODO: 6/5/2017 receiver details
+                    JSONObject receiverobject = object.getJSONObject("receiver_detail");
+                    details.setOtherUserId(receiverobject.getString("id"));
+                    details.setOtherUserName(receiverobject.getString("username"));
+                    details.setOtherUserImage(receiverobject.getString("user_image"));
+                    arrayUserList.add(details);
+                }
+
+                if(arrayUserList.size() > 0){
+                    edMessage.setText("");
+                    openChatDetailsList();
+
                 }
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            super.onPostExecute(s);
         }
     }
 }
