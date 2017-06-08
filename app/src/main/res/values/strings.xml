@@ -111,58 +111,58 @@
     <string name="option3optional">Option 3 (Optional)</string>
     <string name="option4optional">Option 4 (Optional)</string>
     <string name="uploadfile">Upload image or video with maximum 30 second</string>
+    <string name="yousentmsg">You sent a message</string>
 
     <string-array name="time">
 
-        <item>Add Time Duration*</item>
-        <item>00:30:00</item>
-        <item>01:00:00</item>
-        <item>01:30:00</item>
-        <item>02:00:00</item>
-        <item>02:30:00</item>
-        <item>03:00:00</item>
-        <item>03:30:00</item>
-        <item>04:00:00</item>
-        <item>04:30:00</item>
-        <item>05:00:00</item>
-        <item>05:30:00</item>
-        <item>06:00:00</item>
-        <item>06:30:00</item>
-        <item>07:00:00</item>
-        <item>07:30:00</item>
-        <item>08:00:00</item>
-        <item>08:30:00</item>
-        <item>09:00:00</item>
-        <item>09:30:00</item>
-        <item>10:00:00</item>
-        <item>10:30:00</item>
-        <item>11:00:00</item>
-        <item>11:30:00</item>
-        <item>12:00:00</item>
-        <item>12:30:00</item>
-        <item>13:00:00</item>
-        <item>13:30:00</item>
-        <item>14:00:00</item>
-        <item>14:30:00</item>
-        <item>15:00:00</item>
-        <item>15:30:00</item>
-        <item>16:00:00</item>
-        <item>16:30:00</item>
-        <item>17:00:00</item>
-        <item>17:30:00</item>
-        <item>18:00:00</item>
-        <item>18:30:00</item>
-        <item>19:00:00</item>
-        <item>19:30:00</item>
-        <item>20:00:00</item>
-        <item>20:30:00</item>
-        <item>21:00:00</item>
-        <item>21:30:00</item>
-        <item>22:00:00</item>
-        <item>22:30:00</item>
-        <item>23:00:00</item>
-        <item>23:30:00</item>
         <item>24:00:00</item>
+        <item>23:30:00</item>
+        <item>23:00:00</item>
+        <item>22:30:00</item>
+        <item>22:00:00</item>
+        <item>21:30:00</item>
+        <item>21:00:00</item>
+        <item>20:30:00</item>
+        <item>20:00:00</item>
+        <item>19:30:00</item>
+        <item>19:00:00</item>
+        <item>18:30:00</item>
+        <item>18:00:00</item>
+        <item>17:30:00</item>
+        <item>17:00:00</item>
+        <item>16:30:00</item>
+        <item>16:00:00</item>
+        <item>15:30:00</item>
+        <item>15:00:00</item>
+        <item>14:30:00</item>
+        <item>14:00:00</item>
+        <item>13:30:00</item>
+        <item>13:00:00</item>
+        <item>12:30:00</item>
+        <item>12:00:00</item>
+        <item>11:30:00</item>
+        <item>11:00:00</item>
+        <item>10:30:00</item>
+        <item>10:00:00</item>
+        <item>09:30:00</item>
+        <item>09:00:00</item>
+        <item>08:30:00</item>
+        <item>08:00:00</item>
+        <item>07:30:00</item>
+        <item>07:00:00</item>
+        <item>06:30:00</item>
+        <item>06:00:00</item>
+        <item>05:30:00</item>
+        <item>05:00:00</item>
+        <item>04:30:00</item>
+        <item>04:00:00</item>
+        <item>03:30:00</item>
+        <item>03:00:00</item>
+        <item>02:30:00</item>
+        <item>02:00:00</item>
+        <item>01:30:00</item>
+        <item>01:00:00</item>
+        <item>00:30:00</item>
 
     </string-array>
 </resources>

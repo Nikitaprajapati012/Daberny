@@ -155,13 +155,13 @@ public class InboxUsers extends Fragment implements View.OnClickListener {
                         details.setUserMsgReceiver(followingObject.getString("recipient_msg"));
                         details.setUserMsgSender(followingObject.getString("sender_msg"));
                         details.setUserMsgPostDate(followingObject.getString("post_date"));
+                        details.setUserMsgType(followingObject.getString("type"));
                         arrayUserList.add(details);
                     }
                     if (arrayUserList.size() > 0) {
                         openInboxPeopleDetailsList();
                     }
                 }
-
             } catch (JSONException e) {
                 e.printStackTrace();
             }

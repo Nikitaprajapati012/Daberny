@@ -6,7 +6,7 @@
     android:orientation="vertical">
 
     <LinearLayout
-        android:id="@+id/adapter_tag_list_layout"
+        android:id="@+id/adapter_latest_list_layout"
         android:layout_width="match_parent"
         android:layout_height="@dimen/_40sdp"
         android:layout_margin="@dimen/_5sdp"
@@ -14,13 +14,14 @@
         android:weightSum="2">
 
         <TextView
-            android:id="@+id/adapter_tag_list_txtquestin"
+            android:id="@+id/adapter_latest_list_txtquestin"
             android:layout_width="match_parent"
             android:layout_height="@dimen/_40sdp"
             android:text="@string/username"
-            android:textColor="@color/blue"
+            android:gravity="center|left"
+            android:paddingLeft="@dimen/_5sdp"
+            android:textColor="@color/logintext"
             android:textSize="@dimen/_15sdp" />
-
 
     </LinearLayout>
 </LinearLayout>

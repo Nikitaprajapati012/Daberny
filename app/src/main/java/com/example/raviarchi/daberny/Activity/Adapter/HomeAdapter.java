@@ -20,60 +20,70 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.MediaController;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.widget.VideoView;
+
 import com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar;
 import com.example.raviarchi.daberny.Activity.Fragment.CommentPeopleDetail;
 import com.example.raviarchi.daberny.Activity.Fragment.OtherUserProfile;
 import com.example.raviarchi.daberny.Activity.Model.UserProfileDetails;
 import com.example.raviarchi.daberny.Activity.Utils.Constant;
+import com.example.raviarchi.daberny.Activity.Utils.CountDownTimerClass;
 import com.example.raviarchi.daberny.Activity.Utils.RoundedTransformation;
 import com.example.raviarchi.daberny.Activity.Utils.Utils;
 import com.example.raviarchi.daberny.R;
 import com.example.raviarchi.multiplespinner.MultiSelectionSpinner;
 import com.koushikdutta.async.http.socketio.ExceptionCallback;
 import com.squareup.picasso.Picasso;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /*** Created by Ravi archi on 2/21/2017.
  */
 
-public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.MyViewHolder> implements View.OnClickListener, MultiSelectionSpinner.OnMultipleItemsSelectedListener {
+public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.MyViewHolder> implements View.OnClickListener {
     public long time;
     public Utils utils;
     public UserProfileDetails details;
-    float progress, remainingProgress;
-    RelativeLayout relativeProgress, relativeRemaining;
-    private ArrayList<String> followingList;
-    private Object[] getFollowingListSpinner;
-    private String loginUserId, queId, Answer,followingPeopleName, commentText;
+    private ArrayList<String> arrayfollowingUserList, arrayfollowingUserIdList;
+    private Object[] getFollowingIdListSpinner;
+    private String loginUserId, queId, Answer, followingPeopleName, commentText;
     private CountDownTimer countdowntimer;
+    private CountDownTimerClass timer;
     private ArrayList<UserProfileDetails> arrayList;
+    private ArrayList<String> followingList;
     private Context context;
     private int seconds, minutes, hours;
+    private Handler handler;
+    private boolean mCancelled = false;
 
-    public HomeAdapter(Context context, ArrayList<UserProfileDetails> arraylist) {
+    public HomeAdapter(Context context, ArrayList<UserProfileDetails> arraylist, ArrayList<String> arrayFollowingNameList, ArrayList<String> arrayFollowingIdList) {
         this.context = context;
         this.arrayList = arraylist;
+        this.arrayfollowingUserList = arrayFollowingNameList;
+        this.arrayfollowingUserIdList = arrayFollowingIdList;
         this.utils = new Utils(context);
         notifyDataSetChanged();
         Log.d("Length", "" + arrayList.size());
+        Log.d("LengthFollowingname", "@" + arrayfollowingUserList.size());
+        Log.d("LengthFollowingId", "@" + arrayfollowingUserIdList.size());
     }
 
     @Override
@@ -88,15 +98,48 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.MyViewHolder> 
         final UserProfileDetails details = arrayList.get(position);
         loginUserId = Utils.ReadSharePrefrence(context, Constant.USERID);
         queId = details.getQueId();
+        final Long timing = details.getQueTiming();
+        Log.d("timing_que", "" + timing);
+        final Long createdtime = details.getQueCreatedTime();
+
+        // TODO: 6/6/2017 time handler
+        timer = new CountDownTimerClass(timing, 1000) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+                seconds = (int) (millisUntilFinished / 1000) % 60;
+                minutes = (int) ((millisUntilFinished / (1000 * 60)) % 60);
+                hours = (int) ((millisUntilFinished / (1000 * 60 * 60)) % 24);
+                holder.txtHour.setText("" + String.format("%2d", hours));
+                holder.txtMinute.setText("" + String.format("%2d", minutes));
+                holder.txtSecond.setText("" + String.format("%2d", seconds));
+                holder.layoutLike.setVisibility(View.INVISIBLE);
+                holder.layoutComment.setVisibility(View.GONE);
+                holder.layoutAllVoteResult.setVisibility(View.GONE);
+                holder.radioGroup.setVisibility(View.VISIBLE);
+                holder.layoutCounter.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void onFinish() {
+                holder.layoutCounter.setVisibility(View.GONE);
+                holder.layoutVote.setVisibility(View.INVISIBLE);
+                holder.layoutLike.setVisibility(View.VISIBLE);
+                holder.layoutComment.setVisibility(View.VISIBLE);
+                holder.layoutAllVoteResult.setVisibility(View.VISIBLE);
+                holder.radioGroup.setVisibility(View.GONE);
+            }
+        }.start();
+        handler = new Handler();
 
         // TODO: 5/25/2017 **************set the Visibility**********************
         holder.rdAnswer3.setVisibility(View.VISIBLE);
         holder.rdAnswer4.setVisibility(View.VISIBLE);
-        if (details.getQueVoteStatus().equalsIgnoreCase("1")){
+        holder.txtVoteSucess.setVisibility(View.GONE);
+
+        if (details.getQueVoteStatus().equalsIgnoreCase("1")) {
             if (details.getUserCanVote().equalsIgnoreCase("1")) {
                 holder.txtVote.setVisibility(View.VISIBLE);
-            }
-            else {
+            } else {
                 holder.txtVote.setVisibility(View.INVISIBLE);
                 holder.rdAnswer1.setButtonDrawable(new ColorDrawable(0xFFFFFF));
                 holder.rdAnswer2.setButtonDrawable(new ColorDrawable(0xFFFFFF));
@@ -122,7 +165,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.MyViewHolder> 
         } else {
             holder.layoutCommentText.setVisibility(View.GONE);
         }
-    // TODO: 5/25/2017 ********************** End ************************
+        // TODO: 5/25/2017 ********************** End ************************
 
         // TODO: 5/25/2017 **************set the value in TextView**********************
         holder.txtVoteCount.setText(String.valueOf(details.getQueVoteTotalCount()));
@@ -131,18 +174,15 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.MyViewHolder> 
         holder.txtCategory.setText(details.getQueCategory());
         holder.txtPostDate.setText(details.getQuePostDate());
         holder.txtQuetion.setText(details.getQueTitle());
-        if (!details.getQueTag().equalsIgnoreCase("")){
+        if (!details.getQueTag().equalsIgnoreCase("")) {
             holder.txtQuetionTag.setText(details.getQueTag());
-        }
-        else
-        {
+        } else {
             holder.txtQuetionTag.setVisibility(View.GONE);
         }
         if (details.getQueComment() != null) {
             holder.txtCommentText.setText(details.getQueComment().replaceAll("%20", " "));
             holder.txtCommentUser.setText(details.getQueCommentUser());
         }
-
         holder.rdAnswer1.setText(details.getQueOptionFirst());
         holder.rdAnswer2.setText(details.getQueOptionSecond());
         holder.txtAnswer1.setText(details.getQueOptionFirst());
@@ -153,8 +193,6 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.MyViewHolder> 
         holder.txtVoteQueCount2.setText("Vote Count:" + details.getQueVoteCount2());
         holder.optionProgress1.setProgress(Float.parseFloat(details.getQueVotePercentage1()));
         holder.optionProgress2.setProgress(Float.parseFloat(details.getQueVotePercentage2()));
-        /*holder.optionProgress1.setPadding(5);
-        holder.optionProgress2.setPadding(5);*/
 
         // TODO: 5/26/2017 set the radio button & progressbar as per option
         if (!details.getQueOptionThird().equalsIgnoreCase("")) {
@@ -162,7 +200,6 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.MyViewHolder> 
             holder.txtAnswer3.setText(details.getQueOptionThird());
             holder.txtVotePercentage3.setText("Vote:" + details.getQueVotePercentage3() + "%");
             holder.txtVoteQueCount3.setText("Vote Count:" + details.getQueVoteCount3());
-            // holder.optionProgress3.setPadding(5);
             holder.optionProgress3.setProgress(Float.parseFloat(details.getQueVotePercentage3()));
         } else {
             holder.rdAnswer3.setVisibility(View.GONE);
@@ -173,7 +210,6 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.MyViewHolder> 
             holder.txtAnswer4.setText(details.getQueOptionFourth());
             holder.txtVotePercentage4.setText("Vote:" + details.getQueVotePercentage4() + "%");
             holder.txtVoteQueCount4.setText("Vote Count:" + details.getQueVoteCount4());
-            //holder.optionProgress4.setPadding(5);
             holder.optionProgress4.setProgress(Float.parseFloat(details.getQueVotePercentage4()));
 
         } else {
@@ -263,28 +299,54 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.MyViewHolder> 
         }
         //TODO: 5/25/2017 ********************** End ************************
 
-
         // TODO: 5/25/2017 **************set the click event**********************
         holder.layoutFacebook.setOnClickListener(this);
         holder.layoutTwitter.setOnClickListener(this);
         holder.txtCommentUser.setOnClickListener(this);
+        // TODO: 6/7/2017 get list of following people
+
+        StringBuffer myText = new StringBuffer();
+        for (int i = 0; i < arrayfollowingUserList.size(); i++) {
+            myText.append(arrayfollowingUserList.get(i));
+            myText.append("\n");
+        }
+        Log.d("Rujul@@", myText.toString());
+       /* if (position == 0) {
+            if (arrayfollowingUserList != null && arrayfollowingUserList.size() > 0) {
+                holder.spinnnerFollowing.setItems(arrayfollowingUserList);
+                holder.spinnnerFollowing.setListener(new MultiSelectionSpinner.OnMultipleItemsSelectedListener() {
+                    @Override
+                    public void selectedIndices(List<Integer> indices) {
+                        followingList = new ArrayList<>();
+                        getFollowingIdListSpinner = indices.toArray();
+                        for (int i = 0; i < getFollowingIdListSpinner.length; i++) {
+                            followingList.add(arrayfollowingUserIdList.get((Integer) getFollowingIdListSpinner[i]));
+                        }
+                    }
+
+                    @Override
+                    public void selectedStrings(List<String> strings) {
+                        followingPeopleName = strings.toString().replace("[", "").replace("]", "")
+                                .replace(", ", ",");
+                        Log.d("following_name ", "string=" + followingPeopleName);
+                    }
+                });
+            }
+        }*/
+
         // TODO: 3/28/2017 redirect to show all comments
         holder.txtViewAllComments.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //just pass question Id
-                Fragment fragment = null;
-                fragment = new CommentPeopleDetail();
+                Fragment fragment = new CommentPeopleDetail();
                 Bundle bundle = new Bundle();
                 bundle.putString("queid", details.getQueId());
-                if (fragment != null) {
-                    fragment.setArguments(bundle);
-                    FragmentManager fm = ((FragmentActivity) context).getSupportFragmentManager();
-                    FragmentTransaction transaction = fm.beginTransaction();
-                    transaction.replace(R.id.frame_contain_layout, fragment);
-                    transaction.addToBackStack(null);
-                    transaction.commit();
-                }
+                fragment.setArguments(bundle);
+                FragmentManager fm = ((FragmentActivity) context).getSupportFragmentManager();
+                FragmentTransaction transaction = fm.beginTransaction();
+                transaction.replace(R.id.frame_contain_layout, fragment);
+                transaction.addToBackStack(null);
+                transaction.commit();
             }
         });
         holder.imgComment.setOnClickListener(new View.OnClickListener() {
@@ -331,7 +393,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.MyViewHolder> 
                     }
                 }
                 notifyDataSetChanged();
-                new SubmitVote(holder,position, loginUserId,details.getQueId(), Answer, arrayList).execute();
+                new SubmitVote(holder, position, loginUserId, details.getQueId(), Answer, arrayList).execute();
             }
         });
 
@@ -393,29 +455,15 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.MyViewHolder> 
             }
         });
 // TODO: 5/25/2017 ********************** End ************************
-
-
-        //TODO: 3/21/2017 countdown timer
-        Long timimg = details.getQueTiming();
-        Long createdtime = details.getQueCreatedTime();
-        Log.d("timing_que", "" + timimg);
-        Log.d("created_time", "" + createdtime);
-
-        // countdowntimer = new CountDownTimerClass(holder, timimg, 1000).start();
-        countdowntimer = new CountDownTimer(timimg, 1000) {
+       /* countdowntimer = new CountDownTimer(timing, 1000) {
             @Override
             public void onFinish() {
-                holder.rdAnswer1.setButtonDrawable(new ColorDrawable(0xFFFFFF));
-                holder.rdAnswer2.setButtonDrawable(new ColorDrawable(0xFFFFFF));
-                holder.rdAnswer3.setButtonDrawable(new ColorDrawable(0xFFFFFF));
-                holder.rdAnswer4.setButtonDrawable(new ColorDrawable(0xFFFFFF));
                 holder.layoutCounter.setVisibility(View.GONE);
                 holder.layoutVote.setVisibility(View.INVISIBLE);
                 holder.layoutLike.setVisibility(View.VISIBLE);
                 holder.layoutComment.setVisibility(View.VISIBLE);
                 holder.layoutAllVoteResult.setVisibility(View.VISIBLE);
                 holder.radioGroup.setVisibility(View.GONE);
-                holder.txtVoteSucess.setVisibility(View.GONE);
             }
 
             @Override
@@ -432,16 +480,10 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.MyViewHolder> 
                 holder.radioGroup.setVisibility(View.VISIBLE);
                 holder.layoutCounter.setVisibility(View.VISIBLE);
             }
-        }.start();
-
-        // TODO: 6/5/2017 stop counter
-        if (details.getQueVoteStatus().equalsIgnoreCase("0")){
-            countdowntimer.cancel();
-        }
-        // TODO: 3/20/2017 get list of following people
-        // holder.spinnnerFollowing.setListener(this);
-
+        };
+*/
     }
+
 
     @Override
     public int getItemCount() {
@@ -472,37 +514,13 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.MyViewHolder> 
     }
 
 
-    @Override
-    public void selectedIndices(List<Integer> indices) {
-        followingList = new ArrayList<>();
-        ArrayList<String> followingNameList = new ArrayList<>();
-        getFollowingListSpinner = indices.toArray();
-        for (int i = 0; i < getFollowingListSpinner.length; i++) {
-            //followingList.add(details.getUserFollowingId().get(i));
-            followingList.add(details.getUserFollowingName().get((Integer) getFollowingListSpinner[i]));
-            //followingNameList.add(details.getUserFollowingName().get(i));
-        }
-        /*interestID = new ArrayList<>();
-        getinterestidspinner = indices.toArray();
-        for (int i = 0; i < getinterestidspinner.length; i++) {
-            interestID.add(arrayInterestIDList.get((Integer) getinterestidspinner[i]));
-        }*/
-        Log.d("follow_id", "" + followingList.toString());
-    }
-
-    @Override
-    public void selectedStrings(List<String> strings) {
-        followingPeopleName = strings.toString().replace("[", "").replace("]", "")
-                .replace(", ", ",");
-        Log.d("following_name ", "string=" + followingPeopleName);
-    }
-
     public class MyViewHolder extends RecyclerView.ViewHolder {
-        public MultiSelectionSpinner spinnnerFollowing;
-        public Handler handler;
-        public Runnable runnable;
+        @BindView(R.id.adapter_home_list_spinnerFollowing)
+        MultiSelectionSpinner spinnnerFollowing;
         @BindView(R.id.adapter_home_list_layoutfb)
         LinearLayout layoutFacebook;
+        @BindView(R.id.adapter_home_list_btnshare)
+        Button btnShare;
         @BindView(R.id.adapter_home_list_layout_all_voteresult)
         LinearLayout layoutAllVoteResult;
         @BindView(R.id.adapter_home_list_layoutCommentText)
@@ -636,7 +654,6 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.MyViewHolder> 
         public MyViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
-            // multiSelectionSpinnerFollowing = (MultiSelectionSpinner) itemView.findViewById(R.id.adapter_home_list_spinnerFollowing);
         }
     }
 
@@ -650,7 +667,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.MyViewHolder> 
         MyViewHolder holder;
 
         public SubmitVote(MyViewHolder holder, int position, String id, String queId, String answer, ArrayList<UserProfileDetails> arrayList) {
-            this.holder=holder;
+            this.holder = holder;
             this.position = position;
             this.id = id;
             this.queId = queId;
@@ -687,19 +704,18 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.MyViewHolder> 
                     UserProfileDetails details = new UserProfileDetails();
                     details.setQueAnswer(voteObject.getString("vote_opn_val"));
                     arrayList.add(details);
-                    Toast.makeText(context, "Success! Thanks for vote..", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(context, "Success! Thanks for vote..", Toast.LENGTH_SHORT).show();
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            if(arrayList.size() > 0){
+            if (arrayList.size() > 0) {
                 holder.txtVote.setVisibility(View.GONE);
-            }
-            else{
+            } else {
                 new ExceptionCallback() {
                     @Override
                     public void onException(Exception e) {
-                        Log.d("E",""+e);
+                        Log.d("E", "" + e);
                     }
                 };
             }

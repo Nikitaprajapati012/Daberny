@@ -55,29 +55,30 @@
                                 <LinearLayout
                                     android:layout_width="match_parent"
                                     android:layout_height="match_parent"
-                                    android:layout_weight="1.4"
+                                    android:layout_weight="1.3"
                                     android:orientation="vertical">
 
                                     <LinearLayout
-                                        android:layout_width="match_parent"
+                                        android:layout_width="@dimen/_110sdp"
                                         android:layout_height="@dimen/_110sdp"
                                         android:layout_marginBottom="@dimen/_15sdp"
-                                        android:layout_marginLeft="@dimen/_5sdp"
                                         android:layout_marginTop="@dimen/_10sdp"
-                                        android:background="@drawable/ic_profilepic_bg"
+                                        android:layout_gravity="left"
+                                        android:gravity="left"
+                                        android:background="@mipmap/ic_daberny_mainicon"
                                         android:orientation="vertical">
 
                                         <RelativeLayout
-                                            android:layout_width="match_parent"
+                                            android:layout_width="wrap_content"
                                             android:layout_height="wrap_content">
 
                                             <ImageView
                                                 android:id="@+id/fragment_user_profile_imgphoto"
-                                                android:layout_width="match_parent"
+                                                android:layout_width="@dimen/_70sdp"
                                                 android:layout_height="match_parent"
                                                 android:layout_marginBottom="@dimen/_10sdp"
-                                                android:layout_marginLeft="@dimen/_10sdp"
-                                                android:layout_marginTop="@dimen/_25sdp"
+                                                android:layout_marginLeft="@dimen/_30sdp"
+                                                android:layout_marginTop="@dimen/_30sdp"
                                                 android:gravity="right"
                                                 android:padding="5dp"
                                                 android:src="@drawable/ic_blue_dot" />
@@ -113,7 +114,7 @@
                                 <LinearLayout
                                     android:layout_width="match_parent"
                                     android:layout_height="match_parent"
-                                    android:layout_weight="0.6"
+                                    android:layout_weight="0.7"
                                     android:layout_margin="@dimen/_10sdp"
                                     android:orientation="vertical"
                                     android:weightSum="2">

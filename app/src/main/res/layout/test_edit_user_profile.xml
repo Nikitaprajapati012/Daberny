@@ -39,8 +39,8 @@
 
                     <ImageView
                         android:id="@+id/fragment_edit_user_profile_imgchangepic"
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
                         android:layout_gravity="right"
                         android:background="@drawable/roundborder_bluebg"
                         android:padding="@dimen/_10sdp"
@@ -63,29 +63,18 @@
 
                         <ImageView
                             android:id="@+id/fragment_edit_user_profile_imgprofilepic"
-                            android:layout_width="110dp"
+                            android:layout_width="95dp"
                             android:layout_height="95dp"
                             android:layout_gravity="center"
                             android:layout_marginBottom="@dimen/_5sdp"
-                            android:layout_marginLeft="@dimen/_43sdp"
+                            android:layout_marginLeft="@dimen/_40sdp"
                             android:layout_marginTop="@dimen/_35sdp"
                             android:gravity="center|right"
                             android:padding="@dimen/_3sdp"
                             android:src="@drawable/ic_placeholder" />
                     </RelativeLayout>
                 </LinearLayout>
-
-                <!-- <TextView
-                    android:id="@+id/fragment_edit_user_profile_txtchangepic"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="center"
-                    android:gravity="center"
-                    android:text="Change Photo"
-                    android:textColor="@color/logintext"
-                    android:textSize="@dimen/_13sdp"
-                    android:textStyle="bold" />-->
-            </LinearLayout>
+           </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"

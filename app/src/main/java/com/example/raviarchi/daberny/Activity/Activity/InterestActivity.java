@@ -118,7 +118,6 @@ public class InterestActivity extends AppCompatActivity implements View.OnClickL
                 .replace(", ", ",");
 
         Log.d("interest_name ", "string=" + InterestName);
-
     }
 
 
@@ -131,7 +130,6 @@ public class InterestActivity extends AppCompatActivity implements View.OnClickL
             super.onPreExecute();
             arrayInterestIDList = new ArrayList<>();
             arrayInterestNameList = new ArrayList<>();
-
             pd = new ProgressDialog(InterestActivity.this);
             pd.setMessage("Loading");
             pd.setCancelable(false);
@@ -141,7 +139,7 @@ public class InterestActivity extends AppCompatActivity implements View.OnClickL
         @Override
         protected String doInBackground(String... strings) {
             //http://hire-people.com/host2/surveys/api/interests
-            return utils.getResponseofGet(Constant.QUESTION_BASE_URL + "interests");
+            return Utils.getResponseofGet(Constant.QUESTION_BASE_URL + "interests");
         }
 
         @Override
@@ -154,9 +152,7 @@ public class InterestActivity extends AppCompatActivity implements View.OnClickL
                 if (jsonObject.getString("status").equalsIgnoreCase("true")) {
                     JSONObject userObject = jsonObject.getJSONObject("user_intrests");
                     JSONArray userArray = userObject.getJSONArray("interests");
-                    for (int i = 0; i < userArray.length(); i++) {
-
-
+                    for (int i = 1; i < userArray.length(); i++) {
                         JSONObject interestObject = userArray.getJSONObject(i);
                         arrayInterestNameList.add(interestObject.getString("name"));
                         arrayInterestIDList.add(interestObject.getString("id"));

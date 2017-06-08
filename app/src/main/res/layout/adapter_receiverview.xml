@@ -18,5 +18,13 @@
         android:layout_marginTop="@dimen/_5sdp"
         android:textColor="@color/black"
         android:textSize="@dimen/_13sdp" />
-
+    <ImageView
+        android:id="@+id/adapter_receiverview_image"
+        android:layout_width="@dimen/_200sdp"
+        android:layout_height="@dimen/_200sdp"
+        android:gravity="left|center"
+        android:layout_marginTop="@dimen/_5sdp"
+        android:src="@drawable/ic_placeholder"
+        android:layout_gravity="left"
+        />
 </LinearLayout>

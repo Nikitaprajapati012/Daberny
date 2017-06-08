@@ -6,13 +6,17 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.example.raviarchi.daberny.Activity.Activity.ChatActivity;
 import com.example.raviarchi.daberny.Activity.Model.UserProfileDetails;
 import com.example.raviarchi.daberny.Activity.Utils.Constant;
+import com.example.raviarchi.daberny.Activity.Utils.RoundedTransformation;
 import com.example.raviarchi.daberny.Activity.Utils.Utils;
 import com.example.raviarchi.daberny.R;
+import com.squareup.picasso.Picasso;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -71,24 +75,44 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             senderId=details.getOtherUserId();
             strMessageReceiver=details.getUserMsgReceiver();
             strMessageSender=details.getUserMsgSender();
-        }else
+          }else
         {
             senderId=details.getUserId();
             strMessageSender=details.getUserMsgSender();
             strMessageReceiver=details.getUserMsgReceiver();
         }
 
+
         switch (holder.getItemViewType()) {
 
             case SENDERVIEW:
                 SenderViewHolder senderViewHolder = (SenderViewHolder) holder;
-                senderViewHolder.msgTv.setText(strMessageSender);
+                if(details.getUserMsgType().equalsIgnoreCase("image")){
+                    Picasso.with(mContext).load(strMessageSender).placeholder(R.drawable.ic_placeholder)
+                            .transform(new RoundedTransformation(120,2))
+                            .into(senderViewHolder.imgMsg);
+                    senderViewHolder.msgTv.setVisibility(View.GONE);
+                }else
+                {
+                    senderViewHolder.msgTv.setVisibility(View.VISIBLE);
+                    senderViewHolder.msgTv.setText(strMessageSender);
+                }
                 break;
 
             case RECEIVERVIEW:
                 ReceiverViewHolder receiverViewHolder = (ReceiverViewHolder) holder;
-                receiverViewHolder.msgTv.setText(strMessageReceiver
-                );
+                if(details.getUserMsgType().equalsIgnoreCase("image")){
+                    Picasso.with(mContext).load(strMessageReceiver).placeholder(R.drawable.ic_placeholder)
+                            .transform(new RoundedTransformation(120,2))
+                            .into(receiverViewHolder.imgMsg);
+                    receiverViewHolder.msgTv.setVisibility(View.GONE);
+
+                }else
+                {
+                    receiverViewHolder.msgTv.setVisibility(View.VISIBLE);
+                    receiverViewHolder.msgTv.setText(strMessageReceiver);
+                }
+
                 break;
         }
     }
@@ -100,19 +124,23 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private class SenderViewHolder extends RecyclerView.ViewHolder {
         TextView msgTv;
+        ImageView imgMsg;
 
         private SenderViewHolder(View itemView) {
             super(itemView);
             msgTv = (TextView) itemView.findViewById(R.id.adapter_sendview_text);
+            imgMsg = (ImageView) itemView.findViewById(R.id.adapter_sendview_image);
         }
     }
 
     private class ReceiverViewHolder extends RecyclerView.ViewHolder {
         TextView msgTv;
+        ImageView imgMsg;
 
         private ReceiverViewHolder(View itemView) {
             super(itemView);
             msgTv = (TextView) itemView.findViewById(R.id.adapter_receiverview_text);
+            imgMsg = (ImageView) itemView.findViewById(R.id.adapter_receiverview_image);
         }
     }
 }

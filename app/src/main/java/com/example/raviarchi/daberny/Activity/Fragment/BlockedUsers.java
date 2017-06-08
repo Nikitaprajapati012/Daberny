@@ -13,35 +13,38 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import com.example.raviarchi.daberny.Activity.Adapter.SearchLatestAdapter;
+
+import com.example.raviarchi.daberny.Activity.Adapter.BlockedUsersAdapter;
+import com.example.raviarchi.daberny.Activity.Adapter.SearchPeopleAdapter;
 import com.example.raviarchi.daberny.Activity.Model.UserProfileDetails;
 import com.example.raviarchi.daberny.Activity.Utils.Constant;
 import com.example.raviarchi.daberny.Activity.Utils.Utils;
 import com.example.raviarchi.daberny.R;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import java.util.ArrayList;
+
 import static com.example.raviarchi.daberny.Activity.Fragment.Search.edSearch;
 import static com.facebook.FacebookSdk.getApplicationContext;
 
-/**
- * Created by Ravi archi on 1/10/2017.
+/*** Created by Ravi archi on 1/10/2017.
  */
 
-public class SearchLatest extends Fragment {
+public class BlockedUsers extends Fragment {
     public RecyclerView recyclerViewPeople;
     public Utils utils;
     public UserProfileDetails details;
     public String userId;
-    public SearchLatestAdapter adapter;
-    public String SearchLatest;
+    public BlockedUsersAdapter adapter;
     private ArrayList<UserProfileDetails> arrayUserList;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
-        View view = inflater.inflate(R.layout.fragment_search_recent, container, false);
+        View view = inflater.inflate(R.layout.fragment_blockedusers, container, false);
         init();
         findViewId(view);
         return view;
@@ -49,24 +52,7 @@ public class SearchLatest extends Fragment {
 
     // TODO: 2/22/2017 bind data with field
     private void findViewId(View view) {
-        recyclerViewPeople = (RecyclerView) view.findViewById(R.id.fragment_search_recyclerrecentlist);
-
-        edSearch.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                arrayUserList.clear();
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                SearchLatest = edSearch.getText().toString().trim();
-                new GetPeopleList(SearchLatest).execute();
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-            }
-        });
+        recyclerViewPeople = (RecyclerView) view.findViewById(R.id.fragment_block_recyclerpeoplelist);
     }
 
     // TODO: 2/21/2017 initilization
@@ -74,11 +60,12 @@ public class SearchLatest extends Fragment {
         utils = new Utils(getActivity());
         arrayUserList = new ArrayList<>();
         userId = Utils.ReadSharePrefrence(getActivity(),Constant.USERID);
+        new GetBlockedUsersList(userId).execute();
     }
 
-    private void openLatestList() {
+    private void openPeopleList() {
         // TODO: 2/21/2017 bind list and show in adapter
-        adapter = new SearchLatestAdapter(getActivity(), arrayUserList);
+        adapter = new BlockedUsersAdapter(getActivity(), arrayUserList);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
         recyclerViewPeople.setLayoutManager(mLayoutManager);
         recyclerViewPeople.setItemAnimator(new DefaultItemAnimator());
@@ -88,39 +75,42 @@ public class SearchLatest extends Fragment {
 
 
     // TODO: 2/21/2017 get list of Question from URL
-    private class GetPeopleList extends AsyncTask<String, String, String> {
+    private class GetBlockedUsersList extends AsyncTask<String, String, String> {
         ProgressDialog pd;
-        String searchlatest;
+        String user_id;
 
-        public GetPeopleList(String searchPeople) {
-            this.searchlatest = searchPeople;
+        public GetBlockedUsersList(String userId) {
+            this.user_id=userId;
         }
+
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
+            pd = new ProgressDialog(getActivity());
+            pd.setMessage("Loading");
+            pd.setCancelable(false);
+            pd.show();
         }
 
         @Override
         protected String doInBackground(String... strings) {
 
-            //http://181.224.157.105/~hirepeop/host2/surveys/api/searched_question/752/How many
-            String response = Utils.getResponseofGet(Constant.QUESTION_BASE_URL + "searched_question/" +userId + "/" + searchlatest);
-            Log.d("RESPONSE", "Search latest List..." + response);
+            //http://181.224.157.105/~hirepeop/host2/surveys/api/block_user_lists/752
+            String response = Utils.getResponseofGet(Constant.QUESTION_BASE_URL + "block_user_lists/" +user_id);
+            Log.d("RESPONSE", "Blocked Users List..." + response);
             try {
                 JSONObject jsonObject = new JSONObject(response);
                 if (jsonObject.getString("status").equalsIgnoreCase("true")) {
-                    JSONArray searchArray = jsonObject.getJSONArray("searchd result");
+                    JSONArray searchArray = jsonObject.getJSONArray("data");
                     for (int i = 0; i < searchArray.length(); i++) {
                         JSONObject userObject = searchArray.getJSONObject(i);
                         details = new UserProfileDetails();
-                        details.setQueTitle(userObject.getString("title"));
-                        details.setQueId(userObject.getString("id"));
+                        details.setUserUserName(userObject.getString("username"));
+                        details.setUserFullName(userObject.getString("fullname"));
+                        details.setUserImage(userObject.getString("image"));
+                        details.setUserId(userObject.getString("user_id"));
                         arrayUserList.add(details);
-                    }
-                } else {
-                    if (jsonObject.getString("status").equalsIgnoreCase("FALSE")) {
-                        arrayUserList.clear();
                     }
                 }
             } catch (JSONException e) {
@@ -132,12 +122,10 @@ public class SearchLatest extends Fragment {
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
+            pd.dismiss();
             if (arrayUserList.size() > 0) {
-                openLatestList();
-            } else {
-                arrayUserList.clear();
+                openPeopleList();
             }
-
         }
     }
 }

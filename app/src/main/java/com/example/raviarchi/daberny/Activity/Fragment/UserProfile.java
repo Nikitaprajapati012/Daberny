@@ -54,8 +54,6 @@ public class UserProfile extends Fragment implements View.OnClickListener {
     public ArrayList<UserProfileDetails> arrayList;
     public Toolbar toolBar;
     public TextView txtTitle;
-    /*@BindView(R.id.fragment_user_profile_imgBrowse)
-    ImageView imgBrowse;*/
     @BindView(R.id.fragment_user_profile_imgphoto)
     ImageView imgProfilePic;
     @BindView(R.id.fragment_user_profile_txtlevelstartpoint1)

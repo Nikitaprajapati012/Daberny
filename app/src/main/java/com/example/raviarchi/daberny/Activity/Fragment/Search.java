@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.example.raviarchi.daberny.Activity.Adapter.SearchPager;
@@ -25,15 +26,19 @@ public class Search extends Fragment implements TabLayout.OnTabSelectedListener 
     public ViewPager viewPager;
     public Toolbar toolBar;
     public TextView txtTitle;
+    public RelativeLayout layoutHeader;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
         View view = inflater.inflate(R.layout.fragment_search, container, false);
         findById(view);
-        tabLayout.addTab(tabLayout.newTab().setText("Latest"));
-        tabLayout.addTab(tabLayout.newTab().setText("People"));
-        tabLayout.addTab(tabLayout.newTab().setText("Tags"));
+        layoutHeader = (RelativeLayout) getActivity().findViewById(R.id.mainview);
+        layoutHeader.setVisibility(View.GONE);
+
+        tabLayout.addTab(tabLayout.newTab().setText("Latest").setIcon(R.mipmap.ic_latest));
+        tabLayout.addTab(tabLayout.newTab().setText("People").setIcon(R.mipmap.ic_users));
+        tabLayout.addTab(tabLayout.newTab().setText("Tags").setIcon(R.mipmap.ic_tags));
         tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
 
         // TODO: 3/22/2017 set view pager

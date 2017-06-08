@@ -21,7 +21,7 @@ public class Constant {
     public static final String USER_INTERESTS = "userInterests";
     public static final String LIKEPOST= "likePost";
     public static final String PERMISSION = "permission";
-
+    public static final String REMAINTIME = "remainTime";
 
     public static class SHRED_PR {
         public static final String SHARE_PREF = AppName + "_preferences";

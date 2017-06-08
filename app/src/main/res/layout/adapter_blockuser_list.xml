@@ -5,7 +5,7 @@
     android:orientation="vertical">
 
     <LinearLayout
-        android:id="@+id/adapter_people_list_layout"
+        android:id="@+id/adapter_blockuser_list_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
@@ -28,7 +28,7 @@
                 android:layout_weight="1.5"
                 android:gravity="center"
                 android:orientation="vertical">
-
+                
                 <LinearLayout
                     android:layout_width="@dimen/_70sdp"
                     android:layout_height="@dimen/_70sdp"
@@ -37,7 +37,7 @@
                     android:orientation="vertical">
 
                     <ImageView
-                        android:id="@+id/adapter_people_list_imgprofilepic"
+                        android:id="@+id/adapter_blockuser_list_imgprofilepic"
                         android:layout_width="@dimen/_65sdp"
                         android:layout_height="@dimen/_42sdp"
                         android:layout_marginLeft="@dimen/_10sdp"
@@ -55,7 +55,7 @@
                 android:weightSum="2">
 
                 <TextView
-                    android:id="@+id/adapter_people_list_txtusername"
+                    android:id="@+id/adapter_blockuser_list_txtusername"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_weight="1"
@@ -65,7 +65,7 @@
                     android:textStyle="bold" />
 
                 <TextView
-                    android:id="@+id/adapter_people_list_txtfullname"
+                    android:id="@+id/adapter_blockuser_list_txtfullname"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_weight="1"

@@ -221,8 +221,8 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
 
             case R.id.activity_chat_txtsend:
                 strMsg = edMessage.getText().toString().replaceAll(" ", "%20");
-                //sendmessage(loginUserId, receiverId,strMsg,picturepath);
                 if (!strMsg.equalsIgnoreCase("")){
+                    //sendmessage(loginUserId, receiverId, strMsg,picturepath);
                     new SendMessage(loginUserId, receiverId, strMsg).execute();
                 }
                 ////new GetChat(loginUserId, receiverId).execute();
@@ -244,15 +244,13 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
     // TODO: 6/2/2017 send the message as well as image in chat
     private void sendmessage(String loginUserId, String receiverId, String strMsg, String picturepath) {
         //http://181.224.157.105/~hirepeop/host2/surveys/api/insert_chat_msg/677/669/hello
-        Log.d("id","##"+ "send"+loginUserId+"----------rec" +receiverId);
-        Log.d("msg","##"+strMsg);
-        Log.d("picture","##"+picturepath);
-
+       Log.d("path","@@"+picturepath);
+       Log.d("msg","@@"+strMsg);
+        if (picturepath != null){
         Ion.with(this)
                 .load(Constant.QUESTION_BASE_URL + "insert_chat_msg")
-                .setMultipartParameter("sender_id", "752")
-                .setMultipartParameter("recipient_id", "677")
-                .setMultipartParameter("msg",strMsg)
+                .setMultipartParameter("sender_id", loginUserId)
+                .setMultipartParameter("recipient_id", receiverId)
                 .setMultipartFile("picture", new File(picturepath))
                 .asString()
                 .setCallback(new FutureCallback<String>() {
@@ -261,6 +259,20 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
                         Log.d("JSONRESULTChat", "#@@@@" + result);
                     }
                 });
+    }else {
+           Ion.with(this)
+                   .load(Constant.QUESTION_BASE_URL + "insert_chat_msg")
+                   .setMultipartParameter("sender_id", loginUserId)
+                   .setMultipartParameter("recipient_id", receiverId)
+                   .setMultipartParameter("msg",strMsg)
+                   .asString()
+                   .setCallback(new FutureCallback<String>() {
+                       @Override
+                       public void onCompleted(Exception e, String result) {
+                           Log.d("JSONRESULTChat", "#@@@@" + result);
+                       }
+                   });
+       }
     }
 
 
@@ -321,7 +333,6 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
                         JSONObject followingObject = jsonArray.getJSONObject(i);
                         details = new UserProfileDetails();
                         details.setUserId(followingObject.getString("sender_id"));
-                        Log.d("@@","sender"+followingObject.getString("sender_id"));
                         details.setUserUserName(followingObject.getString("sender_username"));
                         details.setUserFullName(followingObject.getString("sender_fullname"));
                         details.setUserImage(followingObject.getString("sender_image"));
@@ -331,7 +342,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
                         details.setOtherUserImage(followingObject.getString("recipient_image"));
                         details.setUserMsgReceiver(followingObject.getString("receiver_msg"));
                         details.setUserMsgSender(followingObject.getString("sender_msg"));
-                        //details.setUserMsgType(followingObject.getString("sender_msg"));
+                        details.setUserMsgType(followingObject.getString("type"));
                         arrayUserList.add(details);
                     }
                     if (arrayUserList.size() > 0) {
@@ -362,7 +373,6 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
         protected String doInBackground(String... params) {
             //http://181.224.157.105/~hirepeop/host2/surveys/api/insert_chat_msg/677/669/hello
             String sendmessage = Constant.QUESTION_BASE_URL + "insert_chat_msg/" + loginUserId + "/" + receiver_Id + "/" + strMessage;
-            Log.d("URL", "" + sendmessage);
             return Utils.getResponseofGet(sendmessage);
         }
 

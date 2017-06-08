@@ -12,34 +12,41 @@
         <LinearLayout
             android:id="@+id/fragment_home_serachlayout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/_50sdp"
             android:orientation="horizontal"
+            android:background="@color/signinbg"
             android:weightSum="2">
 
             <ImageView
                 android:id="@+id/fragment_home_imgsearch"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="1.8"
-                android:padding="@dimen/_5sdp"
-                android:src="@mipmap/ic_search" />
+                android:layout_weight="1.7"
+                android:padding="@dimen/_3sdp"
+                android:src="@mipmap/ic_searchtab" />
 
             <EditText
                 android:id="@+id/fragment_searchdata_edsearch"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="0.2" />
+                android:hint="@string/search"
+                android:textColorHint="@color/white"
+                android:background="@android:color/transparent"
+                android:textColor="@color/white"
+                android:textSize="@dimen/_14sdp"
+                android:layout_weight="0.3" />
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:visibility="gone"
             android:layout_below="@+id/fragment_home_serachlayout">
 
             <View
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/_2sdp"
-                android:background="@color/blue" />
+                android:layout_height="@dimen/_1sdp"
+                android:background="@color/login_bg" />
         </LinearLayout>
     </RelativeLayout>
 
@@ -51,11 +58,12 @@
         <android.support.design.widget.TabLayout
             android:id="@+id/tabLayout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/_50sdp"
             android:minHeight="?attr/actionBarSize"
+            android:background="@color/signinbg"
             android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-            app:tabSelectedTextColor="@color/black"
-            app:tabTextColor="@color/gray" />
+            app:tabSelectedTextColor="@color/white"
+            app:tabTextColor="@color/white" />
 
         <android.support.v4.view.ViewPager
             android:id="@+id/pager"

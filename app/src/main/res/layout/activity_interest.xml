@@ -13,7 +13,6 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
 
-
             <LinearLayout
                 android:orientation="horizontal"
                 android:id="@+id/activity_interest_header"

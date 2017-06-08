@@ -1,7 +1,6 @@
 package com.example.raviarchi.multiplespinner;
 
-/**
- * Created by archi on 03-Mar-17.
+/** * Created by archi on 03-Mar-17.
  */
 
 import android.app.AlertDialog;
@@ -23,7 +22,6 @@ import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -31,7 +29,7 @@ import java.util.List;
 
 import static android.content.ContentValues.TAG;
 
-public class MultiSelectionSpinner extends Spinner implements
+public class MultiSelectionSpinner extends android.support.v7.widget.AppCompatSpinner implements
         OnMultiChoiceClickListener, Filterable {
     public OnMultipleItemsSelectedListener listener;
     ListView listView;
@@ -221,7 +219,7 @@ public class MultiSelectionSpinner extends Spinner implements
         mSelectionAtStart[0] = true;
     }
 
-    public void setItems(List<String> items) {
+    public void setItems(ArrayList<String> items) {
         _items = items.toArray(new String[items.size()]);
         mSelection = new boolean[_items.length];
         mSelectionAtStart = new boolean[_items.length];
@@ -230,7 +228,6 @@ public class MultiSelectionSpinner extends Spinner implements
         simple_adapter.notifyDataSetChanged();
         Arrays.fill(mSelection, false);
         mSelection[0] = true;
-
         listener.selectedIndices(getSelectedIndices());
         listener.selectedStrings(getSelectedStrings());
 
@@ -328,7 +325,6 @@ public class MultiSelectionSpinner extends Spinner implements
     }
 
     public List<Integer> getSelectedIndices() {
-
         List<Integer> selectionId = new LinkedList<>();
         for (int i = 0; i < _items.length; ++i) {
             if (mSelection[i]) {
@@ -336,7 +332,6 @@ public class MultiSelectionSpinner extends Spinner implements
             }
         }
         return selectionId;
-
     }
 
     private String buildSelectedItemString() {

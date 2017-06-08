@@ -45,7 +45,7 @@ import static com.example.raviarchi.daberny.Activity.Utils.Utils.ReadSharePrefre
  */
 
 public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapter.MyViewHolder> {
-    public String Id, interest, notification, status, notificationType, contentId, username;
+    public String Id, userId,interest, notification, status, notificationType,username;
     public Utils utils;
     private List<UserProfileDetails> arrayUserList;
     private Context context;
@@ -67,6 +67,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
     public void onBindViewHolder(final MyViewHolder holder, final int position) {
         final UserProfileDetails userdetails = arrayUserList.get(position);
         Id = userdetails.getQueId();
+        userId=ReadSharePrefrence(context, USERID);
         Picasso.with(context).load(userdetails.getUserImage()).placeholder(R.drawable.ic_placeholder)
                 .into(holder.imgProfilepic);
         username = userdetails.getUserUserName().substring(0, 1).toUpperCase()
@@ -101,32 +102,20 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
             @Override
             public void onClick(View v) {
                 String notifyStatus = userdetails.getQueNotificationStatus();
-
                 if(notifyStatus.equalsIgnoreCase("1")){
                     arrayUserList.get(position).setQueNotificationStatus("0");
-                    //Toast.makeText(context, "read", Toast.LENGTH_SHORT).show();
-                }
-                new ReadNotification(holder,position,notifyStatus,ReadSharePrefrence(context, USERID), userdetails.getQueNotificationId());
-                Fragment fragment = null;
-                Gson gson = new Gson();
-                Bundle bundle = new Bundle();
-                if (userdetails.getQueNotificationType().equalsIgnoreCase("follow")) {
-                    bundle.putString("id", userdetails.getUserId());
-                    fragment = new OtherUserProfile();
+                    holder.imgProfilepic.setBackgroundColor(ContextCompat.getColor(context, R.color.white));
+                    holder.txtNotification.setBackgroundColor(ContextCompat.getColor(context, R.color.white));
+                    holder.txtNotification.setTextColor(ContextCompat.getColor(context, R.color.black));
                 } else {
-                    bundle.putString("userprofiledetails", gson.toJson(userdetails));
-                    fragment = new Tag();
+                    holder.imgProfilepic.setBackgroundColor(ContextCompat.getColor(context, R.color.home_bg));
+                    holder.txtNotification.setBackgroundColor(ContextCompat.getColor(context, R.color.home_bg));
+                    holder.txtNotification.setTextColor(ContextCompat.getColor(context, R.color.black));
                 }
-                if (fragment != null) {
-                    fragment.setArguments(bundle);
-                    FragmentManager fm = ((FragmentActivity) context).getSupportFragmentManager();
-                    FragmentTransaction transaction = fm.beginTransaction();
-                    transaction.replace(R.id.frame_contain_layout, fragment);
-                    transaction.commit();
-                }
+                notifyDataSetChanged();
+                new ReadNotification(userdetails,holder,position,notifyStatus,userId, userdetails.getQueNotificationId()).execute();
             }
         });
-
     }
 
     @Override
@@ -153,14 +142,16 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
         ProgressDialog pd;
         int pos;
         MyViewHolder holder;
+        UserProfileDetails user_details;
 
 
-        public ReadNotification(MyViewHolder holder, int position, String notifyStatus, String userId, String notificationId) {
+        public ReadNotification(UserProfileDetails userdetail, MyViewHolder holder, int position, String notifyStatus, String userId, String notificationId) {
             this.holder=holder;
             this.pos=position;
             this.notify_status = notifyStatus;
             this.user_id = userId;
             this.notification_id = notificationId;
+            this.user_details=userdetail;
             notifyDataSetChanged();
         }
 
@@ -188,14 +179,11 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
                 JSONObject jsonObject = new JSONObject(s);
                 if (jsonObject.getString("status").equalsIgnoreCase("true")) {
                     UserProfileDetails details =new UserProfileDetails();
-                    Toast.makeText(context, jsonObject.getString("msg"), Toast.LENGTH_SHORT).show();
                     if(notify_status.equalsIgnoreCase("1"))
                     {
                         details.setQueNotificationStatus("0");
                     }
                     arrayUserList.add(details);
-                } else {
-                    Toast.makeText(context, jsonObject.getString("msg"), Toast.LENGTH_SHORT).show();
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -207,6 +195,23 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
                 } else {
                     holder.txtNotification.setBackgroundColor(ContextCompat.getColor(context, R.color.home_bg));
                     holder.txtNotification.setTextColor(ContextCompat.getColor(context, R.color.black));
+                }
+                Fragment fragment = null;
+                Gson gson = new Gson();
+                Bundle bundle = new Bundle();
+                if (user_details.getQueNotificationType().equalsIgnoreCase("follow")) {
+                    bundle.putString("id", user_details.getUserId());
+                    fragment = new OtherUserProfile();
+                } else {
+                    bundle.putString("userprofiledetails", gson.toJson(user_details));
+                    fragment = new Tag();
+                }
+                if (fragment != null) {
+                    fragment.setArguments(bundle);
+                    FragmentManager fm = ((FragmentActivity) context).getSupportFragmentManager();
+                    FragmentTransaction transaction = fm.beginTransaction();
+                    transaction.replace(R.id.frame_contain_layout, fragment);
+                    transaction.commit();
                 }
             }
         }

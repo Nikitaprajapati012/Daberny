@@ -56,6 +56,10 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import static com.facebook.FacebookSdk.getApplicationContext;
@@ -69,7 +73,6 @@ public class AskQuestionFragment extends Fragment implements View.OnClickListene
     public UserProfileDetails details;
     public String userChoosenTask, Question, Tags, Option1, Option2, Option3, Option4, PicturePath, Time, Interest, CurrentDate;
     public String userId;
-    public byte[] inputData;
     public ArrayAdapter<String> spinnerAdapter;
     public String[] spinnerTimeList;
     public ArrayList<UserProfileDetails> arrayList;
@@ -77,8 +80,6 @@ public class AskQuestionFragment extends Fragment implements View.OnClickListene
     public TextView txtTitle;
     public Uri uri, videoUri;
     public int REQUEST_CAMERA = 0, SELECT_FILE = 1, SELECT_VIDEO_FILE = 2, REQUEST_CAMERA_VIDEO = 3;
-    @BindView(R.id.activity_ask_question_txtfilepath)
-    TextView txtFilePath;
     @BindView(R.id.activity_ask_question_btncamera)
     ImageView imgCamera;
     @BindView(R.id.activity_ask_question_btnvideo)
@@ -295,8 +296,6 @@ public class AskQuestionFragment extends Fragment implements View.OnClickListene
                      }
                     } else {
                        Log.d("##","below 30");
-                       String filename=PicturePath.substring(PicturePath.lastIndexOf("/")+1);
-                        txtFilePath.setText(filename);
                     }
                 }
 
@@ -315,11 +314,9 @@ public class AskQuestionFragment extends Fragment implements View.OnClickListene
                 MediaStore.Video.Media.DATA);
         cursor.moveToFirst();
         PicturePath = cursor.getString(column_index_data);
-        String filename=PicturePath.substring(PicturePath.lastIndexOf("/")+1);
-        txtFilePath.setText(filename);
     }
 
-    // TODO: 5/31/2017 image from gallery
+    // TODO: 5/31/2017 image from camera
     public void onCaptureImageResult(Intent data) {
         String[] projection = {MediaStore.Images.Media.DATA};
         Cursor cursor = getActivity().managedQuery(uri, projection, null,
@@ -328,8 +325,6 @@ public class AskQuestionFragment extends Fragment implements View.OnClickListene
                 MediaStore.Images.Media.DATA);
         cursor.moveToFirst();
         PicturePath = cursor.getString(column_index_data);
-        String filename=PicturePath.substring(PicturePath.lastIndexOf("/")+1);
-        txtFilePath.setText(filename);
     }
 
     // TODO: 4/13/2017 choose from gallery for image
@@ -368,7 +363,7 @@ public class AskQuestionFragment extends Fragment implements View.OnClickListene
             if (Option1.length() > 0) {
                 if (Option2.length() > 0) {
                     if (Interest.length() > 0) {
-                        if (Time.length() > 1) {
+                        if (Time.length() > 0) {
                             AddAskQuestionDetails(userId,Question, Tags, Option1, Option2, Option3, Option4, PicturePath, Interest, Time);
                         } else {
                             Toast.makeText(getActivity(), "Please Select Time", Toast.LENGTH_SHORT).show();
@@ -548,8 +543,6 @@ public class AskQuestionFragment extends Fragment implements View.OnClickListene
                     return; // DO YOUR ERROR HANDLING
                 String image = getStringImage(bitmap);
                 PicturePath = cursor.getString(columnIndex);
-                String filename=PicturePath.substring(PicturePath.lastIndexOf("/")+1);
-                txtFilePath.setText(filename);
                 cursor.close(); // close cursor
             } catch (Exception e) {
                 e.printStackTrace();
@@ -558,8 +551,6 @@ public class AskQuestionFragment extends Fragment implements View.OnClickListene
             Toast.makeText(getActivity(), "No Data Found", Toast.LENGTH_SHORT).show();
         }
     }
-
-
 
     @Override
     public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {

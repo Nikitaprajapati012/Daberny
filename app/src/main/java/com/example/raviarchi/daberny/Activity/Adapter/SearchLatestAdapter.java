@@ -79,10 +79,9 @@ public class SearchLatestAdapter extends RecyclerView.Adapter<SearchLatestAdapte
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
-
-        @BindView(R.id.adapter_tag_list_txtquestin)
+        @BindView(R.id.adapter_latest_list_txtquestin)
         TextView txtQuestion;
-        @BindView(R.id.adapter_tag_list_layout)
+        @BindView(R.id.adapter_latest_list_layout)
         LinearLayout linearLayoutTag;
 
 

@@ -19,13 +19,13 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.raviarchi.daberny.Activity.Fragment.AskQuestionFragment;
 import com.example.raviarchi.daberny.Activity.Fragment.General;
 import com.example.raviarchi.daberny.Activity.Fragment.Home;
 import com.example.raviarchi.daberny.Activity.Fragment.InboxUsers;
 import com.example.raviarchi.daberny.Activity.Fragment.Notification;
+import com.example.raviarchi.daberny.Activity.Fragment.OtherUserProfile;
 import com.example.raviarchi.daberny.Activity.Fragment.Search;
 import com.example.raviarchi.daberny.Activity.Fragment.UserProfile;
 import com.example.raviarchi.daberny.Activity.Model.UserProfileDetails;
@@ -50,6 +50,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     //private int REQUEST_CAMERA = 0;
     public Toolbar toolBar;
     public TextView txtTitle;
+    private boolean isChangedStat = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -252,25 +253,35 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     public boolean onCreateOptionsMenu(Menu menu) {
-
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.popup, menu);
+        menu.clear();
+        if (isChangedStat) {
+            inflater.inflate(R.menu.popup, menu);
+        } else {
+            inflater.inflate(R.menu.userprofilemenu, menu);
+        }
         return true;
     }
 
     public boolean onOptionsItemSelected(MenuItem item) {
+        //option menu
+        Fragment fragment = null;
+        if (isChangedStat) {
 
+            isChangedStat = false;
+
+        } else {
+
+            isChangedStat = true;
+
+        }
         switch (item.getItemId()) {
             case R.id.menu_item_userprofile:
-                Fragment fragment = null;
-                fragmentManager = getSupportFragmentManager();
                 fragment = new UserProfile();
-                if (fragment != null) {
-                    transaction = fragmentManager.beginTransaction();
-                    transaction.replace(R.id.frame_contain_layout, fragment);
-                    transaction.addToBackStack(null);
-                    transaction.commit();
-                }
+                break;
+
+            case R.id.menu_item_blockeduser:
+                fragment = new OtherUserProfile();
                 break;
 
             case R.id.menu_item_logout:
@@ -279,6 +290,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 Utils.ClearSharePref(MainActivity.this, Constant.USERID);
                 startActivity(ilogout);
                 break;
+        }
+        if (fragment != null) {
+            fragmentManager = getSupportFragmentManager();
+            transaction = fragmentManager.beginTransaction();
+            transaction.replace(R.id.frame_contain_layout, fragment);
+            transaction.addToBackStack(null);
+            transaction.commit();
         }
         return super.onOptionsItemSelected(item);
     }

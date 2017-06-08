@@ -1,6 +1,9 @@
 package com.example.raviarchi.daberny.Activity.Fragment;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.ContentValues;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -10,6 +13,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
 import android.util.Base64;
 import android.util.Log;
@@ -70,12 +74,12 @@ public class EditUserProfile extends Fragment implements View.OnClickListener, M
     private static final String TAG = "EditUserProfile";
     public Utils utils;
     public UserProfileDetails details;
-    public String ID, FullName, UserName, Email, Country, InterestId, ImagePath, InterestName, StrInterest;
-    public byte[] inputData;
+    public String ID,userChoosenTask, FullName, UserName, Email, Country, InterestId, ImagePath, InterestName, StrInterest;
+    public Uri uri;
+    public int REQUEST_CAMERA = 0, SELECT_FILE = 1;
     public ArrayAdapter<String> spinnerAdapter;
     public ArrayList<UserProfileDetails> arrayList;
     public Collection<String> enums;
-    public int SELECT_FILE = 1;
     public ArrayList<String> arrayCountryList, arrayCountryIDList, arrayInterestList, arrayInterestIdList, interestID;
     public Object[] getinterestidspinner;
     public File file;
@@ -106,6 +110,7 @@ public class EditUserProfile extends Fragment implements View.OnClickListener, M
     @BindView(R.id.header_title)
     TextView txtTitle;
     private Bitmap bitmap;
+    public  boolean result;
 
     public static String convertStreamToString(FileOutputStream is) throws Exception {
         BufferedReader reader = new BufferedReader(new FileReader(String.valueOf(is)));
@@ -138,6 +143,7 @@ public class EditUserProfile extends Fragment implements View.OnClickListener, M
         arrayInterestList = new ArrayList<>();
         arrayInterestIdList = new ArrayList<>();
         utils = new Utils(getActivity());
+        result = Boolean.parseBoolean(Utils.ReadSharePref(getActivity(), Constant.PERMISSION));
 
         //TODO: 3/3/2017 get country list
         new GetCountryList().execute();
@@ -165,7 +171,6 @@ public class EditUserProfile extends Fragment implements View.OnClickListener, M
             arrayCountryList.add(Country);
             File imgFile = new File(ImagePath);
             Bitmap myBitmap = BitmapFactory.decodeFile(ImagePath);
-            Log.d("profilepic_name", "" +myBitmap);
             imgProfilePic.setImageBitmap(myBitmap);
             Picasso.with(getActivity()).load(ImagePath).
                     transform(new RoundedTransformation(120, 2)).
@@ -180,26 +185,6 @@ public class EditUserProfile extends Fragment implements View.OnClickListener, M
                 //spinnerAdapter = (ArrayAdapter<String>) spinnerIntererst.getAdapter();
                 spinnerIntererst.setSelection(arrayInterestList);
             }*/
-        }
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_OK) {
-            if (requestCode == SELECT_FILE) {
-                Uri filePath = data.getData();
-                try {
-                    bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), filePath);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
-                imgProfilePic.setImageBitmap(bitmap);
-                onSelectFromGalleryResult(data);
-            } else {
-                Toast.makeText(getActivity(), "You haven't picked Image", Toast.LENGTH_SHORT).show();
-            }
         }
     }
 
@@ -221,15 +206,6 @@ public class EditUserProfile extends Fragment implements View.OnClickListener, M
                 if (columnIndex < 0) // no column index
                     return; // DO YOUR ERROR HANDLING
                 String image = getStringImage(bitmap);
-
-               /* ProfilePic = cursor.getString(columnIndex);
-                file = new File(ProfilePic);
-                file = new File(file.getAbsolutePath());
-                String dir = file.getParent();
-                File dirAsFile = file.getParentFile();
-                Log.d("imagepath", ProfilePic);
-                Log.d("imagefile", "" + dirAsFile);
-                Log.d("imagedir", "" + dir);*/
                 cursor.close(); // close cursor
             } catch (Exception e) {
                 e.printStackTrace();
@@ -281,8 +257,7 @@ public class EditUserProfile extends Fragment implements View.OnClickListener, M
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.fragment_edit_user_profile_imgchangepic:
-                Intent intentPickImage = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                startActivityForResult(intentPickImage, SELECT_FILE);
+                openDialogPhotos();
                 break;
 
             case R.id.fragment_edit_user_profile_txtchangepwd:
@@ -302,6 +277,86 @@ public class EditUserProfile extends Fragment implements View.OnClickListener, M
         }
     }
 
+    // TODO: 6/7/2017 choose the option from camera and gallery
+    private void openDialogPhotos() {
+        final CharSequence[] items = {"Take Photo", "Choose from Library",
+                "Cancel"};
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle("Add Photo!");
+        builder.setItems(items, new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface dialog, int item) {
+                if (items[item].equals("Take Photo")) {
+                    userChoosenTask = "Take Photo";
+                    if (result)
+                        cameraIntent();
+                } else if (items[item].equals("Choose from Library")) {
+                    userChoosenTask = "Choose from Library";
+                    if (result)
+                        galleryIntent();
+                } else if (items[item].equals("Cancel")) {
+                    dialog.dismiss();
+                }
+            }
+        });
+        builder.show();
+    }
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == Activity.RESULT_OK) {
+            if (requestCode == SELECT_FILE) {
+                Uri uri = data.getData();
+                try {
+                    bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), uri);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                imgProfilePic.setImageBitmap(bitmap);
+                onSelectFromGalleryResult(data);
+            } else if (requestCode == REQUEST_CAMERA) {
+                onCaptureImageResult(data);
+            } else {
+                Toast.makeText(getActivity(), "You haven't picked Image", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+    // TODO: 5/31/2017 image from camera
+    public void onCaptureImageResult(Intent data) {
+        String[] projection = {MediaStore.Images.Media.DATA};
+        Cursor cursor = getActivity().managedQuery(uri, projection, null,
+                null, null);
+        int column_index_data = cursor.getColumnIndexOrThrow(
+                MediaStore.Images.Media.DATA);
+        cursor.moveToFirst();
+        ImagePath = cursor.getString(column_index_data);
+        try {
+            bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), uri);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        imgProfilePic.setImageBitmap(bitmap);
+    }
+    // TODO: 6/7/2017  choose from gallery for image
+    private void galleryIntent() {
+        Intent intentPickImage = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        startActivityForResult(intentPickImage, SELECT_FILE);
+    }
+
+    // TODO: 6/7/2017 choose from camera for image
+    private void cameraIntent() {
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        if (takePictureIntent.resolveActivity(getActivity().getPackageManager()) != null) {
+            String fileName = "temp.jpg";
+            ContentValues values = new ContentValues();
+            values.put(MediaStore.Images.Media.TITLE, fileName);
+            uri = getActivity().getContentResolver().insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                    values);
+            takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
+            startActivityForResult(takePictureIntent, REQUEST_CAMERA);
+        }
+    }
     private void getUserUpdatedDetails() {
         FullName = edFullName.getText().toString();
         UserName = edUserName.getText().toString();
@@ -394,7 +449,7 @@ public class EditUserProfile extends Fragment implements View.OnClickListener, M
         @Override
         protected String doInBackground(String... strings) {
             //http://hire-people.com/host2/surveys/api/interests
-            return utils.getResponseofGet(Constant.QUESTION_BASE_URL + "interests");
+            return Utils.getResponseofGet(Constant.QUESTION_BASE_URL + "interests");
         }
 
         @Override
@@ -407,7 +462,7 @@ public class EditUserProfile extends Fragment implements View.OnClickListener, M
                 if (jsonObject.getString("status").equalsIgnoreCase("true")) {
                     JSONObject userObject = jsonObject.getJSONObject("user_intrests");
                     JSONArray userArray = userObject.getJSONArray("interests");
-                    for (int i = 0; i < userArray.length(); i++) {
+                    for (int i = 1; i < userArray.length(); i++) {
                         JSONObject interestObject = userArray.getJSONObject(i);
                         arrayInterestList.add(interestObject.getString("name"));
                         arrayInterestIdList.add(interestObject.getString("id"));

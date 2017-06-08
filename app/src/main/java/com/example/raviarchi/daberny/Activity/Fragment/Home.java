@@ -27,6 +27,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.sql.Time;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -86,7 +87,7 @@ public class Home extends Fragment {
 
     private void openQuetionList() {
         // TODO: 2/21/2017 bind list and show in adapter
-        adapter = new HomeAdapter(getActivity(), arrayUserList);
+        adapter = new HomeAdapter(getActivity(), arrayUserList,arrayFollowingNameList,arrayFollowingIdList);
         layoutManager = new LinearLayoutManager(getActivity());
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
         recyclerViewHome.setLayoutManager(mLayoutManager);
@@ -136,6 +137,16 @@ public class Home extends Fragment {
                         details.setUserInterestId(questionObject.getString("in_id"));
                         details.setQueVoteStatus(questionObject.getString("vote_status"));
                         details.setUserCanVote(questionObject.getString("can_vote"));
+
+                        // TODO: 6/6/2017 set remain time
+                        JSONObject remaintimeObj = questionObject.getJSONObject("remain_time");
+                        Utils.WriteSharePrefrence(getActivity(),Constant.REMAINTIME,""+remaintimeObj);
+                        if (remaintimeObj.length() > 0){
+                            details.setQueRemainHour(remaintimeObj.getString("hours"));
+                            details.setQueRemainMinute(remaintimeObj.getString("minutes"));
+                            details.setQueRemainSecond(remaintimeObj.getString("seconds"));
+                        }
+
                         // TODO: 3/29/2017 get remaining  time
                         details.setQueCategory(questionObject.getString("name"));
                         details.setQueType(questionObject.getString("type"));
@@ -210,22 +221,20 @@ public class Home extends Fragment {
                         SimpleDateFormat df = new SimpleDateFormat("HH:mm:ss");
                         try {
                             Date d = df.parse(timing);
-                            long timeStamp = d.getTime();
+                            long timeStamp = Math.abs(d.getTime());
+                            Log.d("step1","aaaaa"+timeStamp);
                             details.setQueTiming(timeStamp);
                         } catch (ParseException e) {
                             e.printStackTrace();
                         }
-
-                        // TODO: 3/27/2017 get the list of following
-                        JSONArray followingArray = jsonObject.getJSONArray("following");
-                        for (int i = 0; i < followingArray.length(); i++) {
-                            JSONObject followingObject = followingArray.getJSONObject(i);
-                            arrayFollowingIdList.add(followingObject.getString("follow_user_id"));
-                            //  arrayFollowingNameList.add(followingObject.getString("fullname"));
-                            details.setUserFollowingId(arrayFollowingIdList);
-                            //   details.setUserFollowingName(arrayFollowingNameList);
-                        }
                         arrayUserList.add(details);
+                    }
+                    // TODO: 3/27/2017 get the list of following
+                    JSONArray followingArray = jsonObject.getJSONArray("following");
+                    for (int f = 0; f < followingArray.length(); f++) {
+                        JSONObject followingObject = followingArray.getJSONObject(f);
+                        arrayFollowingIdList.add(followingObject.getString("follow_user_id").trim());
+                        arrayFollowingNameList.add(followingObject.getString("fullname").trim());
                     }
                 }
             } catch (JSONException e) {
@@ -234,13 +243,13 @@ public class Home extends Fragment {
             return response;
         }
 
-
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
             pd.dismiss();
             if (arrayUserList.size() > 0) {
                 openQuetionList();
+
             } else {
                 Toast.makeText(getActivity(), "No Question Found", Toast.LENGTH_SHORT).show();
             }

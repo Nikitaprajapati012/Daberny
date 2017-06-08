@@ -60,7 +60,11 @@ public class InboxUsersAdapter extends RecyclerView.Adapter<InboxUsersAdapter.My
         loginUserId = Utils.ReadSharePrefrence(context, Constant.USERID);
         if (userdetails.getUserId().equalsIgnoreCase(loginUserId)) {
             Utils.WriteSharePrefrence(context,Constant.OTHER_USERID,userdetails.getOtherUserId());
-            holder.txtMessage.setText(userdetails.getUserMsgSender());
+            if (userdetails.getUserMsgType().equalsIgnoreCase("image")){
+                holder.txtMessage.setText("You sent a message");
+            }else {
+                holder.txtMessage.setText(userdetails.getUserMsgSender());
+            }
             holder.txtUsername.setText(userdetails.getOtherUserName());
             if (userdetails.getOtherUserImage().length() > 0) {
                 Picasso.with(context).load(userdetails.getOtherUserImage()).
@@ -69,10 +73,13 @@ public class InboxUsersAdapter extends RecyclerView.Adapter<InboxUsersAdapter.My
                 Picasso.with(context).load(R.mipmap.ic_launcher).transform(new RoundedTransformation(120, 2))
                         .placeholder(R.drawable.ic_placeholder).into(holder.imgProfile);
             }
-
         } else {
             Utils.WriteSharePrefrence(context,Constant.OTHER_USERID,userdetails.getUserId());
-            holder.txtMessage.setText(userdetails.getUserMsgReceiver());
+            if (userdetails.getUserMsgType().equalsIgnoreCase("image")){
+                holder.txtMessage.setText(R.string.yousentmsg);
+            }else {
+                holder.txtMessage.setText(userdetails.getUserMsgReceiver());
+            }
             holder.txtUsername.setText(userdetails.getUserUserName());
             if (userdetails.getUserImage().length() > 0) {
                 Picasso.with(context).load(userdetails.getUserImage()).

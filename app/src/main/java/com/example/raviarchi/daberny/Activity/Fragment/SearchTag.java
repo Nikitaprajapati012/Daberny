@@ -13,7 +13,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.example.raviarchi.daberny.Activity.Adapter.SearchTagAdapter;
 import com.example.raviarchi.daberny.Activity.Model.UserProfileDetails;
@@ -65,8 +64,8 @@ public class SearchTag extends Fragment {
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                SearchRecent = edSearch.getText().toString().trim();
-                new GetTagList(userId,SearchRecent).execute();
+                SearchRecent = edSearch.getText().toString().replaceAll("#", "%23");
+                new GetTagList(userId, SearchRecent).execute();
             }
 
             @Override
@@ -79,7 +78,7 @@ public class SearchTag extends Fragment {
     private void init() {
         utils = new Utils(getActivity());
         arrayUserList = new ArrayList<>();
-        userId = Utils.ReadSharePrefrence(getActivity(),Constant.USERID);
+        userId = Utils.ReadSharePrefrence(getActivity(), Constant.USERID);
     }
 
     private void openRecentList() {
@@ -95,33 +94,28 @@ public class SearchTag extends Fragment {
     // TODO: 2/21/2017 get list of Question from URL
     private class GetTagList extends AsyncTask<String, String, String> {
         ProgressDialog pd;
-        String searchRecent,user_id;
+        String searchRecent, user_id;
 
         public GetTagList(String userId, String searchRecent) {
             this.searchRecent = searchRecent;
-            this.user_id=userId;
+            this.user_id = userId;
         }
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            pd = new ProgressDialog(getActivity());
-            pd.setMessage("Loading");
-            pd.setCancelable(false);
-            pd.show();
         }
 
         @Override
         protected String doInBackground(String... strings) {
             //http://181.224.157.105/~hirepeop/host2/surveys/api/searched_tags/752/%23g
-            return Utils.getResponseofGet(Constant.QUESTION_BASE_URL + "searched_tags/" + user_id +"/"+searchRecent);
+            return Utils.getResponseofGet(Constant.QUESTION_BASE_URL + "searched_tags/" + user_id + "/" + searchRecent);
         }
 
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
             Log.d("RESPONSE", "Search Tag List..." + s);
-            pd.dismiss();
             try {
                 JSONObject jsonObject = new JSONObject(s);
                 if (jsonObject.getString("status").equalsIgnoreCase("true")) {
@@ -135,9 +129,6 @@ public class SearchTag extends Fragment {
                         arrayUserList.add(details);
                     }
                 }
-                else {
-                    Toast.makeText(getActivity(), jsonObject.getString("msg"), Toast.LENGTH_SHORT).show();
-}
             } catch (JSONException e) {
                 e.printStackTrace();
             }

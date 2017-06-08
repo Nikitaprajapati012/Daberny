@@ -10,19 +10,8 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_gravity="center|left"
-            android:layout_marginLeft="@dimen/_5sdp"
-            android:layout_weight="1"
-            android:gravity="center|left"
-            android:text="suggested"
-            android:textColor="@color/black"
-            android:textSize="@dimen/_15sdp" />
-
         <LinearLayout
-            android:id="@+id/adapter_recent_list_layout"
+            android:id="@+id/adapter_tag_list_layout"
             android:layout_width="match_parent"
             android:layout_height="@dimen/_60sdp"
             android:layout_gravity="center"
@@ -37,16 +26,16 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_gravity="center"
-                android:layout_weight="1.5"
+                android:layout_weight="1.6"
                 android:gravity="center"
                 android:orientation="vertical">
 
                 <de.hdodenhof.circleimageview.CircleImageView
-                    android:id="@+id/adapter_recent_list_imgprofilepic"
+                    android:id="@+id/adapter_tag_list_imgprofilepic"
                     android:layout_width="80dp"
                     android:layout_height="80dp"
                     android:layout_gravity="center|left"
-                    android:gravity="center|left"
+                    android:gravity="center"
                     android:padding="@dimen/_10sdp"
                     android:src="@drawable/ic_placeholder" />
             </LinearLayout>
@@ -55,60 +44,21 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/_5sdp"
-                android:layout_weight="0.5"
+                android:layout_weight="0.4"
                 android:orientation="vertical"
                 android:weightSum="2">
 
-                <TextView
-                    android:id="@+id/adapter_recent_list_txtusername"
-                    android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1"
-                    android:text="@string/username"
-                    android:textColor="@color/black"
-                    android:textSize="@dimen/_15sdp"
-                    android:textStyle="bold" />
 
                 <TextView
-                    android:id="@+id/adapter_recent_list_txtfullname"
+                    android:id="@+id/adapter_tag_list_txttags"
                     android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1"
-                    android:text="@string/fullname"
-                    android:textColor="@color/black"
+                    android:layout_height="wrap_content"
+                    android:text="tag"
+                    android:textColor="@color/logintext"
                     android:textSize="@dimen/_15sdp" />
 
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_gravity="center|left"
-            android:layout_marginLeft="@dimen/_5sdp"
-            android:layout_weight="1"
-            android:gravity="center|left"
-            android:text="Recent"
-            android:textColor="@color/black"
-            android:textSize="@dimen/_15sdp" />
-
-        <TextView
-            android:id="@+id/adapter_recent_list_txtquestin"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/_40sdp"
-            android:layout_gravity="center|left"
-            android:layout_marginLeft="@dimen/_5sdp"
-            android:background="@drawable/loginborder"
-            android:gravity="center|left"
-            android:text="@string/username"
-            android:textColor="@color/black"
-            android:textSize="@dimen/_15sdp" />
-
-    </LinearLayout>
 </LinearLayout>
