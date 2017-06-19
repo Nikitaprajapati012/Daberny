@@ -82,7 +82,7 @@ public class SearchLatest extends Fragment {
                     utils.setAdapterForList(recyclerViewPeople, adapter);
                 }else
                 {
-                    //clear the search list
+                    //clear the search listt
                     searchedArraylist.clear();
                 }
             }
