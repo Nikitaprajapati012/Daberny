@@ -14,10 +14,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -48,13 +50,20 @@ public class OtherUserProfile extends Fragment implements View.OnClickListener {
     public Utils utils;
     public UserProfileDetails details;
     public Dialog dialog;
-    public Button btnAskQue, btnUserProfile, btnLogout, btnSend, btnClose, btnSetting;
-    public String ID, userId, isInFollowList, isInBlockList, task, blocktask;
-    public int flag;
-    public ArrayList<String> arrayInterestList, arrayInterestIdList, interestList,
-            arrayInterestStartNameList,arrayInterestStartPointsList,
-            arrayInterestEndNameList,arrayInterestEndPointsList,
-            arrayInterestTotalPointsList,arrayInterestUserPointsList,arrayInterestUserPercentageList;
+    public Button btnSend, btnClose;
+    public Spinner spinnerReport;
+    public String isInFollowList, isInBlockList, task, blocktask,loginUserId,otherUserId,reason;
+    public String[] arrayReasonList;
+    public ArrayList<String> arrayInterestList;
+    public ArrayList<String> arrayInterestIdList;
+    public ArrayList<String> interestList;
+    public ArrayList<String> arrayInterestStartNameList;
+    public ArrayList<String> arrayInterestStartPointsList;
+    public ArrayList<String> arrayInterestEndNameList;
+    public ArrayList<String> arrayInterestEndPointsList;
+    public ArrayList<String> arrayInterestTotalPointsList;
+    public ArrayList<String> arrayInterestUserPointsList;
+    public ArrayList<String> arrayInterestUserPercentageList;
     public RelativeLayout headerView;
     /*@BindView(R.id.fragment_other_user_profile_imgBrowse)
     ImageView imgBrowse;
@@ -127,29 +136,27 @@ public class OtherUserProfile extends Fragment implements View.OnClickListener {
     private ArrayList<UserProfileDetails> arrayList;
     public Toolbar toolBar;
     public TextView txtTitle;
+    public RelativeLayout layoutHeader;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
         utils = new Utils(getActivity());
-        userId = Utils.ReadSharePrefrence(getActivity(), Constant.USERID);
+        loginUserId = Utils.ReadSharePrefrence(getActivity(), Constant.USERID);
         if (getArguments() != null) {
-            ID = getArguments().getString("id");
-        }
-        if (ID.equalsIgnoreCase(userId)) {
-            Fragment fragment = new UserProfile();
-            if (fragment != null) {
-                FragmentManager fm = getActivity().getSupportFragmentManager();
-                FragmentTransaction transaction = fm.beginTransaction();
-                transaction.replace(R.id.frame_contain_layout, fragment);
-                transaction.commit();
+            otherUserId = getArguments().getString("id");
+            if (otherUserId != null) {
+                if (otherUserId.equalsIgnoreCase(loginUserId)) {
+                    Fragment fragment = new UserProfile();
+                    utils.replaceFragment(fragment);
+                } else {
+                    View view = inflater.inflate(R.layout.fragment_other_user_profile, container, false);
+                    ButterKnife.bind(this, view);
+                    init();
+                    click();
+                    return view;
+                }
             }
-        } else {
-            View view = inflater.inflate(R.layout.fragment_other_user_profile, container, false);
-            ButterKnife.bind(this, view);
-            init();
-            click();
-            return view;
         }
         return null;
     }
@@ -157,6 +164,8 @@ public class OtherUserProfile extends Fragment implements View.OnClickListener {
     // TODO: 2/21/2017 initilization
     private void init() {
         arrayList = new ArrayList<>();
+        layoutHeader = (RelativeLayout) getActivity().findViewById(R.id.mainview);
+        layoutHeader.setVisibility(View.VISIBLE);
         toolBar = (Toolbar) getActivity().findViewById(R.id.activity_main_toolbar);
         txtTitle = (TextView) toolBar.findViewById(R.id.toolbar_title);
         txtTitle.setText(R.string.profile);
@@ -195,7 +204,7 @@ public class OtherUserProfile extends Fragment implements View.OnClickListener {
                     details.setUserFollowStatus("Unfollow");
                 }
                 task = isInFollowList.equalsIgnoreCase("Unfollow") ? "add" : "remove";
-                new GetFollowUnFollow(Utils.ReadSharePrefrence(getActivity(), Constant.USERID), ID, task).execute();
+                new GetFollowUnFollow(Utils.ReadSharePrefrence(getActivity(), Constant.USERID), otherUserId, task).execute();
                 break;
 
            /* case R.id.fragment_other_user_profile_imgBrowse:
@@ -216,7 +225,7 @@ public class OtherUserProfile extends Fragment implements View.OnClickListener {
                     details.setUserFollowStatus("Unblock");
                 }
                 blocktask = isInBlockList.equalsIgnoreCase("Unblock") ? "add" : "remove";
-                new UserBlockUnblock(userId, ID, blocktask).execute();
+                new UserBlockUnblock(loginUserId, otherUserId, blocktask).execute();
                 break;
 
             case R.id.fragment_other_user_profile_layoutfollowers:
@@ -236,10 +245,7 @@ public class OtherUserProfile extends Fragment implements View.OnClickListener {
         }
         if (fragment != null) {
             fragment.setArguments(bundle);
-            FragmentTransaction transaction = fragmentManager.beginTransaction();
-            transaction.replace(R.id.frame_contain_layout, fragment);
-            transaction.addToBackStack(null);
-            transaction.commit();
+            utils.replaceFragment(fragment);
         }
     }
 
@@ -249,12 +255,13 @@ public class OtherUserProfile extends Fragment implements View.OnClickListener {
         dialog.setContentView(R.layout.dialog_report);
         btnSend = (Button) dialog.findViewById(R.id.dialog_report_btnsend);
         btnClose = (Button) dialog.findViewById(R.id.dialog_report_btnclose);
+        spinnerReport = (Spinner) dialog.findViewById(R.id.dialog_report_spinner);
+        arrayReasonList = getResources().getStringArray(R.array.reason_select);
         dialog.show();
         btnSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-               /* Intent ilogout = new Intent(getActivity(), LoginActivity.class);
-                startActivity(ilogout);*/
+               new SendReport(loginUserId,otherUserId,reason).execute();
                 dialog.dismiss();
             }
         });
@@ -263,6 +270,17 @@ public class OtherUserProfile extends Fragment implements View.OnClickListener {
             @Override
             public void onClick(View view) {
                 dialog.dismiss();
+            }
+        });
+        spinnerReport.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
+                reason = spinnerReport.getItemAtPosition(position).toString().replaceAll(" ","%20");
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
             }
         });
     }
@@ -317,7 +335,7 @@ public class OtherUserProfile extends Fragment implements View.OnClickListener {
 
         // TODO: 3/9/2017 get interest in different text
         // TODO: 3/15/2017 for first interest
-        if (interest.split("/").length > 0) {
+        if (interest.split("/").length >= 0) {
             String firstInterest = interest.split("/")[0];
             txtInterestChart1.setText(firstInterest);
             txtInterestChartStartLevel1.setText(""+details.getStartRankName().get(0));
@@ -329,7 +347,6 @@ public class OtherUserProfile extends Fragment implements View.OnClickListener {
             txtInterestChartUserPoints1.setText(""+details.getUserRankPoints().get(0) + " Points");
             // TODO: 5/19/2017 set first progress
             progressbar1.setProgress(Float.parseFloat(details.getUserRankPercentage().get(0)));
-
         } else {
             txtInterestChart1.setText(" ");
             layoutInterestChart1.setVisibility(View.GONE);
@@ -372,7 +389,6 @@ public class OtherUserProfile extends Fragment implements View.OnClickListener {
             txtInterestChart3.setText(" ");
             layoutInterestChart3.setVisibility(View.GONE);
         }
-
 
         if (details.getUserImage().length() > 0) {
             Picasso.with(getActivity()).load(details.getUserImage())
@@ -427,7 +443,7 @@ public class OtherUserProfile extends Fragment implements View.OnClickListener {
         @Override
         protected String doInBackground(String... strings) {
             //http://181.224.157.105/~hirepeop/host2/surveys/api/profile/669
-            return utils.getResponseofGet(Constant.QUESTION_BASE_URL + "profile/" + userId + "/" + ID);
+            return Utils.getResponseofGet(Constant.QUESTION_BASE_URL + "profile/" + loginUserId + "/" + otherUserId);
         }
 
         @Override
@@ -468,24 +484,26 @@ public class OtherUserProfile extends Fragment implements View.OnClickListener {
                     details.setUserBlockStatus(blockObj.getString("type1"));
                     // TODO: 4/5/2017 user interest details
                     JSONArray userArray = userObject.getJSONArray("user_interests");
-                    for (int i = 0; i < userArray.length(); i++) {
-                        JSONObject interestObject = userArray.getJSONObject(i);
-                        arrayInterestList.add(interestObject.getString("name"));
-                        arrayInterestIdList.add(interestObject.getString("id"));
-                        arrayInterestStartNameList.add(interestObject.getString("start_name"));
-                        arrayInterestStartPointsList.add(interestObject.getString("start_point"));
-                        arrayInterestEndNameList.add(interestObject.getString("end_name"));
-                        arrayInterestEndPointsList.add(interestObject.getString("end_point"));
-                        arrayInterestTotalPointsList.add(interestObject.getString("total_point"));
-                        arrayInterestUserPointsList.add(interestObject.getString("user_point"));
-                        arrayInterestUserPercentageList.add(interestObject.getString("percentage_count"));
-                        details.setStartRankName(arrayInterestStartNameList);
-                        details.setStartRankPoints(arrayInterestStartPointsList);
-                        details.setEndRankName(arrayInterestEndNameList);
-                        details.setEndRankPoints(arrayInterestEndPointsList);
-                        details.setTotalRankPoints(arrayInterestTotalPointsList);
-                        details.setUserRankPoints(arrayInterestUserPointsList);
-                        details.setUserRankPercentage(arrayInterestUserPercentageList);
+                    if (userArray.length() > 0) {
+                        for (int i = 0; i < userArray.length(); i++) {
+                            JSONObject interestObject = userArray.getJSONObject(i);
+                            arrayInterestList.add(interestObject.getString("name"));
+                            arrayInterestIdList.add(interestObject.getString("id"));
+                            arrayInterestStartNameList.add(interestObject.getString("start_name"));
+                            arrayInterestStartPointsList.add(interestObject.getString("start_point"));
+                            arrayInterestEndNameList.add(interestObject.getString("end_name"));
+                            arrayInterestEndPointsList.add(interestObject.getString("end_point"));
+                            arrayInterestTotalPointsList.add(interestObject.getString("total_point"));
+                            arrayInterestUserPointsList.add(interestObject.getString("user_point"));
+                            arrayInterestUserPercentageList.add(interestObject.getString("percentage_count"));
+                            details.setStartRankName(arrayInterestStartNameList);
+                            details.setStartRankPoints(arrayInterestStartPointsList);
+                            details.setEndRankName(arrayInterestEndNameList);
+                            details.setEndRankPoints(arrayInterestEndPointsList);
+                            details.setTotalRankPoints(arrayInterestTotalPointsList);
+                            details.setUserRankPoints(arrayInterestUserPointsList);
+                            details.setUserRankPercentage(arrayInterestUserPercentageList);
+                        }
                     }
                     arrayList.add(details);
                 }
@@ -582,7 +600,7 @@ public class OtherUserProfile extends Fragment implements View.OnClickListener {
         @Override
         protected String doInBackground(String... strings) {
             //http://181.224.157.105/~hirepeop/host2/surveys/api/profile_block/677/669
-            return utils.getResponseofGet(Constant.QUESTION_BASE_URL + "profile_block/" + userId + "/" + ID);
+            return Utils.getResponseofGet(Constant.QUESTION_BASE_URL + "profile_block/" + userId + "/" + otherUserId);
         }
 
         @Override
@@ -596,7 +614,6 @@ public class OtherUserProfile extends Fragment implements View.OnClickListener {
                     JSONObject userObject = jsonObject.getJSONObject("data");
                     details = new UserProfileDetails();
                     details.setUserBlockStatus(userObject.getString("type1"));
-                    Log.d("user_type1", userObject.getString("type1"));
                     boolean isSucess = task.equalsIgnoreCase("add") ? false : true;
                     if (isSucess) {
                         details.setUserBlockStatus("Unblock");
@@ -612,6 +629,63 @@ public class OtherUserProfile extends Fragment implements View.OnClickListener {
                 showUserBlockUnblock();
             } else {
                 Toast.makeText(getActivity(), "Please select interest", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+    private class SendReport extends AsyncTask<String, String, String> {
+        ProgressDialog pd;
+        String user_id, reason, otherUser_id;
+
+        private SendReport(String userId, String id, String reason) {
+            this.user_id = userId;
+            this.otherUser_id = id;
+            this.reason = reason;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            arrayList = new ArrayList<>();
+            pd = new ProgressDialog(getActivity());
+            pd.setMessage("Loading");
+            pd.setCancelable(false);
+            pd.show();
+        }
+
+        @Override
+        protected String doInBackground(String... strings) {
+            //http://181.224.157.105/~hirepeop/host2/surveys/api/profile_block_report/669/752/Their account may be hacked
+            return Utils.getResponseofGet(Constant.QUESTION_BASE_URL + "profile_block_report/" + user_id + "/" + otherUser_id + "/" + reason);
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+            Log.d("RESPONSE", "Report the user..." + s);
+            pd.dismiss();
+            try {
+                JSONObject jsonObject = new JSONObject(s);
+                if (jsonObject.getString("status").equalsIgnoreCase("true")) {
+                    Toast.makeText(getActivity(), jsonObject.getString("msg"), Toast.LENGTH_SHORT).show();
+                    /*JSONObject userObject = jsonObject.getJSONObject("data");
+                    details = new UserProfileDetails();
+                    details.setUserBlockStatus(userObject.getString("type1"));
+                    Log.d("user_type1", userObject.getString("type1"));
+                    boolean isSucess = task.equalsIgnoreCase("add") ? false : true;
+                    if (isSucess) {
+                        details.setUserBlockStatus("Unblock");
+                    } else {
+                        details.setUserBlockStatus("block");
+                    }
+                    arrayList.add(details);*/
+                }
+                else
+                {
+                    Toast.makeText(getActivity(), jsonObject.getString("msg"), Toast.LENGTH_SHORT).show();
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
         }
     }

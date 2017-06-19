@@ -13,6 +13,7 @@ public class Constant {
     public static final String INTERESTID = "interestId";
     public static final String USER_INTERESTID = "userInterestId";
     public static final String USER_EMAIL = "userEmail";
+    public static final String NOTIFICATION = "Notification";
     public static final String USER_FOLLOWING = "userfollowing";
     public static final String ISFIRSTTIMEREG = "isFirstTimeReg";
     public static final String USER_USERNAME = "userUserName";
@@ -22,6 +23,10 @@ public class Constant {
     public static final String LIKEPOST= "likePost";
     public static final String PERMISSION = "permission";
     public static final String REMAINTIME = "remainTime";
+    public static final String TIME = "time";
+    public static final String ISREAD = "isread";
+    public static final String FB_USER_ID = "fb_user_id";
+    public static final String FB_ACCESS_TOKEN = "fb_access_token";
 
     public static class SHRED_PR {
         public static final String SHARE_PREF = AppName + "_preferences";

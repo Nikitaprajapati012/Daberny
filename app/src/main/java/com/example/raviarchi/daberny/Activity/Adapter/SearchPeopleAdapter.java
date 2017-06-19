@@ -75,10 +75,7 @@ public class SearchPeopleAdapter extends RecyclerView.Adapter<SearchPeopleAdapte
 
                 if (fragment != null) {
                     fragment.setArguments(bundle);
-                    FragmentManager fm = ((FragmentActivity) context).getSupportFragmentManager();
-                    FragmentTransaction transaction = fm.beginTransaction();
-                    transaction.replace(R.id.frame_contain_layout, fragment);
-                    transaction.commit();
+                    utils.replaceFragment(fragment);
                 }
             }
         });

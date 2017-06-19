@@ -4,8 +4,6 @@ import android.app.ProgressDialog;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -13,20 +11,23 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
+
 import com.example.raviarchi.daberny.Activity.Adapter.SearchLatestAdapter;
 import com.example.raviarchi.daberny.Activity.Model.UserProfileDetails;
 import com.example.raviarchi.daberny.Activity.Utils.Constant;
 import com.example.raviarchi.daberny.Activity.Utils.Utils;
 import com.example.raviarchi.daberny.R;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import java.util.ArrayList;
-import static com.example.raviarchi.daberny.Activity.Fragment.Search.edSearch;
-import static com.facebook.FacebookSdk.getApplicationContext;
 
-/**
- * Created by Ravi archi on 1/10/2017.
+import java.util.ArrayList;
+
+import static com.example.raviarchi.daberny.Activity.Fragment.Search.edSearch;
+
+/*** Created by Ravi archi on 1/10/2017.
  */
 
 public class SearchLatest extends Fragment {
@@ -36,7 +37,7 @@ public class SearchLatest extends Fragment {
     public String userId;
     public SearchLatestAdapter adapter;
     public String SearchLatest;
-    private ArrayList<UserProfileDetails> arrayUserList;
+    private ArrayList<UserProfileDetails> arrayUserList, searchedArraylist;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -51,61 +52,72 @@ public class SearchLatest extends Fragment {
     private void findViewId(View view) {
         recyclerViewPeople = (RecyclerView) view.findViewById(R.id.fragment_search_recyclerrecentlist);
 
-        edSearch.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                arrayUserList.clear();
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                SearchLatest = edSearch.getText().toString().trim();
-                new GetPeopleList(SearchLatest).execute();
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-            }
-        });
     }
 
     // TODO: 2/21/2017 initilization
     private void init() {
         utils = new Utils(getActivity());
-        arrayUserList = new ArrayList<>();
-        userId = Utils.ReadSharePrefrence(getActivity(),Constant.USERID);
+        userId = Utils.ReadSharePrefrence(getActivity(), Constant.USERID);
+        new GetPeopleList(userId).execute();
+        edSearch.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                String searchFor = edSearch.getText().toString();
+                searchedArraylist = new ArrayList<>();
+                for (int i = 0; i < arrayUserList.size(); i++) {
+                    if (arrayUserList.get(i).getQueTitle().toLowerCase().startsWith(searchFor.toLowerCase())) {
+                        searchedArraylist.add(arrayUserList.get(i));
+                    }
+                }
+                if (edSearch.getText().toString().length() > 0) {
+                    adapter = new SearchLatestAdapter(getActivity(), searchedArraylist);
+                    utils.setAdapterForList(recyclerViewPeople, adapter);
+                }else
+                {
+                    //clear the search list
+                    searchedArraylist.clear();
+                }
+            }
+        });
     }
 
     private void openLatestList() {
         // TODO: 2/21/2017 bind list and show in adapter
-        adapter = new SearchLatestAdapter(getActivity(), arrayUserList);
-        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
-        recyclerViewPeople.setLayoutManager(mLayoutManager);
-        recyclerViewPeople.setItemAnimator(new DefaultItemAnimator());
-        recyclerViewPeople.setAdapter(adapter);
-        adapter.notifyDataSetChanged();
-    }
+        if (edSearch.getText().toString().length() > 0) {
+            adapter = new SearchLatestAdapter(getActivity(), arrayUserList);
+            utils.setAdapterForList(recyclerViewPeople, adapter);
+        }
 
+    }
 
     // TODO: 2/21/2017 get list of Question from URL
     private class GetPeopleList extends AsyncTask<String, String, String> {
         ProgressDialog pd;
         String searchlatest;
 
-        public GetPeopleList(String searchPeople) {
+        private GetPeopleList(String searchPeople) {
             this.searchlatest = searchPeople;
         }
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
+            arrayUserList = new ArrayList<>();
+
         }
 
         @Override
         protected String doInBackground(String... strings) {
-
             //http://181.224.157.105/~hirepeop/host2/surveys/api/searched_question/752/How many
-            String response = Utils.getResponseofGet(Constant.QUESTION_BASE_URL + "searched_question/" +userId + "/" + searchlatest);
+            String response = Utils.getResponseofGet(Constant.QUESTION_BASE_URL + "searched_question/" + userId);
             Log.d("RESPONSE", "Search latest List..." + response);
             try {
                 JSONObject jsonObject = new JSONObject(response);
@@ -117,10 +129,6 @@ public class SearchLatest extends Fragment {
                         details.setQueTitle(userObject.getString("title"));
                         details.setQueId(userObject.getString("id"));
                         arrayUserList.add(details);
-                    }
-                } else {
-                    if (jsonObject.getString("status").equalsIgnoreCase("FALSE")) {
-                        arrayUserList.clear();
                     }
                 }
             } catch (JSONException e) {
@@ -134,10 +142,7 @@ public class SearchLatest extends Fragment {
             super.onPostExecute(s);
             if (arrayUserList.size() > 0) {
                 openLatestList();
-            } else {
-                arrayUserList.clear();
             }
-
         }
     }
 }

@@ -14,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.raviarchi.daberny.Activity.Adapter.SearchLatestAdapter;
 import com.example.raviarchi.daberny.Activity.Adapter.SearchTagAdapter;
 import com.example.raviarchi.daberny.Activity.Model.UserProfileDetails;
 import com.example.raviarchi.daberny.Activity.Utils.Constant;
@@ -35,13 +36,13 @@ import static com.facebook.FacebookSdk.getApplicationContext;
  */
 
 public class SearchTag extends Fragment {
-    public RecyclerView recyclerViewRecent;
+    public RecyclerView recyclerViewTag;
     public Utils utils;
     public UserProfileDetails details;
     public String userId;
     public SearchTagAdapter adapter;
     public String SearchRecent;
-    private ArrayList<UserProfileDetails> arrayUserList;
+    private ArrayList<UserProfileDetails> arrayUserList,searchedArraylist;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -54,62 +55,65 @@ public class SearchTag extends Fragment {
 
     // TODO: 2/22/2017 bind data with field
     private void findViewId(View view) {
-        recyclerViewRecent = (RecyclerView) view.findViewById(R.id.fragment_search_recyclertaglist);
-
-        edSearch.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                arrayUserList.clear();
+        recyclerViewTag = (RecyclerView) view.findViewById(R.id.fragment_search_recyclertaglist);
             }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                SearchRecent = edSearch.getText().toString().replaceAll("#", "%23");
-                new GetTagList(userId, SearchRecent).execute();
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-            }
-        });
-    }
 
     // TODO: 2/21/2017 initilization
     private void init() {
         utils = new Utils(getActivity());
-        arrayUserList = new ArrayList<>();
         userId = Utils.ReadSharePrefrence(getActivity(), Constant.USERID);
+        new GetTagList(userId).execute();
+        edSearch.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                SearchRecent = edSearch.getText().toString().replaceAll("#", "%23");
+                searchedArraylist = new ArrayList<>();
+                for (int i = 0; i < arrayUserList.size(); i++) {
+                    if (arrayUserList.get(i).getQueTag().toLowerCase().startsWith(SearchRecent.toLowerCase())) {
+                        searchedArraylist.add(arrayUserList.get(i));
+                    }
+                }
+                adapter = new SearchTagAdapter(getActivity(), searchedArraylist);
+                utils.setAdapterForList(recyclerViewTag,adapter);
+            }
+        });
     }
 
     private void openRecentList() {
         // TODO: 2/21/2017 bind list and show in adapter
         adapter = new SearchTagAdapter(getActivity(), arrayUserList);
-        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
-        recyclerViewRecent.setLayoutManager(mLayoutManager);
-        recyclerViewRecent.setItemAnimator(new DefaultItemAnimator());
-        recyclerViewRecent.setAdapter(adapter);
-        adapter.notifyDataSetChanged();
+        utils.setAdapterForList(recyclerViewTag,adapter);
     }
 
     // TODO: 2/21/2017 get list of Question from URL
     private class GetTagList extends AsyncTask<String, String, String> {
         ProgressDialog pd;
-        String searchRecent, user_id;
+        String  user_id;
 
-        public GetTagList(String userId, String searchRecent) {
-            this.searchRecent = searchRecent;
+        public GetTagList(String userId) {
             this.user_id = userId;
         }
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
+            arrayUserList = new ArrayList<>();
         }
 
         @Override
         protected String doInBackground(String... strings) {
             //http://181.224.157.105/~hirepeop/host2/surveys/api/searched_tags/752/%23g
-            return Utils.getResponseofGet(Constant.QUESTION_BASE_URL + "searched_tags/" + user_id + "/" + searchRecent);
+            return Utils.getResponseofGet(Constant.QUESTION_BASE_URL + "searched_tags/" + user_id + "/");
         }
 
         @Override

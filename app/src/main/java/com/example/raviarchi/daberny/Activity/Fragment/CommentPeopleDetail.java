@@ -96,11 +96,7 @@ public class CommentPeopleDetail extends Fragment {
     private void openPeopleList() {
         // TODO: 2/21/2017 bind list and show in adapter
         adapter = new CommentPeopleAdapter(getActivity(), arrayUserList);
-        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
-        recyclerViewPeople.setLayoutManager(mLayoutManager);
-        recyclerViewPeople.setItemAnimator(new DefaultItemAnimator());
-        recyclerViewPeople.setAdapter(adapter);
-        adapter.notifyDataSetChanged();
+        utils.setAdapterForList(recyclerViewPeople,adapter);
     }
 
 

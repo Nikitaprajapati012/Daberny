@@ -1,12 +1,10 @@
 package com.example.raviarchi.daberny.Activity.Adapter;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
-import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
+import android.graphics.Typeface;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,10 +12,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.raviarchi.daberny.Activity.Activity.ChatActivity;
-import com.example.raviarchi.daberny.Activity.Fragment.OtherUserProfile;
 import com.example.raviarchi.daberny.Activity.Model.UserProfileDetails;
 import com.example.raviarchi.daberny.Activity.Utils.Constant;
 import com.example.raviarchi.daberny.Activity.Utils.RoundedTransformation;
@@ -25,8 +21,10 @@ import com.example.raviarchi.daberny.Activity.Utils.Utils;
 import com.example.raviarchi.daberny.R;
 import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
+
 import java.util.ArrayList;
 import java.util.List;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -43,6 +41,7 @@ public class InboxUsersAdapter extends RecyclerView.Adapter<InboxUsersAdapter.My
     public InboxUsersAdapter(Context context, ArrayList<UserProfileDetails> arraylist) {
         this.context = context;
         this.arrayUserList = arraylist;
+        this.utils = new Utils(context);
     }
 
     @Override
@@ -53,18 +52,14 @@ public class InboxUsersAdapter extends RecyclerView.Adapter<InboxUsersAdapter.My
     }
 
     @Override
-    public void onBindViewHolder(MyViewHolder holder, final int position) {
+    public void onBindViewHolder(final MyViewHolder holder, final int position) {
         final UserProfileDetails userdetails = arrayUserList.get(position);
         Id = userdetails.getUserId();
         holder.txtMessageTime.setText(userdetails.getUserMsgPostDate());
         loginUserId = Utils.ReadSharePrefrence(context, Constant.USERID);
         if (userdetails.getUserId().equalsIgnoreCase(loginUserId)) {
-            Utils.WriteSharePrefrence(context,Constant.OTHER_USERID,userdetails.getOtherUserId());
-            if (userdetails.getUserMsgType().equalsIgnoreCase("image")){
-                holder.txtMessage.setText("You sent a message");
-            }else {
-                holder.txtMessage.setText(userdetails.getUserMsgSender());
-            }
+            // TODO: 6/12/2017 set the details of the other user which is in sender
+            Utils.WriteSharePrefrence(context, Constant.OTHER_USERID, userdetails.getOtherUserId());
             holder.txtUsername.setText(userdetails.getOtherUserName());
             if (userdetails.getOtherUserImage().length() > 0) {
                 Picasso.with(context).load(userdetails.getOtherUserImage()).
@@ -74,10 +69,16 @@ public class InboxUsersAdapter extends RecyclerView.Adapter<InboxUsersAdapter.My
                         .placeholder(R.drawable.ic_placeholder).into(holder.imgProfile);
             }
         } else {
-            Utils.WriteSharePrefrence(context,Constant.OTHER_USERID,userdetails.getUserId());
-            if (userdetails.getUserMsgType().equalsIgnoreCase("image")){
+            // TODO: 6/12/2017 set the details of the other user which is in receiver
+            Utils.WriteSharePrefrence(context, Constant.OTHER_USERID, userdetails.getUserId());
+               if (userdetails.getUserMsgType().equalsIgnoreCase("image")) {
                 holder.txtMessage.setText(R.string.yousentmsg);
-            }else {
+            } else {
+                if (userdetails.getUserMsgStatus().equalsIgnoreCase("1")) {
+                    holder.txtMessage.setTypeface(null, Typeface.BOLD);
+                } else {
+                    holder.txtMessage.setTypeface(null, Typeface.NORMAL);
+                }
                 holder.txtMessage.setText(userdetails.getUserMsgReceiver());
             }
             holder.txtUsername.setText(userdetails.getUserUserName());
@@ -94,10 +95,31 @@ public class InboxUsersAdapter extends RecyclerView.Adapter<InboxUsersAdapter.My
             @Override
             public void onClick(View v) {
                 Gson gson = new Gson();
-                Intent ichat =new Intent(context,ChatActivity.class);
+                userdetails.setUserMsgStatus("0");
+                holder.txtMessage.setTypeface(null, Typeface.NORMAL);
+                Intent ichat = new Intent(context, ChatActivity.class);
                 ichat.putExtra("userprofiledetails", gson.toJson(userdetails));
                 context.startActivity(ichat);
-                }
+            }
+        });
+        holder.layoutInbox.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                new AlertDialog.Builder(context)
+                        .setMessage("Delete Conversion?")
+                        .setPositiveButton(
+                                "OK",
+                                new DialogInterface.OnClickListener() {
+                                    public void onClick(
+                                            DialogInterface dialog,
+                                            int which) {
+                                        arrayUserList.remove(position);
+                                        notifyDataSetChanged();
+                                        dialog.cancel();
+                                    }
+                                }).show();
+                return false;
+            }
         });
     }
 

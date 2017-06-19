@@ -16,7 +16,6 @@
             android:layout_height="@dimen/_60sdp"
             android:layout_gravity="center"
             android:layout_margin="@dimen/_5sdp"
-            android:background="@drawable/loginborder"
             android:gravity="center"
             android:orientation="horizontal"
             android:weightSum="2">
@@ -48,7 +47,6 @@
                 android:orientation="vertical"
                 android:weightSum="2">
 
-
                 <TextView
                     android:id="@+id/adapter_tag_list_txttags"
                     android:layout_width="match_parent"
@@ -56,9 +54,16 @@
                     android:text="tag"
                     android:textColor="@color/logintext"
                     android:textSize="@dimen/_15sdp" />
-
             </LinearLayout>
+
         </LinearLayout>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/_1sdp"
+            android:layout_marginLeft="@dimen/_5sdp"
+            android:layout_marginRight="@dimen/_5sdp"
+            android:background="@color/logintext"
+            />
     </LinearLayout>
 
 </LinearLayout>

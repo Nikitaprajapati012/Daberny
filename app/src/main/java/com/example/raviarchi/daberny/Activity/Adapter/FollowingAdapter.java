@@ -58,7 +58,6 @@ public class FollowingAdapter extends RecyclerView.Adapter<FollowingAdapter.MyVi
         Id = userdetails.getUserId();
 
         holder.txtUsername.setText(userdetails.getUserUserName());
-
         if (userdetails.getUserImage().length() > 0) {
             Picasso.with(context).load(userdetails.getUserImage()).
                     transform(new RoundedTransformation(120, 2)).placeholder(R.drawable.ic_placeholder).into(holder.imgProfile);
@@ -95,13 +94,8 @@ public class FollowingAdapter extends RecyclerView.Adapter<FollowingAdapter.MyVi
                 Fragment fragment = new OtherUserProfile();
                 Bundle bundle = new Bundle();
                 bundle.putString("id", userdetails.getUserId());
-                if (fragment != null) {
-                    fragment.setArguments(bundle);
-                    FragmentManager fm = ((FragmentActivity) context).getSupportFragmentManager();
-                    FragmentTransaction transaction = fm.beginTransaction();
-                    transaction.replace(R.id.frame_contain_layout, fragment);
-                    transaction.commit();
-                }
+                fragment.setArguments(bundle);
+                utils.replaceFragment(fragment);
             }
         });
     }

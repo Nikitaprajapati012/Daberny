@@ -66,20 +66,14 @@ public class BlockedUsersAdapter extends RecyclerView.Adapter<BlockedUsersAdapte
             placeholder(R.drawable.ic_placeholder).into(holder.imgProfile);
         }
 
-        holder.linearLayoutPeople.setOnClickListener(new View.OnClickListener() {
+        holder.linearLayoutblockuser.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Fragment fragment = new OtherUserProfile();
                 Bundle bundle = new Bundle();
                 bundle.putString("id", userdetails.getUserId());
-
-                if (fragment != null) {
-                    fragment.setArguments(bundle);
-                    FragmentManager fm = ((FragmentActivity) context).getSupportFragmentManager();
-                    FragmentTransaction transaction = fm.beginTransaction();
-                    transaction.replace(R.id.frame_contain_layout, fragment);
-                    transaction.commit();
-                }
+                fragment.setArguments(bundle);
+                utils.replaceFragment(fragment);
             }
         });
 
@@ -90,16 +84,14 @@ public class BlockedUsersAdapter extends RecyclerView.Adapter<BlockedUsersAdapte
         return arrayUserList.size();
     }
 
-
     public class MyViewHolder extends RecyclerView.ViewHolder {
-
-        @BindView(R.id.adapter_people_list_txtusername)
+        @BindView(R.id.adapter_blockuser_list_txtusername)
         TextView txtUsername;
-        @BindView(R.id.adapter_people_list_txtfullname)
+        @BindView(R.id.adapter_blockuser_list_txtfullname)
         TextView txtFullname;
-        @BindView(R.id.adapter_people_list_layout)
-        LinearLayout linearLayoutPeople;
-        @BindView(R.id.adapter_people_list_imgprofilepic)
+        @BindView(R.id.adapter_blockuser_list_layout)
+        LinearLayout linearLayoutblockuser;
+        @BindView(R.id.adapter_blockuser_list_imgprofilepic)
         ImageView imgProfile;
 
         public MyViewHolder(View itemView) {

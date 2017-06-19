@@ -30,9 +30,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import static com.facebook.FacebookSdk.getApplicationContext;
 
-
-/**
- * Created by Ravi archi on 1/10/2017.
+/*** Created by Ravi archi on 1/10/2017.
  */
 
 public class InboxUsers extends Fragment implements View.OnClickListener {
@@ -91,25 +89,15 @@ public class InboxUsers extends Fragment implements View.OnClickListener {
                 break;
             case R.id.header_iconplus:
                 Fragment fragment = new SearchChatPeople();
-                FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-                FragmentTransaction transaction = fragmentManager.beginTransaction();
-                transaction.replace(R.id.frame_contain_layout, fragment);
-                transaction.addToBackStack(null);
-                transaction.commit();
-
+                utils.replaceFragment(fragment);
                 break;
         }
     }
 
     private void openInboxPeopleDetailsList() {
-
         // TODO: 2/28/2017 set following peoplelist
         InboxUsersAdapter adapter = new InboxUsersAdapter(getActivity(), arrayUserList);
-        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
-        recyclerViewInboxUsers.setLayoutManager(mLayoutManager);
-        recyclerViewInboxUsers.setItemAnimator(new DefaultItemAnimator());
-        recyclerViewInboxUsers.setAdapter(adapter);
-        adapter.notifyDataSetChanged();
+        utils.setAdapterForList(recyclerViewInboxUsers,adapter);
     }
 
     private class GetInboxPeopleDetails extends AsyncTask<String, String, String> {
@@ -156,6 +144,7 @@ public class InboxUsers extends Fragment implements View.OnClickListener {
                         details.setUserMsgSender(followingObject.getString("sender_msg"));
                         details.setUserMsgPostDate(followingObject.getString("post_date"));
                         details.setUserMsgType(followingObject.getString("type"));
+                        details.setUserMsgStatus(followingObject.getString("read_status"));
                         arrayUserList.add(details);
                     }
                     if (arrayUserList.size() > 0) {

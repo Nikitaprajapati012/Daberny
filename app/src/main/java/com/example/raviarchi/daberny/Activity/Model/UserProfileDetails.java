@@ -17,6 +17,9 @@ public class UserProfileDetails {
     private ArrayList<String> intId;
     private ArrayList<String> userFollowingId;
     private ArrayList<String> userFollowingName;
+    private ArrayList<String> getjsonData;
+    private String jsonStatus;
+    private String jsonMessage;
     private String queVoteCount1;
     private String queVoteCount2;
     private String queVoteCount3;
@@ -26,6 +29,7 @@ public class UserProfileDetails {
     private String queVotePercentage3;
     private String queVotePercentage4;
     private String userFullName;
+    private String userMobileNumber;
     private String otherUserFullName;
     private String userUserName;
     private String otherUserName;
@@ -34,6 +38,143 @@ public class UserProfileDetails {
     private String userCountryName;
     private String userImage;
     private String otherUserImage;
+    private String userPosts;
+    private String userFollowId;
+    private String userFollowers;
+    private String userFollowing;
+    private String userInterestName;
+    private String userId;
+    private String otherUserId;
+    private String userInterestTitle;
+    private String userInterestStartName;
+    private String userInterestEndName;
+    private String userInterestId;
+    private String queTitle;
+    private String queTag;
+    private String queId;
+    private String queOptionFirst;
+    private String queOptionSecond;
+    private String queOptionThird;
+    private String queOptionFourth;
+    private String queImage;
+    private String queImageName;
+    private String queAnswer;
+    private Long queCreatedTime;
+    private Long queTiming;
+    private Long queRemainTime;
+    private String queTimingDuration;
+    private String queCategory;
+    private String quePostDate;
+    private String queType;
+    private String queCommentId;
+    private String queComment;
+    private String userMessage;
+    private String queVoteStatus;
+    private String userCanVote;
+    private String queCommentUser;
+    private String queCommentUserProfilePic;
+    private String queCommentUserId;
+    private int queVoteTotalCount;
+    private int queLikeTotalCount;
+    private boolean isSelected;
+    private String userFollowStatus;
+    private String queLikeStatus;
+    private String queNotificationStatus;
+    private int queNotificationCount;
+    private String queNotificationId;
+    private String queNotificationContentId;
+    private String queNotificationType;
+    private String queRemainHour;
+    private String queRemainMinute;
+    private String queRemainSecond;
+    private String userBlockStatus;
+    private String userMsgSender;
+    private String userMsgReceiver;
+    private String userMsgPostDate;
+    private String userMsgType;
+    private String userMsgStatus;
+    private String userContactName;
+    private String userContactNumber;
+    private Message inserted_data;
+
+    public UserProfileDetails() {
+    }
+    public UserProfileDetails(String quename, boolean isSelected) {
+        this.queTitle = quename;
+        this.isSelected = isSelected;
+    }
+
+    public ArrayList<String> getGetjsonData() {
+        return getjsonData;
+    }
+
+    public void setGetjsonData(ArrayList<String> getjsonData) {
+        this.getjsonData = getjsonData;
+    }
+
+    public String getJsonStatus() {
+        return jsonStatus;
+    }
+
+    public void setJsonStatus(String jsonStatus) {
+        this.jsonStatus = jsonStatus;
+    }
+
+    public String getJsonMessage() {
+        return jsonMessage;
+    }
+
+    public void setJsonMessage(String jsonMessage) {
+        this.jsonMessage = jsonMessage;
+    }
+
+    public String getUserMobileNumber() {
+        return userMobileNumber;
+    }
+
+    public void setUserMobileNumber(String userMobileNumber) {
+        this.userMobileNumber = userMobileNumber;
+    }
+
+    public String getUserContactNumber() {
+        return userContactNumber;
+    }
+
+    public void setUserContactNumber(String userContactNumber) {
+        this.userContactNumber = userContactNumber;
+    }
+
+    public String getUserContactName() {
+        return userContactName;
+    }
+
+    public void setUserContactName(String userContactName) {
+        this.userContactName = userContactName;
+    }
+
+    public String getUserMsgStatus() {
+        return userMsgStatus;
+    }
+
+    public void setUserMsgStatus(String userMsgStatus) {
+        this.userMsgStatus = userMsgStatus;
+    }
+
+    public int getQueNotificationCount() {
+        return queNotificationCount;
+    }
+
+    public void setQueNotificationCount(int queNotificationCount) {
+        this.queNotificationCount = queNotificationCount;
+    }
+
+    public Long getQueRemainTime() {
+        return queRemainTime;
+    }
+
+    public void setQueRemainTime(Long queRemainTime) {
+        this.queRemainTime = queRemainTime;
+    }
 
     public String getOtherUserFullName() {
         return otherUserFullName;
@@ -59,72 +200,12 @@ public class UserProfileDetails {
         this.otherUserImage = otherUserImage;
     }
 
-    private String userPosts;
-    private String userFollowId;
-    private String userFollowers;
-    private String userFollowing;
-    private String userInterestName;
-    private String userId;
-    private String otherUserId;
-    private String userInterestTitle;
-    private String userInterestStartName;
-    private String userInterestEndName;
-    private String userInterestId;
-    private String queTitle;
-    private String queTag;
-    private String queId;
-    private String queOptionFirst;
-    private String queOptionSecond;
-    private String queOptionThird;
-    private String queOptionFourth;
-    private String queImage;
-    private String queImageName;
-    private String queAnswer;
-    private Long queCreatedTime;
-    private Long queTiming;
-    private String queTimingDuration;
-    private String queCategory;
-    private String quePostDate;
-    private String queType;
-    private String queCommentId;
-    private String queComment;
-    private String userMessage;
-    private String queVoteStatus;
-    private String userCanVote;
-    private String queCommentUser;
-    private String queCommentUserProfilePic;
-    private String queCommentUserId;
-    private int queVoteTotalCount;
-    private int queLikeTotalCount;
-    private boolean isSelected;
-    private String userFollowStatus;
-    private String queLikeStatus;
-    private String queNotificationStatus;
-    private String queNotificationId;
-    private String queNotificationContentId;
-    private String queNotificationType;
-    private String queRemainHour;
-    private String queRemainMinute;
-    private String queRemainSecond;
-    private String userBlockStatus;
-    private String userMsgSender;
-    private String userMsgReceiver;
-    private String userMsgPostDate;
-
     public String getUserMsgType() {
         return userMsgType;
     }
 
     public void setUserMsgType(String userMsgType) {
         this.userMsgType = userMsgType;
-    }
-
-    private String userMsgType;
-    public UserProfileDetails() {
-    }
-    public UserProfileDetails(String quename, boolean isSelected) {
-        this.queTitle = quename;
-        this.isSelected = isSelected;
     }
 
     public String getOtherUserId() {

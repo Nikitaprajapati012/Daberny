@@ -2,8 +2,6 @@ package com.example.raviarchi.daberny.Activity.Activity;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
-import android.content.ContentValues;
-import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -30,14 +28,14 @@ import android.widget.Toast;
 
 import com.example.raviarchi.daberny.Activity.Adapter.ChatAdapter;
 import com.example.raviarchi.daberny.Activity.Model.UserProfileDetails;
+import com.example.raviarchi.daberny.Activity.Retrofit.ApiClient;
+import com.example.raviarchi.daberny.Activity.Retrofit.ApiInterface;
 import com.example.raviarchi.daberny.Activity.Utils.Constant;
-import com.example.raviarchi.daberny.Activity.Utils.RoundedTransformation;
 import com.example.raviarchi.daberny.Activity.Utils.Utils;
 import com.example.raviarchi.daberny.R;
 import com.google.gson.Gson;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
-import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -45,12 +43,14 @@ import org.json.JSONObject;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class ChatActivity extends AppCompatActivity implements View.OnClickListener {
     public ChatAdapter chatAdapter;
@@ -58,6 +58,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
     public UserProfileDetails details;
     public String strMsg, picturepath;
     public Uri uri;
+    public int REQUEST_CAMERA = 0, SELECT_FILE = 1;
     @BindView(R.id.activity_chat_msg_edmsg)
     EditText edMessage;
     @BindView(R.id.activity_chat_txtsend)
@@ -78,7 +79,6 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
     Utils utils;
     @BindView(R.id.activity_chat_msg_recycler)
     RecyclerView recyclerView;
-    public int REQUEST_CAMERA = 0, SELECT_FILE = 1;
     private Bitmap bitmap;
 
     @Override
@@ -87,6 +87,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_chat);
         ButterKnife.bind(this);
         init();
+        new GetChat(loginUserId, receiverId).execute();
         click();
     }
 
@@ -155,9 +156,11 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
                     return; // DO YOUR ERROR HANDLING
                 String image = getStringImage(bitmap);
                 picturepath = cursor.getString(columnIndex);
-                // TODO: 6/2/2017 send image in chat
-                sendmessage(loginUserId, receiverId,strMsg,picturepath);
                 cursor.close(); // close cursor
+                // TODO: 6/2/2017 send image in chat
+                if (picturepath != null) {
+                    sendmessageImage(loginUserId, receiverId, strMsg, picturepath);
+                }
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -165,6 +168,13 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
             Toast.makeText(this, "No Data Found", Toast.LENGTH_SHORT).show();
         }
     }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        new GetChat(loginUserId, receiverId).execute();
+    }
+
     public String getStringImage(Bitmap bmp) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         bmp.compress(Bitmap.CompressFormat.JPEG, 100, baos);
@@ -194,25 +204,6 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
-        // TODO: 5/29/2017 API Call for get chat details
-        new GetChat(loginUserId, receiverId).execute();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        new GetChat(loginUserId, receiverId).execute();
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        new GetChat(loginUserId, receiverId).execute();
-    }
-
-    @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.activity_chat_imggallery:
@@ -221,11 +212,11 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
 
             case R.id.activity_chat_txtsend:
                 strMsg = edMessage.getText().toString().replaceAll(" ", "%20");
-                if (!strMsg.equalsIgnoreCase("")){
-                    //sendmessage(loginUserId, receiverId, strMsg,picturepath);
-                    new SendMessage(loginUserId, receiverId, strMsg).execute();
+                if (strMsg != null) {
+                   //sendmessageImage(loginUserId, receiverId, strMsg, picturepath);
+                    new SendMessage(arrayUserList,loginUserId, receiverId, strMsg).execute();
                 }
-                ////new GetChat(loginUserId, receiverId).execute();
+                new GetChat(loginUserId, receiverId).execute();
                 break;
 
             case R.id.header_icon:
@@ -234,7 +225,6 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-
     // TODO: 6/2/2017 image from gallery intent
     private void galleryIntent() {
         Intent intentPickImage = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
@@ -242,48 +232,56 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     // TODO: 6/2/2017 send the message as well as image in chat
-    private void sendmessage(String loginUserId, String receiverId, String strMsg, String picturepath) {
+    private void sendmessageImage(String loginUserId, String receiverId, String strMsg, String picturepath) {
         //http://181.224.157.105/~hirepeop/host2/surveys/api/insert_chat_msg/677/669/hello
-       Log.d("path","@@"+picturepath);
-       Log.d("msg","@@"+strMsg);
-        if (picturepath != null){
-        Ion.with(this)
-                .load(Constant.QUESTION_BASE_URL + "insert_chat_msg")
-                .setMultipartParameter("sender_id", loginUserId)
-                .setMultipartParameter("recipient_id", receiverId)
-                .setMultipartFile("picture", new File(picturepath))
-                .asString()
-                .setCallback(new FutureCallback<String>() {
-                    @Override
-                    public void onCompleted(Exception e, String result) {
-                        Log.d("JSONRESULTChat", "#@@@@" + result);
-                    }
-                });
-    }else {
-           Ion.with(this)
-                   .load(Constant.QUESTION_BASE_URL + "insert_chat_msg")
-                   .setMultipartParameter("sender_id", loginUserId)
-                   .setMultipartParameter("recipient_id", receiverId)
-                   .setMultipartParameter("msg",strMsg)
-                   .asString()
-                   .setCallback(new FutureCallback<String>() {
-                       @Override
-                       public void onCompleted(Exception e, String result) {
-                           Log.d("JSONRESULTChat", "#@@@@" + result);
-                       }
-                   });
-       }
+        if (picturepath != null) {
+            Ion.with(this)
+                    .load(Constant.QUESTION_BASE_URL + "insert_chat_msg")
+                    .setMultipartParameter("sender_id", loginUserId)
+                    .setMultipartParameter("receiver_id", receiverId)
+                    .setMultipartFile("chat_picture", new File(picturepath))
+                    .asString()
+                    .setCallback(new FutureCallback<String>() {
+                        @Override
+                        public void onCompleted(Exception e, String result) {
+                            Log.d("JSONRESULTChat", "#@@@@" + result);
+                            try {
+                                JSONObject jsonObject = new JSONObject(result);
+                                if (jsonObject.getString("status").equalsIgnoreCase("true")) {
+                                    JSONObject object = jsonObject.getJSONObject("inserted_data");
+                                    details = new UserProfileDetails();
+                                    details.setUserMsgType(object.getString("type"));
+                                    details.setUserMessage(object.getString("msg"));
+                                    // TODO: 6/5/2017 sender details
+                                    JSONObject senderobject = object.getJSONObject("sender_detail");
+                                    details.setUserId(senderobject.getString("id"));
+                                    details.setUserUserName(senderobject.getString("username"));
+                                    details.setUserImage(senderobject.getString("user_image"));
+                                    // TODO: 6/5/2017 receiver details
+                                    JSONObject receiverobject = object.getJSONObject("receiver_detail");
+                                    details.setOtherUserId(receiverobject.getString("id"));
+                                    details.setOtherUserName(receiverobject.getString("username"));
+                                    details.setOtherUserImage(receiverobject.getString("user_image"));
+                                    arrayUserList.add(details);
+                                }
+                                if (arrayUserList.size() > 0) {
+                                    edMessage.setText("");
+                                    openChatDetailsList();
+                                }
+                            } catch (Exception exp) {
+                                exp.printStackTrace();
+                            }
+
+                        }
+                    });
+        }
     }
 
 
     // TODO: 5/30/2017 bind the list with adapter
     private void openChatDetailsList() {
         chatAdapter = new ChatAdapter(ChatActivity.this, arrayUserList);
-        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(ChatActivity.this);
-        recyclerView.setLayoutManager(mLayoutManager);
-        recyclerView.setItemAnimator(new DefaultItemAnimator());
-        recyclerView.setAdapter(chatAdapter);
-        chatAdapter.notifyDataSetChanged();
+        utils.setAdapterForList(recyclerView,chatAdapter);
     }
 
     private class GetChat extends AsyncTask<String, String, String> {
@@ -355,13 +353,16 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
+    // TODO: 6/16/2017 send message in text
     private class SendMessage extends AsyncTask<String, String, String> {
         String strMessage, userId, receiver_Id;
+        ArrayList<UserProfileDetails> arrayUserList;
 
-        private SendMessage(String user_id, String receipt_id, String strMsg) {
+        private SendMessage(ArrayList<UserProfileDetails> arrayUserList, String user_id, String receipt_id, String strMsg) {
             this.userId = user_id;
             this.receiver_Id = receipt_id;
             this.strMessage = strMsg;
+            this.arrayUserList = arrayUserList;
         }
 
         @Override
@@ -372,8 +373,11 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
         @Override
         protected String doInBackground(String... params) {
             //http://181.224.157.105/~hirepeop/host2/surveys/api/insert_chat_msg/677/669/hello
-            String sendmessage = Constant.QUESTION_BASE_URL + "insert_chat_msg/" + loginUserId + "/" + receiver_Id + "/" + strMessage;
-            return Utils.getResponseofGet(sendmessage);
+            HashMap<String,String> hashMap = new HashMap<>();
+            hashMap.put("sender_id",loginUserId);
+            hashMap.put("receiver_id",receiver_Id);
+            hashMap.put("msg",strMessage);
+            return Utils.getResponseofPost(Constant.QUESTION_BASE_URL + "insert_chat_msg/" ,hashMap);
         }
 
         @Override
@@ -384,7 +388,6 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
                 JSONObject jsonObject = new JSONObject(s);
                 if (jsonObject.getString("status").equalsIgnoreCase("true")) {
                     JSONObject object = jsonObject.getJSONObject("inserted_data");
-                    arrayUserList = new ArrayList<>();
                     details = new UserProfileDetails();
                     details.setUserMsgType(object.getString("type"));
                     details.setUserMessage(object.getString("msg"));
@@ -403,7 +406,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
                     arrayUserList.add(details);
                 }
 
-                if(arrayUserList.size() > 0){
+                if (arrayUserList.size() > 0) {
                     edMessage.setText("");
                     openChatDetailsList();
 

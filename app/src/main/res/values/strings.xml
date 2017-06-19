@@ -53,6 +53,8 @@
 
     <!-- Facebook Login screen-->
     <string name="facebook_app_id">1303556883000422</string>
+    <string name="fb_login_protocol_scheme">fb1303556883000422</string>
+
 
     <!-- Interest  screen-->
     <string name="interest_movie">Movie</string>
@@ -112,9 +114,10 @@
     <string name="option4optional">Option 4 (Optional)</string>
     <string name="uploadfile">Upload image or video with maximum 30 second</string>
     <string name="yousentmsg">You sent a message</string>
+    <string name="discoverpeople">Discover People</string>
+    <string name="mobile">Mobile Number</string>
 
     <string-array name="time">
-
         <item>24:00:00</item>
         <item>23:30:00</item>
         <item>23:00:00</item>

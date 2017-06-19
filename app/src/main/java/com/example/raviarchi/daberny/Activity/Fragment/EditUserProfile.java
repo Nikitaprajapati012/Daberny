@@ -13,6 +13,8 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
 import android.util.Base64;
@@ -52,7 +54,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
@@ -61,10 +62,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import de.hdodenhof.circleimageview.CircleImageView;
 
-import static android.app.Activity.RESULT_OK;
-import static com.example.raviarchi.daberny.Activity.Utils.DbBitmapUtility.getBytes;
 import static com.facebook.FacebookSdk.getApplicationContext;
 
 /*** Created by Ravi archi on 1/10/2017.
@@ -74,7 +72,7 @@ public class EditUserProfile extends Fragment implements View.OnClickListener, M
     private static final String TAG = "EditUserProfile";
     public Utils utils;
     public UserProfileDetails details;
-    public String ID,userChoosenTask, FullName, UserName, Email, Country, InterestId, ImagePath, InterestName, StrInterest;
+    public String userId, userChoosenTask, FullName, UserName, MobileNumber, Email, Country, InterestId, ImagePath, InterestName, StrInterest;
     public Uri uri;
     public int REQUEST_CAMERA = 0, SELECT_FILE = 1;
     public ArrayAdapter<String> spinnerAdapter;
@@ -85,12 +83,15 @@ public class EditUserProfile extends Fragment implements View.OnClickListener, M
     public File file;
     public RelativeLayout headerView;
     public Toolbar toolBar;
+    public boolean result;
     @BindView(R.id.fragment_edit_user_profile_edfullname)
     EditText edFullName;
     @BindView(R.id.fragment_edit_user_profile_edusername)
     EditText edUserName;
     @BindView(R.id.fragment_edit_user_profile_edemail)
     EditText edEmail;
+    @BindView(R.id.fragment_edit_user_profile_edmobile)
+    EditText edMobileNumber;
     @BindView(R.id.fragment_edit_user_profile_imgprofilepic)
     ImageView imgProfilePic;
     @BindView(R.id.fragment_edit_user_profile_btnsubmit)
@@ -110,7 +111,6 @@ public class EditUserProfile extends Fragment implements View.OnClickListener, M
     @BindView(R.id.header_title)
     TextView txtTitle;
     private Bitmap bitmap;
-    public  boolean result;
 
     public static String convertStreamToString(FileOutputStream is) throws Exception {
         BufferedReader reader = new BufferedReader(new FileReader(String.valueOf(is)));
@@ -159,20 +159,20 @@ public class EditUserProfile extends Fragment implements View.OnClickListener, M
             StrInterest = Utils.ReadSharePrefrence(getActivity(), Constant.USER_INTERESTID);
             //spinnerIntererst.setSelection(new String[]{StrInterest});
             // TODO: 3/3/2017  get data from previous screen
-            ID = Utils.ReadSharePrefrence(getActivity(), Constant.USERID);
+            userId = Utils.ReadSharePrefrence(getActivity(), Constant.USERID);
             FullName = details.getUserFullName();
             UserName = details.getUserUserName();
             Email = details.getUserEmail();
+            MobileNumber = details.getUserMobileNumber();
             Country = details.getUserCountryName();
-            ImagePath = details.getUserImage();
             edFullName.setText(FullName);
             edUserName.setText(UserName);
             edEmail.setText(Email);
+            edMobileNumber.setText(MobileNumber);
             arrayCountryList.add(Country);
-            File imgFile = new File(ImagePath);
-            Bitmap myBitmap = BitmapFactory.decodeFile(ImagePath);
+            Bitmap myBitmap = BitmapFactory.decodeFile(details.getUserImage());
             imgProfilePic.setImageBitmap(myBitmap);
-            Picasso.with(getActivity()).load(ImagePath).
+            Picasso.with(getActivity()).load(details.getUserImage()).
                     transform(new RoundedTransformation(120, 2)).
                     placeholder(R.drawable.ic_placeholder).into(imgProfilePic);
 
@@ -201,7 +201,7 @@ public class EditUserProfile extends Fragment implements View.OnClickListener, M
                 cursor.moveToFirst();
                 int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
 
-               ImagePath = cursor.getString(columnIndex);
+                ImagePath = cursor.getString(columnIndex);
                 Log.d("image@@", ImagePath);
                 if (columnIndex < 0) // no column index
                     return; // DO YOUR ERROR HANDLING
@@ -235,7 +235,6 @@ public class EditUserProfile extends Fragment implements View.OnClickListener, M
         spinnerCountry.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
-
                 int sel;
                 if (position > 0) {
                     sel = (int) spinnerCountry.getItemIdAtPosition(position);
@@ -302,6 +301,7 @@ public class EditUserProfile extends Fragment implements View.OnClickListener, M
         });
         builder.show();
     }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -322,6 +322,7 @@ public class EditUserProfile extends Fragment implements View.OnClickListener, M
             }
         }
     }
+
     // TODO: 5/31/2017 image from camera
     public void onCaptureImageResult(Intent data) {
         String[] projection = {MediaStore.Images.Media.DATA};
@@ -338,6 +339,7 @@ public class EditUserProfile extends Fragment implements View.OnClickListener, M
         }
         imgProfilePic.setImageBitmap(bitmap);
     }
+
     // TODO: 6/7/2017  choose from gallery for image
     private void galleryIntent() {
         Intent intentPickImage = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
@@ -357,10 +359,13 @@ public class EditUserProfile extends Fragment implements View.OnClickListener, M
             startActivityForResult(takePictureIntent, REQUEST_CAMERA);
         }
     }
+
     private void getUserUpdatedDetails() {
         FullName = edFullName.getText().toString();
         UserName = edUserName.getText().toString();
         Email = edEmail.getText().toString();
+        MobileNumber = edMobileNumber.getText().toString();
+
         InterestId = "";
         for (int i = 0; i < interestID.size(); i++) {
             if (InterestId.length() > 0) {
@@ -369,48 +374,109 @@ public class EditUserProfile extends Fragment implements View.OnClickListener, M
                 InterestId = interestID.get(i);
             }
         }
-        Log.d("interest_id@@", "interest id =" + InterestId + "\n" + "interest name" + InterestName);
-        // if (FullName.equalsIgnoreCase("")) {
-        //   if (UserName.equalsIgnoreCase("")) {
-        //  if (Email.equalsIgnoreCase("")) {
-        //   if (Country.length() > 0) {
-        if (InterestId.length() > 0) {
-            try {
-                Ion.with(getContext())
-                        .load(Constant.QUESTION_BASE_URL + "user_update_profile_with_interest")
-                        .setMultipartParameter("user_id", URLEncoder.encode(ID, "UTF-8"))
-                        .setMultipartParameter("fullname", URLEncoder.encode(FullName, "UTF-8"))
-                        .setMultipartParameter("username", URLEncoder.encode(UserName, "UTF-8"))
-                        .setMultipartParameter("email", URLEncoder.encode(Email, "UTF-8"))
-                        .setMultipartParameter("country_id", URLEncoder.encode(Country, "UTF-8"))
-                        .setMultipartParameter("interest_id", InterestId)
-                        .setMultipartFile("image", new File(ImagePath))
-                        .asString()
-                        .setCallback(new FutureCallback<String>() {
-                            @Override
-                            public void onCompleted(Exception e, String result) {
-                                Log.d("JSONRESULT@@" + "", result);
-                            }
-                        });
-            } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
-            }
-//            new UpdateUserDetails(ID, ImagePath, FullName, UserName, Email, Country, InterestId).execute();
-        } else {
-            Toast.makeText(getActivity(), "Please Enter Interest", Toast.LENGTH_SHORT).show();
-            // }
-                            /*} else {
-                                Toast.makeText(getActivity(), "Please Enter Country", Toast.LENGTH_SHORT).show();
+        if (FullName.length() > 0) {
+            if (UserName.length() > 0) {
+                if (Email.length() > 0) {
+                    if (Country.length() > 0) {
+                        if (InterestId.length() > 0) {
+                            if (ImagePath == null) {
+                                //http://181.224.157.105/~hirepeop/host2/surveys/api/user_update_profile_with_interest/752/niki patel/niki/9898240378/archirayan7%40gmail.com/1/1,2,3
+                                try {
+                                    Ion.with(getContext())
+                                            .load(Constant.QUESTION_BASE_URL + "user_update_profile_with_interest")
+                                            .setMultipartParameter("user_id", URLEncoder.encode(userId, "UTF-8"))
+                                            .setMultipartParameter("fullname", URLEncoder.encode(FullName, "UTF-8"))
+                                            .setMultipartParameter("username", URLEncoder.encode(UserName, "UTF-8"))
+                                            .setMultipartParameter("email", URLEncoder.encode(Email, "UTF-8"))
+                                            .setMultipartParameter("mobile_no", URLEncoder.encode(MobileNumber, "UTF-8"))
+                                            .setMultipartParameter("country_id", URLEncoder.encode(Country, "UTF-8"))
+                                            .setMultipartParameter("interest_id", InterestId)
+                                            .asString()
+                                            .setCallback(new FutureCallback<String>() {
+                                                @Override
+                                                public void onCompleted(Exception e, String result) {
+                                                    Log.d("JSONRESULT@@", result);
+                                                    try {
+                                                        JSONObject jsonObject = new JSONObject(result);
+                                                        if (jsonObject.getString("status").equalsIgnoreCase("true")) {
+                                                            Toast.makeText(getActivity(), jsonObject.getString("msg"), Toast.LENGTH_SHORT).show();
+                                                            JSONObject queObj = jsonObject.getJSONObject("inserted_data");
+                                                            arrayList = new ArrayList<>();
+                                                            details = new UserProfileDetails();
+                                                            details.setUserId(queObj.getString("user_id"));
+                                                            arrayList.add(details);
+                                                            if (arrayList.size() > 0) {
+                                                                Fragment fragment = new UserProfile();
+                                                                utils.replaceFragment(fragment);
+                                                            }
+                                                        } else {
+                                                            Toast.makeText(getActivity(), jsonObject.getString("msg"), Toast.LENGTH_SHORT).show();
+                                                        }
+                                                    } catch (JSONException e1) {
+                                                        e1.printStackTrace();
+                                                    }
+                                                }
+                                            });
+                                } catch (UnsupportedEncodingException e) {
+                                    e.printStackTrace();
+                                }
+                            } else {
+                                try {
+                                    Log.d("imageee@@", ImagePath);
+                                    Ion.with(getContext())
+                                            .load(Constant.QUESTION_BASE_URL + "user_update_profile_with_interest")
+                                            .setMultipartParameter("user_id", URLEncoder.encode(userId, "UTF-8"))
+                                            .setMultipartParameter("fullname", URLEncoder.encode(FullName, "UTF-8"))
+                                            .setMultipartParameter("username", URLEncoder.encode(UserName, "UTF-8"))
+                                            .setMultipartParameter("email", URLEncoder.encode(Email, "UTF-8"))
+                                            .setMultipartParameter("mobile_no", URLEncoder.encode(MobileNumber, "UTF-8"))
+                                            .setMultipartParameter("country_id", URLEncoder.encode(Country, "UTF-8"))
+                                            .setMultipartParameter("interest_id", InterestId)
+                                            .setMultipartFile("name", new File(ImagePath))
+                                            .asString()
+                                            .setCallback(new FutureCallback<String>() {
+                                                @Override
+                                                public void onCompleted(Exception e, String result) {
+                                                    Log.d("JSONRESULT@@", result);
+                                                    try {
+                                                        JSONObject jsonObject = new JSONObject(result);
+                                                        if (jsonObject.getString("status").equalsIgnoreCase("true")) {
+                                                            Toast.makeText(getActivity(), jsonObject.getString("msg"), Toast.LENGTH_SHORT).show();
+                                                            JSONObject queObj = jsonObject.getJSONObject("inserted_data");
+                                                            arrayList = new ArrayList<>();
+                                                            details = new UserProfileDetails();
+                                                            details.setUserId(queObj.getString("user_id"));
+                                                            arrayList.add(details);
+                                                            if (arrayList.size() > 0) {
+                                                                Fragment fragment = new UserProfile();
+                                                                utils.replaceFragment(fragment);
+                                                            }
+                                                        } else {
+                                                            Toast.makeText(getActivity(), jsonObject.getString("msg"), Toast.LENGTH_SHORT).show();
+                                                        }
+                                                    } catch (JSONException e1) {
+                                                        e1.printStackTrace();
+                                                    }
+                                                }
+                                            });
+                                } catch (UnsupportedEncodingException e) {
+                                    e.printStackTrace();
+                                }
                             }
                         } else {
-                            Toast.makeText(getActivity(), "Please Enter Email", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getActivity(), "Please Enter Interest", Toast.LENGTH_SHORT).show();
                         }
                     } else {
-                        Toast.makeText(getActivity(), "Please Enter User Name", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getActivity(), "Please Enter Country", Toast.LENGTH_SHORT).show();
                     }
                 } else {
-                    Toast.makeText(getActivity(), "Please Enter Full Name", Toast.LENGTH_SHORT).show();
-                }*/
+                    Toast.makeText(getActivity(), "Please Enter Email", Toast.LENGTH_SHORT).show();
+                }
+            } else {
+                Toast.makeText(getActivity(), "Please Enter User Name", Toast.LENGTH_SHORT).show();
+            }
+        } else {
+            Toast.makeText(getActivity(), "Please Enter Full Name", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -418,7 +484,6 @@ public class EditUserProfile extends Fragment implements View.OnClickListener, M
     public void selectedIndices(List<Integer> indices) {
         interestID = new ArrayList<>();
         getinterestidspinner = indices.toArray();
-
         for (int i = 0; i < getinterestidspinner.length; i++) {
             interestID.add(arrayInterestIdList.get((Integer) getinterestidspinner[i]));
         }
@@ -428,9 +493,7 @@ public class EditUserProfile extends Fragment implements View.OnClickListener, M
     public void selectedStrings(List<String> strings) {
         InterestName = strings.toString().replace("[", "").replace("]", "")
                 .replace(", ", ",");
-
         Log.d("interest_name ", "string=" + InterestName);
-
     }
 
     // TODO: 2/21/2017 get list of Interest from URL
@@ -479,7 +542,6 @@ public class EditUserProfile extends Fragment implements View.OnClickListener, M
             } else {
                 Toast.makeText(getActivity(), "No Interest Found, Please Try Again.", Toast.LENGTH_SHORT).show();
             }
-
         }
     }
 
@@ -500,7 +562,7 @@ public class EditUserProfile extends Fragment implements View.OnClickListener, M
         @Override
         protected String doInBackground(String... strings) {
             //http://181.224.157.105/~hirepeop/host2/surveys/api/country_list/
-            return utils.getResponseofGet(Constant.QUESTION_BASE_URL + "country_list/");
+            return Utils.getResponseofGet(Constant.QUESTION_BASE_URL + "country_list/");
         }
 
         @Override
@@ -529,99 +591,10 @@ public class EditUserProfile extends Fragment implements View.OnClickListener, M
                 spinnerAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_item, arrayCountryList);
                 spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                 spinnerCountry.setAdapter(spinnerAdapter);
-
             } else {
                 Toast.makeText(getActivity(), "No Country Found, Please Try Again.", Toast.LENGTH_SHORT).show();
             }
 
         }
-
     }
-
-//    private class UpdateUserDetails extends AsyncTask<String, String, String> {
-//        ProgressDialog pd;
-//        String userid, fullname, username, email, country, interest
-//        , profilepicfile;
-//
-//        public UpdateUserDetails(String userid, String profilePic, String fullName, String userName, String email, String country, String interest) {
-//            this.userid = userid;
-//            this.profilepicfile = profilePic;
-//            this.fullname = fullName;
-//            this.username = userName;
-//            this.email = email;
-//            this.country = country;
-//            this.interest = interest;
-//        }
-//
-//        @Override
-//        protected void onPreExecute() {
-//            super.onPreExecute();
-//            arrayList = new ArrayList<>();
-//            pd = new ProgressDialog(getActivity());
-//            pd.setMessage("Loading");
-//            pd.setCancelable(false);
-//            pd.show();
-//        }
-//
-//        @Override
-//        protected String doInBackground(String... strings) {
-//
-//            HashMap<String, String> hashMap = new HashMap<>();
-//
-//            try {
-//                hashMap.put("user_id", URLEncoder.encode(userid, "UTF-8"));
-//                hashMap.put("fullname", URLEncoder.encode(fullname, "UTF-8"));
-//                hashMap.put("username", URLEncoder.encode(username, "UTF-8"));
-//                hashMap.put("email", URLEncoder.encode(email, "UTF-8"));
-//                hashMap.put("image", URLEncoder.encode(profilepicfile, "UTF-8"));
-//                hashMap.put("country_id", country);
-//                hashMap.put("interest_id", interest);
-//            } catch (UnsupportedEncodingException e) {
-//                e.printStackTrace();
-//            }
-//            //http://181.224.157.105/~hirepeop/host2/surveys/api/user_update_profile_with_interest/805/Tulips.jpg/archirayan/nikita/archirayan35%40gmail.com/1/0,1,4
-//            // return utils.getResponseofGet(Constant.QUESTION_BASE_URL + "user_update_profile_with_interest/" + ID + "/" + profilepic + "/" + fullname + "/" + username + "/" + URLEncoder.encode(email, "UTF-8") + "/" + country + "/" + interest);
-//            return utils.getResponseofPost(Constant.QUESTION_BASE_URL + "user_update_profile_with_interest", hashMap);
-//        }
-//
-//        @Override
-//        protected void onPostExecute(String s) {
-//            super.onPostExecute(s);
-//            Log.d("RESPONSE", "Update UserDetails..." + s);
-//            pd.dismiss();
-//            try {
-//                JSONObject jsonObject = new JSONObject(s);
-//                if (jsonObject.getString("status").equalsIgnoreCase("true")) {
-//                   /* JSONObject userObject = jsonObject.getJSONObject("inserted_data");
-//                    JSONObject interestObject = jsonObject.getJSONObject("0");
-//                    JSONArray interestArray = interestObject.getJSONArray("interest_id");
-//                    for (int i = 0; i < interestArray.length(); i++) {
-//                        JSONObject interest = interestArray.getJSONObject(i);
-//                        arrayInterestIdList.add(interest.getString("id"));
-//                        arrayInterestList.add(interest.getString("name"));
-//                    }
-//                    details = new UserProfileDetails();
-//                    details.setUserFullName(userObject.getString("fullname"));
-//                    details.setUserUserName(userObject.getString("username"));
-//                    details.setUserEmail(userObject.getString("email"));
-//                    details.setUserCountryId(userObject.getString("country_id"));
-//                    details.setUserImage(userObject.getString("image"));
-//
-//                    arrayList.add(details);*/
-//                    Toast.makeText(getActivity(), jsonObject.getString("msg"), Toast.LENGTH_SHORT).show();
-//                } else {
-//                    Toast.makeText(getActivity(), jsonObject.getString("msg"), Toast.LENGTH_SHORT).show();
-//                }
-//
-//            } catch (JSONException e) {
-//                e.printStackTrace();
-//            }
-//           /* if (arrayList.size() > 0) {
-//                Toast.makeText(getActivity(), "User Details Updated Successfully", Toast.LENGTH_SHORT).show();
-//
-//            } else {
-//                Toast.makeText(getActivity(), "User Details not Updated, Please Try Again.", Toast.LENGTH_SHORT).show();
-//            }*/
-//        }
-//    }
 }

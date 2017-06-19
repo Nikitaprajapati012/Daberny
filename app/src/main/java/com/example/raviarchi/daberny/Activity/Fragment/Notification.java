@@ -135,10 +135,6 @@ public class Notification extends Fragment {
     // TODO: 5/22/2017 set the lotification in list.
     private void openNotificationList() {
         adapter = new NotificationAdapter(getActivity(), arrayUserList);
-        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
-        recyclerView.setLayoutManager(mLayoutManager);
-        recyclerView.setItemAnimator(new DefaultItemAnimator());
-        recyclerView.setAdapter(adapter);
-        adapter.notifyDataSetChanged();
+        utils.setAdapterForList(recyclerView,adapter);
     }
 }

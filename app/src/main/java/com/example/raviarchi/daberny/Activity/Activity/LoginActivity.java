@@ -29,6 +29,8 @@ import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
+import com.facebook.GraphRequest;
+import com.facebook.GraphResponse;
 import com.facebook.appevents.AppEventsLogger;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
@@ -151,7 +153,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         }
         switch (v.getId()) {
             case R.id.activity_login_layoutsigninwithfb:
-                //btnFbLogin.performClick();
+                btnFbLogin.performClick();
                 break;
 
             case R.id.activity_login_txtsignuphere:
@@ -176,19 +178,29 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         btnFbLogin.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
-                Log.d("LOGIN_RESULT", "" + loginResult);
-                Toast.makeText(LoginActivity.this, "Facebook Login", Toast.LENGTH_SHORT).show();
-              /*  GraphRequest request = GraphRequest.newMeRequest(loginResult.getAccessToken(), new GraphRequest.GraphJSONObjectCallback() {
+                Log.d("LOGIN_RESULT", "@@" + loginResult);
+                String token = loginResult.getAccessToken().getToken();
 
+                Utils.WriteSharePrefrence(LoginActivity.this, Constant.FB_ACCESS_TOKEN, loginResult.getAccessToken().toString());
+
+                Toast.makeText(LoginActivity.this, "Facebook Login", Toast.LENGTH_SHORT).show();
+                GraphRequest request = GraphRequest.newMeRequest(loginResult.getAccessToken(), new GraphRequest.GraphJSONObjectCallback() {
                     @Override
                     public void onCompleted(JSONObject object, GraphResponse response) {
                         Log.d("LoginActivity Response ", response.toString() + " -- " + object.toString());
                         try {
-                            FbName = object.getString("name");
-                            Fbemail = object.getString("email");
-                            FbId = object.getString("id");
+                            String FbName = object.getString("name");
+                            String Fbemail = object.getString("email");
+                            String FbId = object.getString("id");
+//                            new GetLogin().execute();
+                            Toast.makeText(LoginActivity.this, "id :" + FbId, Toast.LENGTH_SHORT).show();
+//                            JSONArray rawName = response.getJSONObject().getJSONArray("data");
+//                                    intent.putExtra("jsondata", rawName.toString());
+//                                    startActivity(intent);
+                            Utils.WriteSharePrefrence(LoginActivity.this, Constant.FB_USER_ID, FbId);
 
-                          //  new GetLogin().execute();
+                            Intent imain = new Intent(LoginActivity.this, MainActivity.class);
+                            startActivity(imain);
 
                             Log.d("Data", FbId + " -- " + Fbemail + " -- " + FbName);
                         } catch (JSONException e) {
@@ -200,7 +212,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 Bundle parameters = new Bundle();
                 parameters.putString("fields", "id,name,email,gender,birthday");
                 request.setParameters(parameters);
-                request.executeAsync();*/
+                request.executeAsync();
+
             }
 
             @Override
@@ -213,14 +226,18 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
             }
         });
-
     }
 
     private void doSomethingElse() {
         startActivity(new Intent(LoginActivity.this, MainActivity.class));
         LoginActivity.this.finish();
     }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
 
+        callbackManager.onActivityResult(requestCode, resultCode, data);
+    }
     /*private class GetFacebookLogin extends AsyncTask<String, String, String> {
         ProgressDialog pd;
 
@@ -324,8 +341,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                     Toast.makeText(LoginActivity.this, jsonObject.getString("msg"), Toast.LENGTH_SHORT).show();
                     Utils.WriteSharePrefrence(LoginActivity.this, Constant.USERID, jsonSecondOnject.getString("id"));
                     Utils.WriteSharePrefrence(LoginActivity.this, Constant.USER_EMAIL, jsonSecondOnject.getString("email"));
-                    JSONObject userObject = jsonObject.getJSONObject("user_details");
-                    JSONArray jsonArray =userObject.getJSONArray("ranks");
+                    Utils.WriteSharePrefrence(LoginActivity.this, Constant.NOTIFICATION, jsonSecondOnject.getString("notification_count"));
+                    JSONArray jsonArray = jsonSecondOnject.getJSONArray("ranks");
                     if (jsonArray.length() > 0) {
                         for (int i = 0; i < jsonArray.length(); i++) {
                             JSONObject interestObject = jsonArray.getJSONObject(i);

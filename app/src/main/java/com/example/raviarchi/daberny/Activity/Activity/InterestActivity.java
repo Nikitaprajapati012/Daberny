@@ -92,7 +92,6 @@ public class InterestActivity extends AppCompatActivity implements View.OnClickL
                     new StoreInterest(InterestId).execute();
                     Intent isave = new Intent(InterestActivity.this, MainActivity.class);
                     Utils.WriteSharePrefrence(InterestActivity.this, Constant.INTERESTID, InterestId);
-                    Log.d("interest_write", InterestId);
                     startActivity(isave);
                 } else {
                   //  Toast.makeText(this, "Interest not Stored,Please try again", Toast.LENGTH_SHORT).show();

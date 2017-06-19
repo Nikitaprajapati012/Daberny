@@ -43,16 +43,16 @@ import static com.facebook.FacebookSdk.getApplicationContext;
 public class Follower extends Fragment implements View.OnClickListener {
     public Utils utils;
     public UserProfileDetails details;
-    public String ID;
+    public String ID, userId;
     public ArrayList<String> arrayInterestList, arrayInterestIdList, arrayInterestEndName, arrayInterestStartName;
+    public Toolbar toolBar;
+    public TextView txtTitle;
+    public RelativeLayout headerView;
     @BindView(R.id.fragment_follower_recycler_followerlist)
     RecyclerView recyclerViewFollower;
     @BindView(R.id.fragment_follower_imgback)
     ImageView imgBack;
     private ArrayList<UserProfileDetails> arrayUserList;
-    public Toolbar toolBar;
-    public TextView txtTitle;
-    public RelativeLayout headerView;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -70,7 +70,8 @@ public class Follower extends Fragment implements View.OnClickListener {
 
     // TODO: 2/21/2017 initilization
     private void init() {
-     utils = new Utils(getActivity());
+        utils = new Utils(getActivity());
+        userId = Utils.ReadSharePrefrence(getActivity(), Constant.USERID);
         arrayUserList = new ArrayList<>();
         if (getArguments() != null) {
             Gson gson = new Gson();
@@ -78,7 +79,6 @@ public class Follower extends Fragment implements View.OnClickListener {
             details = gson.fromJson(strObj, UserProfileDetails.class);
             ID = details.getUserId();
         }
-
     }
 
     private void click() {
@@ -98,11 +98,7 @@ public class Follower extends Fragment implements View.OnClickListener {
     private void openFollowerPeopleDetailsList() {
         // TODO: 2/28/2017 set follower peoplelist
         FollowerAdapter adapter = new FollowerAdapter(getActivity(), arrayUserList);
-        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
-        recyclerViewFollower.setLayoutManager(mLayoutManager);
-        recyclerViewFollower.setItemAnimator(new DefaultItemAnimator());
-        recyclerViewFollower.setAdapter(adapter);
-        adapter.notifyDataSetChanged();
+        utils.setAdapterForList(recyclerViewFollower,adapter);
     }
 
     private class GetFollowerPeopleDetails extends AsyncTask<String, String, String> {
@@ -121,8 +117,8 @@ public class Follower extends Fragment implements View.OnClickListener {
         @Override
         protected String doInBackground(String... strings) {
             //http://hire-people.com/host2/surveys/api/followers_list/669
-            Log.d("URL" , Constant.QUESTION_BASE_URL + "followers_list/" + ID);
-            return Utils.getResponseofGet(Constant.QUESTION_BASE_URL + "followers_list/" + ID);
+            Log.d("URL", Constant.QUESTION_BASE_URL + "followers_list/" + ID);
+            return Utils.getResponseofGet(Constant.QUESTION_BASE_URL + "followers_list/" + userId + "/" + ID);
         }
 
         @Override
@@ -134,7 +130,7 @@ public class Follower extends Fragment implements View.OnClickListener {
             try {
                 JSONObject jsonObject = new JSONObject(s);
                 if (jsonObject.getString("status").equalsIgnoreCase("true")) {
-                   // JSONObject dataObject = jsonObject.getJSONObject("data");
+                    // JSONObject dataObject = jsonObject.getJSONObject("data");
                     JSONArray followerArray = jsonObject.getJSONArray("followers");
                     for (int i = 0; i < followerArray.length(); i++) {
                         JSONObject followerObject = followerArray.getJSONObject(i);
@@ -168,7 +164,7 @@ public class Follower extends Fragment implements View.OnClickListener {
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
-                Toast.makeText(getActivity(), "JSON Exception"+e.toString(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), "JSON Exception" + e.toString(), Toast.LENGTH_SHORT).show();
             }
         }
     }

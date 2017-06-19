@@ -66,11 +66,7 @@ public class BlockedUsers extends Fragment {
     private void openPeopleList() {
         // TODO: 2/21/2017 bind list and show in adapter
         adapter = new BlockedUsersAdapter(getActivity(), arrayUserList);
-        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
-        recyclerViewPeople.setLayoutManager(mLayoutManager);
-        recyclerViewPeople.setItemAnimator(new DefaultItemAnimator());
-        recyclerViewPeople.setAdapter(adapter);
-        adapter.notifyDataSetChanged();
+        utils.setAdapterForList(recyclerViewPeople,adapter);
     }
 
 
@@ -79,10 +75,9 @@ public class BlockedUsers extends Fragment {
         ProgressDialog pd;
         String user_id;
 
-        public GetBlockedUsersList(String userId) {
+        private GetBlockedUsersList(String userId) {
             this.user_id=userId;
         }
-
 
         @Override
         protected void onPreExecute() {

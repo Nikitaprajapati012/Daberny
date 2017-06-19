@@ -20,18 +20,22 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.example.raviarchi.daberny.Activity.Fragment.AddFriends;
 import com.example.raviarchi.daberny.Activity.Fragment.AskQuestionFragment;
+import com.example.raviarchi.daberny.Activity.Fragment.BlockedUsers;
 import com.example.raviarchi.daberny.Activity.Fragment.General;
 import com.example.raviarchi.daberny.Activity.Fragment.Home;
 import com.example.raviarchi.daberny.Activity.Fragment.InboxUsers;
 import com.example.raviarchi.daberny.Activity.Fragment.Notification;
-import com.example.raviarchi.daberny.Activity.Fragment.OtherUserProfile;
 import com.example.raviarchi.daberny.Activity.Fragment.Search;
 import com.example.raviarchi.daberny.Activity.Fragment.UserProfile;
 import com.example.raviarchi.daberny.Activity.Model.UserProfileDetails;
+import com.example.raviarchi.daberny.Activity.Utils.BadgeDrawable;
 import com.example.raviarchi.daberny.Activity.Utils.Constant;
 import com.example.raviarchi.daberny.Activity.Utils.Utils;
 import com.example.raviarchi.daberny.R;
+import com.facebook.CallbackManager;
+import com.facebook.login.LoginManager;
 
 import java.util.ArrayList;
 
@@ -43,14 +47,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public ImageView imgUserAdd, imgInbox, imgOption, imgHome, imgGeneral, imgSearch, imgAdd, imgNotification, imgUserProfile/*, imgCamera*/;
     public FragmentManager fragmentManager;
     public FragmentTransaction transaction;
-    public String Email, userId, InterestId;
+    public String userId,fbUserId;
     public Uri uri;
     public UserProfileDetails details;
     public ArrayList<UserProfileDetails> arrayInterestList;
     //private int REQUEST_CAMERA = 0;
     public Toolbar toolBar;
-    public TextView txtTitle;
+    public TextView txtTitle,txtNotificationCount;
     private boolean isChangedStat = false;
+    private CallbackManager callbackManager;
+    private LoginManager loginManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,9 +65,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         // TODO: 3/6/2017 utils intialize
         utils = new Utils(MainActivity.this);
         userId = ReadSharePrefrence(this, Constant.USERID);
+        fbUserId = ReadSharePrefrence(this, Constant.FB_USER_ID);
         String interest = ReadSharePrefrence(this, Constant.INTERESTID);
         Boolean isFirstTimeReg = utils.getReadSharedPrefrenceIsFirstTime();
-        if (userId.equals("")) {
+        if (userId.equals("")&& fbUserId.equals("")) {
             Intent i = new Intent(MainActivity.this, SplashActivity.class);
             startActivity(i);
         } else {
@@ -70,11 +77,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     Intent i = new Intent(MainActivity.this, InterestActivity.class);
                     startActivity(i);
                     utils.clearSharedPreferenceData();
-                    //   if (isFirstTimeReg.toString().length() > 0) {
-                   /* } else {
-                        Intent intent = new Intent(MainActivity.this, InterestActivity.class);
-                        startActivity(intent);
-                    }*/
                 }
             } else {
                 //TODO: 2/22/2017 actvitity main start
@@ -86,7 +88,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     // TODO: 2/23/2017 get id from previous account
-
     private void click() {
         //imgCamera.setOnClickListener(this);
         imgUserAdd.setOnClickListener(this);
@@ -110,6 +111,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         imgSearch = (ImageView) findViewById(R.id.footer_imgsearch);
         imgAdd = (ImageView) findViewById(R.id.footer_imgaddquestion);
         imgNotification = (ImageView) findViewById(R.id.footer_imgnotification);
+        txtNotificationCount = (TextView) findViewById(R.id.footer_badge_notification_count);
         imgUserProfile = (ImageView) findViewById(R.id.footer_imguserprofile);
         footerView.setVisibility(View.VISIBLE);
         toolBar = (Toolbar) findViewById(R.id.activity_main_toolbar);
@@ -117,7 +119,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         imgUserAdd = (ImageView) findViewById(R.id.toolbar_useradd);
         imgInbox = (ImageView) findViewById(R.id.toolbar_inbox);
         txtTitle = (TextView) findViewById(R.id.toolbar_title);
-        imgInbox.setOnClickListener(this);
+        if(Utils.ReadSharePrefrence(MainActivity.this,Constant.NOTIFICATION) != null){
+            if (Utils.ReadSharePrefrence(MainActivity.this,Constant.ISREAD).equalsIgnoreCase("unread"))
+            txtNotificationCount.setVisibility(View.VISIBLE);
+            txtNotificationCount.setText(Utils.ReadSharePrefrence(MainActivity.this,Constant.NOTIFICATION));
+        }
+        else{
+            txtNotificationCount.setVisibility(View.GONE);
+        }
     }
 
   /*  @Override
@@ -147,7 +156,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onClick(View v) {
         Fragment fragment = null;
-        fragmentManager = getSupportFragmentManager();
         Bundle bundle = new Bundle();
         switch (v.getId()) {
            /* case R.id.header_camera:
@@ -168,6 +176,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
             case R.id.toolbar_inbox:
                 fragment = new InboxUsers();
+                break;
+            case R.id.toolbar_useradd:
+                fragment = new AddFriends();
                 break;
 
             //home
@@ -210,6 +221,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.footer_imgnotification:
                 headerView.setVisibility(View.VISIBLE);
                 fragment = new Notification();
+                txtNotificationCount.setVisibility(View.GONE);
+                Utils.WriteSharePrefrence(MainActivity.this,Constant.ISREAD,"read");
                 imgHome.setBackgroundColor(ContextCompat.getColor(MainActivity.this, R.color.signinbg));
                 imgGeneral.setBackgroundColor(ContextCompat.getColor(MainActivity.this, R.color.signinbg));
                 imgSearch.setBackgroundColor(ContextCompat.getColor(MainActivity.this, R.color.signinbg));
@@ -245,43 +258,27 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         if (fragment != null) {
             fragment.setArguments(bundle);
-            transaction = fragmentManager.beginTransaction();
-            transaction.replace(R.id.frame_contain_layout, fragment);
-            transaction.addToBackStack(null);
-            transaction.commit();
+            utils.replaceFragment(fragment);
         }
     }
 
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
-        menu.clear();
-        if (isChangedStat) {
-            inflater.inflate(R.menu.popup, menu);
-        } else {
-            inflater.inflate(R.menu.userprofilemenu, menu);
-        }
+        inflater.inflate(R.menu.userprofilemenu, menu);
         return true;
     }
 
     public boolean onOptionsItemSelected(MenuItem item) {
         //option menu
         Fragment fragment = null;
-        if (isChangedStat) {
-
-            isChangedStat = false;
-
-        } else {
-
-            isChangedStat = true;
-
-        }
+        Bundle bundle = new Bundle();
         switch (item.getItemId()) {
             case R.id.menu_item_userprofile:
                 fragment = new UserProfile();
                 break;
 
             case R.id.menu_item_blockeduser:
-                fragment = new OtherUserProfile();
+                fragment = new BlockedUsers();
                 break;
 
             case R.id.menu_item_logout:
@@ -292,11 +289,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
         }
         if (fragment != null) {
-            fragmentManager = getSupportFragmentManager();
-            transaction = fragmentManager.beginTransaction();
-            transaction.replace(R.id.frame_contain_layout, fragment);
-            transaction.addToBackStack(null);
-            transaction.commit();
+            fragment.setArguments(bundle);
+            utils.replaceFragment(fragment);
         }
         return super.onOptionsItemSelected(item);
     }

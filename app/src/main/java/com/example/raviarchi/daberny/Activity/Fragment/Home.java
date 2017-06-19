@@ -12,7 +12,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -27,36 +26,32 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.sql.Time;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 
 
-/**
- * Created by Ravi archi on 1/10/2017.
+/*** Created by Ravi archi on 1/10/2017.
  */
 
 public class Home extends Fragment {
-    private static int current_page = 1;
     public RecyclerView recyclerViewHome;
     public Utils utils;
     public String Interest, userId;
     public UserProfileDetails details;
     public HomeAdapter adapter;
     public LinearLayoutManager layoutManager;
-    private ArrayList<UserProfileDetails> arrayUserList;
-    private ArrayList<String> arrayInterestList;
-    private ArrayList<String> arrayFollowingNameList;
-    private ArrayList<String> arrayFollowingIdList;
-    private ArrayList<String> arrayStartNameList;
-    private ArrayList<String> arrayEndNameList;
-    private ArrayList<String> arrayFollowingIDList;
     public Toolbar toolBar;
     public TextView txtTitle;
     public RelativeLayout layoutHeader;
+    private ArrayList<UserProfileDetails> arrayUserList;
+    private ArrayList<String> arrayFollowingNameList;
+    private ArrayList<String> arrayFollowingIdList;
+    private ArrayList<String> arrayInterestList;
+    private ArrayList<String> arrayStartNameList;
+    private ArrayList<String> arrayEndNameList;
+    private ArrayList<String> arrayFollowingIDList;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -87,19 +82,14 @@ public class Home extends Fragment {
 
     private void openQuetionList() {
         // TODO: 2/21/2017 bind list and show in adapter
-        adapter = new HomeAdapter(getActivity(), arrayUserList,arrayFollowingNameList,arrayFollowingIdList);
-        layoutManager = new LinearLayoutManager(getActivity());
-        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
-        recyclerViewHome.setLayoutManager(mLayoutManager);
-        recyclerViewHome.setItemAnimator(new DefaultItemAnimator());
-        recyclerViewHome.setAdapter(adapter);
-        adapter.notifyDataSetChanged();
+        adapter = new HomeAdapter(getActivity(), arrayUserList, arrayFollowingNameList, arrayFollowingIdList);
+        utils.setAdapterForList(recyclerViewHome,adapter);
     }
 
     // TODO: 2/21/2017 get list of Question from URL
     private class GetQuetionList extends AsyncTask<String, String, String> {
         ProgressDialog pd;
-        String timing;
+        String timing, remainTime;
 
         @Override
         protected void onPreExecute() {
@@ -115,7 +105,7 @@ public class Home extends Fragment {
 
         @Override
         protected String doInBackground(String... s) {
-            //NEW API== >   http://181.224.157.105/~hirepeop/host2/surveys/api/home_que_api/752
+            // http://181.224.157.105/~hirepeop/host2/surveys/api/home_que_api/752
             String response = Utils.getResponseofGet(Constant.QUESTION_BASE_URL + "home_que_api/" + userId);
             Log.d("RESPONSE", "All Question..." + response);
             try {
@@ -140,13 +130,18 @@ public class Home extends Fragment {
 
                         // TODO: 6/6/2017 set remain time
                         JSONObject remaintimeObj = questionObject.getJSONObject("remain_time");
-                        Utils.WriteSharePrefrence(getActivity(),Constant.REMAINTIME,""+remaintimeObj);
-                        if (remaintimeObj.length() > 0){
-                            details.setQueRemainHour(remaintimeObj.getString("hours"));
-                            details.setQueRemainMinute(remaintimeObj.getString("minutes"));
-                            details.setQueRemainSecond(remaintimeObj.getString("seconds"));
+                        Utils.WriteSharePrefrence(getActivity(), Constant.REMAINTIME, remaintimeObj.toString());
+                        if (remaintimeObj.length() > 0) {
+                            remainTime = remaintimeObj.getString("remain_time");
+                            SimpleDateFormat df = new SimpleDateFormat("HH:mm:ss");
+                            try {
+                                Date d = df.parse(remainTime);
+                                long timeStamp = Math.abs(d.getTime());
+                                details.setQueRemainTime(timeStamp);
+                            } catch (ParseException e) {
+                                e.printStackTrace();
+                            }
                         }
-
                         // TODO: 3/29/2017 get remaining  time
                         details.setQueCategory(questionObject.getString("name"));
                         details.setQueType(questionObject.getString("type"));
@@ -174,13 +169,11 @@ public class Home extends Fragment {
 
                         // TODO: 5/26/2017 set vote percentage of particular question
                         JSONObject percentageCountObj = answerObj.getJSONObject("percentage_count");
-                         details.setQueVotePercentage1(percentageCountObj.getString("1"));
-                         details.setQueVotePercentage2(percentageCountObj.getString("2"));
-                         details.setQueVotePercentage3(percentageCountObj.getString("3"));
-                         details.setQueVotePercentage4(percentageCountObj.getString("4"));
+                        details.setQueVotePercentage1(percentageCountObj.getString("1"));
+                        details.setQueVotePercentage2(percentageCountObj.getString("2"));
+                        details.setQueVotePercentage3(percentageCountObj.getString("3"));
+                        details.setQueVotePercentage4(percentageCountObj.getString("4"));
 
-                            // TODO: 3/25/2017 get like object
-                        // JSONObject userlike = answerObj.getJSONObject("likes");
                         // TODO: 3/22/2017 get user details
                         JSONObject userObject = questionObject.getJSONObject("user");
                         details.setUserImage(userObject.getString("user_image"));
@@ -222,7 +215,6 @@ public class Home extends Fragment {
                         try {
                             Date d = df.parse(timing);
                             long timeStamp = Math.abs(d.getTime());
-                            Log.d("step1","aaaaa"+timeStamp);
                             details.setQueTiming(timeStamp);
                         } catch (ParseException e) {
                             e.printStackTrace();
@@ -231,10 +223,12 @@ public class Home extends Fragment {
                     }
                     // TODO: 3/27/2017 get the list of following
                     JSONArray followingArray = jsonObject.getJSONArray("following");
-                    for (int f = 0; f < followingArray.length(); f++) {
-                        JSONObject followingObject = followingArray.getJSONObject(f);
-                        arrayFollowingIdList.add(followingObject.getString("follow_user_id").trim());
-                        arrayFollowingNameList.add(followingObject.getString("fullname").trim());
+                    if (followingArray.length() > 0) {
+                        for (int f = 0; f < followingArray.length(); f++) {
+                            JSONObject followingObject = followingArray.getJSONObject(f);
+                            arrayFollowingIdList.add(followingObject.getString("follow_user_id"));
+                            arrayFollowingNameList.add(followingObject.getString("username"));
+                        }
                     }
                 }
             } catch (JSONException e) {

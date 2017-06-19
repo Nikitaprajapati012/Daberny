@@ -193,10 +193,7 @@ public class UserProfile extends Fragment implements View.OnClickListener {
 
         if (fragment != null) {
             fragment.setArguments(bundle);
-            FragmentTransaction transaction = fragmentManager.beginTransaction();
-            transaction.replace(R.id.frame_contain_layout, fragment);
-            transaction.addToBackStack(null);
-            transaction.commit();
+            utils.replaceFragment(fragment);
         }
     }
 
@@ -347,8 +344,10 @@ public class UserProfile extends Fragment implements View.OnClickListener {
                     details.setUserImage(userObject.getString("image"));
                     details.setUserCountryId(userObject.getString("country_id"));
                     details.setUserCountryName(userObject.getString("country_name"));
+                    details.setUserMobileNumber(userObject.getString("mobile_no"));
                     //user interest array
                     JSONArray userArray = userObject.getJSONArray("user_interests");
+
                     if (userArray.length() > 0) {
                     for (int i = 0; i < userArray.length(); i++) {
                         JSONObject interestObject = userArray.getJSONObject(i);

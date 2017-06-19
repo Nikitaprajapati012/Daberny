@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:gravity="right"
         android:padding="@dimen/_5sdp"
-        android:textColor="@color/cardview_dark_background"
+        android:textColor="@color/black"
         android:textSize="@dimen/_18sdp" />
 
 </LinearLayout>

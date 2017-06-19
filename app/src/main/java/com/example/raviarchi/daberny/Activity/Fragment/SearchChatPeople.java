@@ -49,7 +49,7 @@ public class SearchChatPeople extends Fragment {
     public String userId;
     public SearchChatPeopleAdapter adapter;
     public String SearchPeople;
-    private ArrayList<UserProfileDetails> arrayUserList;
+    private ArrayList<UserProfileDetails> arrayUserList,searchArrayList;
     public  EditText edSearch;
     public Toolbar toolBar;
     @BindView(R.id.header_icon)
@@ -69,9 +69,9 @@ public class SearchChatPeople extends Fragment {
         toolBar = (Toolbar) getActivity().findViewById(R.id.activity_main_toolbar);
         headerView.setVisibility(View.GONE);
         txtTitle.setText(R.string.newmsg);
+        findViewId(view);
         init();
         click();
-        findViewId(view);
         return view;
     }
 
@@ -88,39 +88,44 @@ public class SearchChatPeople extends Fragment {
     private void findViewId(View view) {
         recyclerViewPeople = (RecyclerView) view.findViewById(R.id.fragment_search_recyclerpeoplelist);
         edSearch = (EditText) view.findViewById(R.id.fragment_searchdata_edsearch);
-        edSearch.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                arrayUserList.clear();
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                SearchPeople = edSearch.getText().toString().trim();
-                new GetPeopleList(SearchPeople).execute();
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-            }
-        });
     }
 
     // TODO: 2/21/2017 initilization
     private void init() {
         utils = new Utils(getActivity());
-        arrayUserList = new ArrayList<>();
         userId = Utils.ReadSharePrefrence(getActivity(),Constant.USERID);
+        new GetPeopleList(userId).execute();
+        edSearch.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                String searchFor =edSearch.getText().toString();
+                searchArrayList = new ArrayList<>();
+                for (int i = 0; i < arrayUserList.size(); i++) {
+                    if (arrayUserList.get(i).getUserUserName().toLowerCase().startsWith(searchFor.toLowerCase())) {
+                        searchArrayList.add(arrayUserList.get(i));
+                    }
+                }
+                adapter = new SearchChatPeopleAdapter(getActivity(), searchArrayList);
+                utils.setAdapterForList(recyclerViewPeople,adapter);
+
+            }
+        });
     }
 
     private void openPeopleList() {
         // TODO: 2/21/2017 bind list and show in adapter
         adapter = new SearchChatPeopleAdapter(getActivity(), arrayUserList);
-        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
-        recyclerViewPeople.setLayoutManager(mLayoutManager);
-        recyclerViewPeople.setItemAnimator(new DefaultItemAnimator());
-        recyclerViewPeople.setAdapter(adapter);
-        adapter.notifyDataSetChanged();
+        utils.setAdapterForList(recyclerViewPeople,adapter);
     }
 
 
@@ -134,8 +139,10 @@ public class SearchChatPeople extends Fragment {
         }
 
         @Override
-        protected void onPreExecute() {
+        protected void onPreExecute()
+        {
             super.onPreExecute();
+            arrayUserList = new ArrayList<>();
             pd = new ProgressDialog(getActivity());
             pd.setMessage("Loading");
             pd.setCancelable(false);
@@ -145,8 +152,8 @@ public class SearchChatPeople extends Fragment {
         @Override
         protected String doInBackground(String... strings) {
 
-            //http://181.224.157.105/~hirepeop/host2/surveys/api/searched_user/752/nikita
-            String response = Utils.getResponseofGet(Constant.QUESTION_BASE_URL + "searched_user/" +userId + "/" + searchpeople);
+            //http://181.224.157.105/~hirepeop/host2/surveys/api/searched_user/752/
+            String response = Utils.getResponseofGet(Constant.QUESTION_BASE_URL + "searched_user/" +userId + "/");
             Log.d("RESPONSE", "Search People List..." + response);
             try {
                 JSONObject jsonObject = new JSONObject(response);
@@ -161,10 +168,6 @@ public class SearchChatPeople extends Fragment {
                         details.setUserId(userObject.getString("id"));
                         arrayUserList.add(details);
                     }
-                } else {
-                    if (jsonObject.getString("status").equalsIgnoreCase("FALSE")) {
-                        arrayUserList.clear();
-                    }
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -178,11 +181,7 @@ public class SearchChatPeople extends Fragment {
             pd.dismiss();
             if (arrayUserList.size() > 0) {
                 openPeopleList();
-            } else {
-                arrayUserList.clear();
-                //Toast.makeText(getActivity(), "No Result Found", Toast.LENGTH_SHORT).show();
             }
-
         }
     }
 }

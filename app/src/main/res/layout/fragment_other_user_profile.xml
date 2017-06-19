@@ -604,7 +604,6 @@
                                                     android:layout_width="match_parent"
                                                     android:layout_height="@dimen/_10sdp"
                                                     android:layout_weight="1"
-                                                    android:background="@color/logintext"
                                                     app:progress_max="100"
                                                     app:rcProgressColor="@color/signinbg"
                                                     app:rcReverse="false"
@@ -636,7 +635,7 @@
                                                             android:textSize="@dimen/_11sdp" />
 
                                                         <TextView
-                                                            android:id="@+id/fragment_other_user_profile_txtlevelstartpoints3"
+                                                            android:id="@+id/fragment_other_user_profile_txtlevelstartpoint3"
                                                             android:layout_width="match_parent"
                                                             android:layout_height="match_parent"
                                                             android:layout_gravity="center|left"
@@ -692,7 +691,6 @@
                                                             android:paddingRight="@dimen/_5sdp"
                                                             android:text="44"
                                                             android:textSize="@dimen/_11sdp" />
-
                                                     </LinearLayout>
                                                 </LinearLayout>
                                             </LinearLayout>

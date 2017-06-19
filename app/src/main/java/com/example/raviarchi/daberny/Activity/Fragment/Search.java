@@ -35,7 +35,6 @@ public class Search extends Fragment implements TabLayout.OnTabSelectedListener 
         findById(view);
         layoutHeader = (RelativeLayout) getActivity().findViewById(R.id.mainview);
         layoutHeader.setVisibility(View.GONE);
-
         tabLayout.addTab(tabLayout.newTab().setText("Latest").setIcon(R.mipmap.ic_latest));
         tabLayout.addTab(tabLayout.newTab().setText("People").setIcon(R.mipmap.ic_users));
         tabLayout.addTab(tabLayout.newTab().setText("Tags").setIcon(R.mipmap.ic_tags));

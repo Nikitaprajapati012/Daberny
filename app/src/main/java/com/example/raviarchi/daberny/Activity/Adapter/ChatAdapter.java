@@ -20,7 +20,7 @@ import com.squareup.picasso.Picasso;
 import java.util.ArrayList;
 import java.util.List;
 
-/** * Created by archi on 07-Apr-17.
+/*** Created by archi on 07-Apr-17.
  */
 
 public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
@@ -36,12 +36,10 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
         this.mContext = context;
         utils = new Utils(context);
         this.arrayList = arrayUserList;
-        Log.d("userid","@"+Utils.ReadSharePrefrence(mContext, Constant.USERID));
     }
 
     @Override
     public int getItemViewType(final int position) {
-        Log.d("id","@"+arrayList.get(position).getUserId());
         if (arrayList.get(position).getUserId().equalsIgnoreCase(Utils.ReadSharePrefrence(mContext, Constant.USERID))) {
             return SENDERVIEW;
         } else {
@@ -84,7 +82,6 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
 
         switch (holder.getItemViewType()) {
-
             case SENDERVIEW:
                 SenderViewHolder senderViewHolder = (SenderViewHolder) holder;
                 if(details.getUserMsgType().equalsIgnoreCase("image")){
@@ -94,6 +91,7 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     senderViewHolder.msgTv.setVisibility(View.GONE);
                 }else
                 {
+                    senderViewHolder.imgMsg.setVisibility(View.GONE);
                     senderViewHolder.msgTv.setVisibility(View.VISIBLE);
                     senderViewHolder.msgTv.setText(strMessageSender);
                 }
@@ -109,6 +107,7 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
                 }else
                 {
+                    receiverViewHolder.imgMsg.setVisibility(View.GONE);
                     receiverViewHolder.msgTv.setVisibility(View.VISIBLE);
                     receiverViewHolder.msgTv.setText(strMessageReceiver);
                 }

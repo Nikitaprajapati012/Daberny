@@ -11,13 +11,18 @@ import android.net.ConnectivityManager;
 import android.net.Network;
 import android.net.NetworkInfo;
 import android.os.Build;
-import android.os.CountDownTimer;
 import android.os.StrictMode;
 import android.preference.PreferenceManager;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
-import android.widget.TextView;
 
 import com.example.raviarchi.daberny.R;
 
@@ -35,7 +40,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 import javax.net.ssl.HttpsURLConnection;
 
@@ -60,6 +64,7 @@ public class Utils {
         editor.putString(key, value);
         editor.apply();
     }
+
     public static void WriteSharePre(Context context, String key, String value) {
 
         final SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
@@ -76,6 +81,7 @@ public class Utils {
         editor.apply();
         return data;
     }
+
     public static String ReadSharePref(Context context, String key) {
         String data;
         final SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
@@ -92,7 +98,7 @@ public class Utils {
         editor.apply();
     }
 
-    public static void ClearSharePref(Context context,String value) {
+    public static void ClearSharePref(Context context, String value) {
 
         final SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
         final SharedPreferences.Editor editor = preferences.edit().remove(value);
@@ -119,7 +125,6 @@ public class Utils {
         long hours = (different - years * 365 * 60 * 60 * 24 - months * 30 * 60 * 60 * 24 - days * 60 * 60 * 24) / (60 * 60);
         long minuts = (different - years * 365 * 60 * 60 * 24 - months * 30 * 60 * 60 * 24 - days * 60 * 60 * 24 - hours * 60 * 60) / 60;
         long seconds = (different - years * 365 * 60 * 60 * 24 - months * 30 * 60 * 60 * 24 - days * 60 * 60 * 24 - hours * 60 * 60 - minuts * 60);
-
         return " " + years + ":" + months + ":" + days + ":" + hours + ":" + minuts + ":" + seconds;
 
     }
@@ -143,24 +148,6 @@ public class Utils {
                 }
             }).alpha(0f).start();
         }
-    }
-
-
-    public void setSharedPrefrenceIsFirstTime(Boolean firstTime) {
-        sp.edit().putBoolean(Constant.ISFIRSTTIMEREG, firstTime).apply();
-        Log.d("reg_put", "key" + Constant.ISFIRSTTIMEREG + "value" + firstTime);
-    }
-
-    public Boolean getReadSharedPrefrenceIsFirstTime(/*Context context, String key*/) {
-        Boolean response = sp.getBoolean(Constant.ISFIRSTTIMEREG, false);
-        Log.d("reg_get", "key" + Constant.ISFIRSTTIMEREG);
-
-        return response;
-    }
-
-    public void clearSharedPreferenceData() {
-        sp.edit().clear().apply();
-
     }
 
     public static String getResponseofPost(String URL, HashMap<String, String> postDataParams) {
@@ -241,22 +228,6 @@ public class Utils {
         return response;
     }
 
-    public void getSelectedInterest(ArrayList<String> interestList, String interest) {
-        interest = "";
-        if (interestList.size() > 0) {
-            for (int i = 0; i < interestList.size(); i++) {
-                if (interest.length() > 0) {
-                    interest = interest + "," + interestList.get(i);
-                } else {
-                    interest = interestList.get(i);
-                }
-            }
-            Log.d("interest_utils", interest);
-        }
-
-    }
-
-
     private static String getPostDataString(HashMap<String, String> params) throws
             UnsupportedEncodingException {
         StringBuilder result = new StringBuilder();
@@ -273,6 +244,55 @@ public class Utils {
         }
         return result.toString();
     }
+
+    public void setSharedPrefrenceIsFirstTime(Boolean firstTime) {
+        sp.edit().putBoolean(Constant.ISFIRSTTIMEREG, firstTime).apply();
+        Log.d("reg_put", "key" + Constant.ISFIRSTTIMEREG + "value" + firstTime);
+    }
+
+    public Boolean getReadSharedPrefrenceIsFirstTime(/*Context context, String key*/) {
+        Boolean response = sp.getBoolean(Constant.ISFIRSTTIMEREG, false);
+        Log.d("reg_get", "key" + Constant.ISFIRSTTIMEREG);
+        return response;
+    }
+
+    public void clearSharedPreferenceData() {
+        sp.edit().clear().apply();
+
+    }
+
+    public void getSelectedInterest(ArrayList<String> interestList, String interest) {
+        interest = "";
+        if (interestList.size() > 0) {
+            for (int i = 0; i < interestList.size(); i++) {
+                if (interest.length() > 0) {
+                    interest = interest + "," + interestList.get(i);
+                } else {
+                    interest = interestList.get(i);
+                }
+            }
+            Log.d("interest_utils", interest);
+        }
+
+    }
+
+    public void replaceFragment(Fragment fragment) {
+        FragmentManager fm = ((FragmentActivity) context).getSupportFragmentManager();
+        FragmentTransaction transaction = fm.beginTransaction();
+        transaction.replace(R.id.frame_contain_layout, fragment);
+        transaction.addToBackStack(null);
+        transaction.commit();
+    }
+
+    public void setAdapterForList(RecyclerView recyclerView, RecyclerView.Adapter adapter){
+        LinearLayoutManager layoutManager = new LinearLayoutManager(context);
+        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(context);
+        recyclerView.setLayoutManager(mLayoutManager);
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        recyclerView.setAdapter(adapter);
+        adapter.notifyDataSetChanged();
+    }
+
 
     public String MakeServiceCall(String URLSTR) {
         StringBuilder response = null;

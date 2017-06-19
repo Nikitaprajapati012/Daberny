@@ -85,12 +85,8 @@ public class GeneralBeforeLogin extends Fragment {
     private void openQuetionList() {
         // TODO: 2/21/2017 bind list and show in adapter
         Collections.reverse(arrayUserList);
-        GeneralAdapter adapter = new GeneralAdapter(getActivity(), arrayUserList);
-        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
-        recyclerViewposts.setLayoutManager(mLayoutManager);
-        recyclerViewposts.setItemAnimator(new DefaultItemAnimator());
-        recyclerViewposts.setAdapter(adapter);
-        adapter.notifyDataSetChanged();
+        GeneralAdapter adapter = new GeneralAdapter(getActivity(), arrayUserList,arrayFollowingNameList,arrayFollowingIdList);
+        utils.setAdapterForList(recyclerViewposts,adapter);
     }
 
 

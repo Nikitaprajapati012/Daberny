@@ -42,7 +42,7 @@ import static com.facebook.FacebookSdk.getApplicationContext;
 public class Following extends Fragment implements View.OnClickListener {
     public Utils utils;
     public UserProfileDetails details;
-    public String ID;
+    public String ID,userId;
     public ArrayList<String> arrayInterestList, arrayInterestIdList, arrayInterestEndName, arrayInterestStartName;
     @BindView(R.id.fragment_following_recycler_followinglist)
     RecyclerView recyclerViewFollowing;
@@ -70,6 +70,7 @@ public class Following extends Fragment implements View.OnClickListener {
     // TODO: 2/21/2017 initilization
     private void init() {
         utils = new Utils(getActivity());
+        userId = Utils.ReadSharePrefrence(getActivity(),Constant.USERID);
         arrayUserList = new ArrayList<>();
         if (getArguments() != null) {
             Gson gson = new Gson();
@@ -94,14 +95,9 @@ public class Following extends Fragment implements View.OnClickListener {
     }
 
     private void openFollowingPeopleDetailsList() {
-
         // TODO: 2/28/2017 set following peoplelist
         FollowingAdapter adapter = new FollowingAdapter(getActivity(), arrayUserList);
-        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
-        recyclerViewFollowing.setLayoutManager(mLayoutManager);
-        recyclerViewFollowing.setItemAnimator(new DefaultItemAnimator());
-        recyclerViewFollowing.setAdapter(adapter);
-        adapter.notifyDataSetChanged();
+        utils.setAdapterForList(recyclerViewFollowing,adapter);
     }
 
     private class GetFollowingPeopleDetails extends AsyncTask<String, String, String> {
@@ -120,8 +116,8 @@ public class Following extends Fragment implements View.OnClickListener {
 
         @Override
         protected String doInBackground(String... strings) {
-            // http://181.224.157.105/~hirepeop/host2/surveys/api//following_list/669
-            return utils.getResponseofGet(Constant.QUESTION_BASE_URL + "following_list/" + ID);
+            // http://181.224.157.105/~hirepeop/host2/surveys/api//following_list/669/667
+            return Utils.getResponseofGet(Constant.QUESTION_BASE_URL + "following_list/" + userId + "/" + ID);
         }
 
         @Override
