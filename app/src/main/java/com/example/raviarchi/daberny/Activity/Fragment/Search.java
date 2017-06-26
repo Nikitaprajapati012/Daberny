@@ -11,13 +11,10 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-
 import com.example.raviarchi.daberny.Activity.Adapter.SearchPager;
 import com.example.raviarchi.daberny.R;
 
-
-/**
- * Created by Ravi archi on 1/10/2017.
+/**** Created by Ravi archi on 1/10/2017.
  */
 
 public class Search extends Fragment implements TabLayout.OnTabSelectedListener {

@@ -749,6 +749,7 @@
                                     android:layout_marginLeft="@dimen/_15sdp"
                                     android:gravity="center|left"
                                     android:text="@string/option4"
+                                    android:visibility="gone"
                                     android:textColor="@color/logintext"
                                     android:textSize="@dimen/_10sdp" />
 

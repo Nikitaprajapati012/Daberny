@@ -275,7 +275,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.MyViewHolder> 
         holder.layoutFacebook.setOnClickListener(this);
         holder.layoutTwitter.setOnClickListener(this);
         // TODO: 6/7/2017 get list of following people
-        holder.spinnnerFollowing.setItems(arrayfollowingUserList, "Following", this);
+            holder.spinnnerFollowing.setItems(arrayfollowingUserList, "Following", this);
 
         // TODO: 3/28/2017 redirect to show all comments
         holder.txtViewAllComments.setOnClickListener(new View.OnClickListener() {
@@ -293,7 +293,6 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.MyViewHolder> 
                 Fragment fragment = new CommentPeopleDetail();
                 utils.setIdOfQuestion(details, fragment);
                 utils.replaceFragment(fragment);
-
             }
         });
         holder.imgComment.setOnClickListener(new View.OnClickListener() {
@@ -302,7 +301,6 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.MyViewHolder> 
                 // TODO: 3/27/2017 store the comment
                 commentText = holder.edCommentText.getText().toString().replaceAll(" ", "%20");
                 if (commentText.length() > 0) {
-                    //not empty comment
                     new CommentPost(holder, arrayList, loginUserId, details.getQueId(), commentText).execute();
                 }
             }
@@ -576,7 +574,6 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.MyViewHolder> 
         LinearLayout layoutInterest3;
         @BindView(R.id.adapter_home_list_radiogroup)
         RadioGroup radioGroup;
-        MultiSelectionSpinner multiSelectionSpinnerFollowing;
         @BindView(R.id.adapter_home_list_beforecounter)
         LinearLayout layoutCounter;
         @BindView(R.id.adapter_home_list_progressbar1)

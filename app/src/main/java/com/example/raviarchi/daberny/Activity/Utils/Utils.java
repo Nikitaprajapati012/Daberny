@@ -35,6 +35,7 @@ import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.VideoView;
 
+import com.example.raviarchi.daberny.Activity.Adapter.BlockedUsersAdapter;
 import com.example.raviarchi.daberny.Activity.Model.UserProfileDetails;
 import com.example.raviarchi.daberny.R;
 import com.squareup.picasso.Picasso;
@@ -299,7 +300,6 @@ public class Utils {
     }
 
     public void setAdapterForList(RecyclerView recyclerView, RecyclerView.Adapter adapter) {
-        LinearLayoutManager layoutManager = new LinearLayoutManager(context);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(context);
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());

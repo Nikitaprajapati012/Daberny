@@ -303,7 +303,9 @@ public class PostsAdapter extends RecyclerView.Adapter<PostsAdapter.MyViewHolder
             public void onClick(View view) {
                 // TODO: 3/27/2017 store the comment
                 commentText = holder.edCommentText.getText().toString().replaceAll(" ", "%20");
-                new CommentPost(holder, arrayList, loginUserId, details.getQueId(), commentText).execute();
+                if (commentText.length() > 0) {
+                    new CommentPost(holder, arrayList, loginUserId, details.getQueId(), commentText).execute();
+                }
             }
         });
 

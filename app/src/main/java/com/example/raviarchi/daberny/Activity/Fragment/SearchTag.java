@@ -91,8 +91,10 @@ public class SearchTag extends Fragment {
 
     private void openRecentList() {
         // TODO: 2/21/2017 bind list and show in adapter
-        adapter = new SearchTagAdapter(getActivity(), arrayUserList);
-        utils.setAdapterForList(recyclerViewTag, adapter);
+        if (edSearch.getText().toString().length() > 0) {
+            adapter = new SearchTagAdapter(getActivity(), arrayUserList);
+            utils.setAdapterForList(recyclerViewTag, adapter);
+        }
     }
 
     // TODO: 2/21/2017 get list of Question from URL
@@ -100,7 +102,7 @@ public class SearchTag extends Fragment {
         ProgressDialog pd;
         String user_id;
 
-        public GetTagList(String userId) {
+        private GetTagList(String userId) {
             this.user_id = userId;
         }
 
@@ -137,16 +139,7 @@ public class SearchTag extends Fragment {
                 e.printStackTrace();
             }
             if (arrayUserList.size() > 0) {
-                // if (searchRecent.equalsIgnoreCase(details.getQueTitle())) {
                 openRecentList();
-               /* } else {
-                    arrayUserList.clear();
-                    Toast.makeText(getActivity(), "No Result Found", Toast.LENGTH_SHORT).show();
-                }*/
-
-            } else {
-
-                //Toast.makeText(getActivity(), "No Data Found,Please Try Again", Toast.LENGTH_SHORT).show();
             }
         }
     }

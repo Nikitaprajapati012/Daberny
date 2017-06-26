@@ -3,7 +3,6 @@ package com.example.raviarchi.daberny.Activity.Fragment;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -202,14 +201,11 @@ public class Tag extends Fragment implements View.OnClickListener, MultiSelectSp
     RoundCornerProgressBar optionProgress4;
     private ArrayList<UserProfileDetails> arrayUserList;
     private ArrayList<String> arrayFollowingNameList, arrayFollowingIdList, arrayInterestList,
-            arrayStartNameList, arrayEndNameList, followingList;
-    private Object[] getFollowingIdListSpinner;
+            arrayStartNameList, arrayEndNameList;
     private String loginUserId, questionId, Answer, followingPeopleName, followingPeopleId, commentText;
     private CountDownTimerClass timer;
     private int seconds, minutes, hours;
-    private Handler handler;
     private Long remainTime;
-    private boolean mCancelled = false;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -297,7 +293,7 @@ public class Tag extends Fragment implements View.OnClickListener, MultiSelectSp
                 txtVote.setVisibility(View.VISIBLE);
             } else {
                 txtVote.setVisibility(View.INVISIBLE);
-                utils.setRadioButtonAsPerVote( rdAnswer1,rdAnswer2,rdAnswer3,rdAnswer4);
+                utils.setRadioButtonAsPerVote(rdAnswer1, rdAnswer2, rdAnswer3, rdAnswer4);
 
                 if (details.getUserId().equalsIgnoreCase(loginUserId)) {
                     txtVoteSucess.setVisibility(View.GONE);
@@ -308,7 +304,7 @@ public class Tag extends Fragment implements View.OnClickListener, MultiSelectSp
         } else {
             txtVote.setVisibility(View.INVISIBLE);
             txtVoteSucess.setVisibility(View.GONE);
-            utils.setRadioButtonAsPerVote( rdAnswer1,rdAnswer2,rdAnswer3,rdAnswer4);
+            utils.setRadioButtonAsPerVote(rdAnswer1, rdAnswer2, rdAnswer3, rdAnswer4);
         }
 
         if (details.getQueComment() != null) {
@@ -459,9 +455,7 @@ public class Tag extends Fragment implements View.OnClickListener, MultiSelectSp
             @Override
             public void onClick(View view) {
                 Fragment fragment = new CommentPeopleDetail();
-                Bundle bundle = new Bundle();
-                bundle.putString("queid", details.getQueId());
-                fragment.setArguments(bundle);
+                utils.setIdOfQuestion(details, fragment);
                 utils.replaceFragment(fragment);
             }
         });
@@ -470,7 +464,9 @@ public class Tag extends Fragment implements View.OnClickListener, MultiSelectSp
             public void onClick(View view) {
                 // TODO: 3/27/2017 store the comment
                 commentText = edCommentText.getText().toString().replaceAll(" ", "%20");
-                new CommentPost(arrayUserList, loginUserId, Utils.ReadSharePrefrence(getActivity(), Constant.QUESTION_ID), commentText).execute();
+                if (commentText.length() > 0) {
+                    new CommentPost(arrayUserList, loginUserId, Utils.ReadSharePrefrence(getActivity(), Constant.QUESTION_ID), commentText).execute();
+                }
             }
         });
 
@@ -592,7 +588,7 @@ public class Tag extends Fragment implements View.OnClickListener, MultiSelectSp
                     sAux = sAux + "https://play.google.com/store/apps/details?id=com.example.raviarchi\n\n";
                     i.putExtra(Intent.EXTRA_TEXT, "https://i.diawi.com/UBMuRn");
                     startActivity(Intent.createChooser(i, "choose one"));
-                } catch(Exception e) {
+                } catch (Exception e) {
                     //e.toString();
                 }
                 break;
@@ -610,7 +606,7 @@ public class Tag extends Fragment implements View.OnClickListener, MultiSelectSp
                     sAux = sAux + "https://play.google.com/store/apps/details?id=com.example.raviarchi\n\n";
                     i.putExtra(Intent.EXTRA_TEXT, "https://i.diawi.com/UBMuRn");
                     startActivity(Intent.createChooser(i, "choose one"));
-                } catch(Exception e) {
+                } catch (Exception e) {
                     //e.toString();
                 }
                 break;
@@ -1052,8 +1048,6 @@ public class Tag extends Fragment implements View.OnClickListener, MultiSelectSp
             pd.dismiss();
             if (arrayUserList.size() > 0) {
                 openQuetionList();
-            } else {
-                Toast.makeText(getActivity(), "No Question Found", Toast.LENGTH_SHORT).show();
             }
         }
     }

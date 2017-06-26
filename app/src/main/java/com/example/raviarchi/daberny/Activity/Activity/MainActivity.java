@@ -100,6 +100,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     // TODO: 2/22/2017 bind field
     private void findById() {
+        //bind the data
         headerView = (RelativeLayout) findViewById(R.id.mainview);
         footerView = (RelativeLayout) findViewById(R.id.footerview);
         imgHome = (ImageView) findViewById(R.id.footer_imghome);

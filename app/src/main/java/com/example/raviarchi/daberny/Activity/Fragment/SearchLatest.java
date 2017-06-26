@@ -11,20 +11,15 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
-
 import com.example.raviarchi.daberny.Activity.Adapter.SearchLatestAdapter;
 import com.example.raviarchi.daberny.Activity.Model.UserProfileDetails;
 import com.example.raviarchi.daberny.Activity.Utils.Constant;
 import com.example.raviarchi.daberny.Activity.Utils.Utils;
 import com.example.raviarchi.daberny.R;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.util.ArrayList;
-
 import static com.example.raviarchi.daberny.Activity.Fragment.Search.edSearch;
 
 /*** Created by Ravi archi on 1/10/2017.
@@ -91,7 +86,6 @@ public class SearchLatest extends Fragment {
             adapter = new SearchLatestAdapter(getActivity(), arrayUserList);
             utils.setAdapterForList(recyclerViewPeople, adapter);
         }
-
     }
 
     // TODO: 2/21/2017 get list of Question from URL
