@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.raviarchi.daberny.Activity.Activity.ChatActivity;
@@ -80,7 +81,6 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
             strMessageReceiver=details.getUserMsgReceiver();
         }
 
-
         switch (holder.getItemViewType()) {
             case SENDERVIEW:
                 SenderViewHolder senderViewHolder = (SenderViewHolder) holder;
@@ -88,6 +88,10 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     Picasso.with(mContext).load(strMessageSender).placeholder(R.drawable.ic_placeholder)
                             .transform(new RoundedTransformation(120,2))
                             .into(senderViewHolder.imgMsg);
+                    /*if(Utils.ReadSharePrefrence(mContext,Constant.CHAT_LIKE).equalsIgnoreCase("1")){
+                        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(100, 100);
+                        senderViewHolder.imgMsg.setLayoutParams(layoutParams);
+                    }*/
                     senderViewHolder.msgTv.setVisibility(View.GONE);
                 }else
                 {
@@ -103,6 +107,10 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     Picasso.with(mContext).load(strMessageReceiver).placeholder(R.drawable.ic_placeholder)
                             .transform(new RoundedTransformation(120,2))
                             .into(receiverViewHolder.imgMsg);
+                   /* if(Utils.ReadSharePrefrence(mContext,Constant.CHAT_LIKE).equalsIgnoreCase("1")){
+                        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(100, 100);
+                        receiverViewHolder.imgMsg.setLayoutParams(layoutParams);
+                    }*/
                     receiverViewHolder.msgTv.setVisibility(View.GONE);
 
                 }else

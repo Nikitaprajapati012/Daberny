@@ -4,11 +4,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.drawable.ColorDrawable;
-import android.net.Uri;
 import android.os.AsyncTask;
-import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
@@ -20,12 +16,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.MediaController;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.VideoView;
+
 import com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar;
 import com.example.raviarchi.daberny.Activity.Activity.MultiSelectSpinner;
 import com.example.raviarchi.daberny.Activity.Fragment.CommentPeopleDetail;
@@ -39,12 +35,15 @@ import com.example.raviarchi.daberny.R;
 import com.example.raviarchi.multiplespinner.MultiSelectionSpinner;
 import com.koushikdutta.async.http.socketio.ExceptionCallback;
 import com.squareup.picasso.Picasso;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -62,9 +61,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.MyViewHolder> 
     private ArrayList<UserProfileDetails> arrayList;
     private Context context;
     private int seconds, minutes, hours;
-    private Handler handler;
     private Long remainTime;
-    private boolean mCancelled = false;
 
     public HomeAdapter(Context context, ArrayList<UserProfileDetails> arraylist, ArrayList<String> arrayFollowingNameList, ArrayList<String> arrayFollowingIdList) {
         this.context = context;
@@ -88,31 +85,44 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.MyViewHolder> 
     @Override
     public void onBindViewHolder(final MyViewHolder holder, final int position) {
         final UserProfileDetails details = arrayList.get(position);
-
         loginUserId = Utils.ReadSharePrefrence(context, Constant.USERID);
         String isRemainTime = Utils.ReadSharePrefrence(context, Constant.REMAINTIME);
+        Log.d("ISREMAINTIME", "@@" + isRemainTime);
         queId = details.getQueId();
-        Long time;
-        if (isRemainTime.length() > 0) {
+        long time;
+        if (isRemainTime != null) {
             remainTime = arrayList.get(position).getQueRemainTime();
             if (remainTime != null) {
                 Utils.WriteSharePrefrence(context, Constant.TIME, String.valueOf(remainTime));
+                Log.d("REMAIN", "@@" + remainTime);
+             /*   long longVal = remainTime;
+                int hours = (int) longVal / 3600;
+                int remainder = (int) longVal - hours * 3600;
+                int mins = remainder / 60;
+                remainder = remainder - mins * 60;
+                int secs = remainder;
+                int[] ints = {hours , mins , secs};
+                Log.d("H:M:S","@@"+hours +"--"+mins+"--"+secs);
+*/
             } else {
                 time = 0000000000L;
                 remainTime = time;
             }
         }
 
+
         // TODO: 6/6/2017 time handler
         timer = new CountDownTimerClass(remainTime, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
-                seconds = (int) (millisUntilFinished / 1000) % 60;
-                minutes = (int) ((millisUntilFinished / (1000 * 60)) % 60);
+                //Toast.makeText(context, ""+millisUntilFinished / 1000, Toast.LENGTH_SHORT).show();
                 hours = (int) ((millisUntilFinished / (1000 * 60 * 60)) % 24);
+                minutes = (int) ((millisUntilFinished / (1000 * 60)) % 60);
+                seconds = (int) (millisUntilFinished / 1000) % 60;
                 holder.txtHour.setText("" + String.format("%2d", hours));
                 holder.txtMinute.setText("" + String.format("%2d", minutes));
                 holder.txtSecond.setText("" + String.format("%2d", seconds));
+                Log.d("TIMEEE", "@@" + hours + "--" + minutes + "--" + seconds);
                 holder.layoutLike.setVisibility(View.INVISIBLE);
                 holder.layoutComment.setVisibility(View.GONE);
                 holder.layoutAllVoteResult.setVisibility(View.GONE);
@@ -141,10 +151,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.MyViewHolder> 
                 holder.txtVote.setVisibility(View.VISIBLE);
             } else {
                 holder.txtVote.setVisibility(View.INVISIBLE);
-                holder.rdAnswer1.setButtonDrawable(new ColorDrawable(0xFFFFFF));
-                holder.rdAnswer2.setButtonDrawable(new ColorDrawable(0xFFFFFF));
-                holder.rdAnswer3.setButtonDrawable(new ColorDrawable(0xFFFFFF));
-                holder.rdAnswer4.setButtonDrawable(new ColorDrawable(0xFFFFFF));
+                utils.setRadioButtonAsPerVote(holder.rdAnswer1, holder.rdAnswer2, holder.rdAnswer3, holder.rdAnswer4);
                 if (details.getUserId().equalsIgnoreCase(loginUserId)) {
                     holder.txtVoteSucess.setVisibility(View.GONE);
                 } else {
@@ -154,12 +161,15 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.MyViewHolder> 
         } else {
             holder.txtVote.setVisibility(View.INVISIBLE);
             holder.txtVoteSucess.setVisibility(View.GONE);
-            holder.rdAnswer1.setButtonDrawable(new ColorDrawable(0xFFFFFF));
-            holder.rdAnswer2.setButtonDrawable(new ColorDrawable(0xFFFFFF));
-            holder.rdAnswer3.setButtonDrawable(new ColorDrawable(0xFFFFFF));
-            holder.rdAnswer4.setButtonDrawable(new ColorDrawable(0xFFFFFF));
+            utils.setRadioButtonAsPerVote(holder.rdAnswer1, holder.rdAnswer2, holder.rdAnswer3, holder.rdAnswer4);
         }
-
+        // TODO: 6/20/2017 set the layout if any user have any friends
+        /*if (Utils.ReadSharePrefrence(context, Constant.USER_FOLLOWING).length() > 0) {
+            holder.layoutShare.setVisibility(View.VISIBLE);
+        } else {
+            holder.layoutShare.setVisibility(View.GONE);
+        }*/
+        // TODO: 6/20/2017 set the layout if any comment on post
         if (details.getQueComment() != null) {
             holder.layoutCommentText.setVisibility(View.VISIBLE);
         } else {
@@ -245,59 +255,21 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.MyViewHolder> 
         } else {
             holder.imgLike.setImageDrawable(ContextCompat.getDrawable(context, R.mipmap.ic_like_icon));
         }
-
         // TODO: 5/25/2017 ************** End **********************
 
 
         // TODO: 5/25/2017 **************set the value in ImageView & VideoView*******************
         // TODO: 2/23/2017 set user profile image of comment user
-        if (details.getQueCommentUserProfilePic() != null) {
-            if (details.getQueCommentUserProfilePic().length() > 0) {
-                Picasso.with(context).load(details.getQueCommentUserProfilePic()).
-                        transform(new RoundedTransformation(120, 2)).
-                        placeholder(R.drawable.ic_placeholder).into(holder.imgCommentUserProfilePic);
-            }
+        utils.setCommentUserImageInPicasso(details, holder.imgCommentUserProfilePic);
 
-        } else {
-            Picasso.with(context).load(R.drawable.ic_placeholder).
-                    transform(new RoundedTransformation(120, 2)).
-                    placeholder(R.drawable.ic_placeholder).into(holder.imgCommentUserProfilePic);
-        }
         // TODO: 2/23/2017 set user profile image of post user
-        if (details.getUserImage() != null) {
-            if (details.getUserImage().length() > 0) {
-                Picasso.with(context).load(details.getUserImage()).
-                        transform(new RoundedTransformation(120, 2)).
-                        placeholder(R.drawable.ic_placeholder).into(holder.imgProfilePic);
-            }
-        } else {
-            Picasso.with(context).load(R.mipmap.ic_launcher).
-                    transform(new RoundedTransformation(120, 2)).
-                    placeholder(R.drawable.ic_placeholder).into(holder.imgProfilePic);
-        }
+        utils.setPostUserImageInPicasso(details, holder.imgProfilePic);
+
         // TODO: 2/23/2017 set image & video dynamically
-        if (details.getQueImageName().length() > 0) {
-            if (details.getQueImage() != null) {
-                holder.imgQuestionPic.setVisibility(View.VISIBLE);
-                holder.vdProfile.setVisibility(View.VISIBLE);
-                holder.layoutMedia.setVisibility(View.VISIBLE);
-                if (details.getQueType().equalsIgnoreCase("0")) {
-                    holder.layoutMedia.setVisibility(View.GONE);
-                } else if (details.getQueType().equalsIgnoreCase("1")) {
-                    holder.vdProfile.setVisibility(View.GONE);
-                    Picasso.with(context).load(details.getQueImage()).placeholder(R.drawable.ic_placeholder).into(holder.imgQuestionPic);
-                } else if (details.getQueType().equalsIgnoreCase("2")) {
-                    holder.imgQuestionPic.setVisibility(View.GONE);
-                    holder.vdProfile.setVideoURI(Uri.parse(details.getQueImage()));
-                    holder.vdProfile.setMediaController(new MediaController(context));
-                    holder.vdProfile.requestFocus();
-                    holder.vdProfile.start();
-                }
-            }
-        } else {
-            holder.layoutMedia.setVisibility(View.GONE);
-        }
+        utils.setPostImageVideo(details, holder.imgQuestionPic, holder.vdProfile, holder.layoutMedia);
+
         //TODO: 5/25/2017 ********************** End ************************
+
 
         // TODO: 5/25/2017 **************set the click event**********************
         holder.layoutFacebook.setOnClickListener(this);
@@ -305,15 +277,12 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.MyViewHolder> 
         // TODO: 6/7/2017 get list of following people
         holder.spinnnerFollowing.setItems(arrayfollowingUserList, "Following", this);
 
-
         // TODO: 3/28/2017 redirect to show all comments
         holder.txtViewAllComments.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Fragment fragment = new CommentPeopleDetail();
-                Bundle bundle = new Bundle();
-                bundle.putString("queid", details.getQueId());
-                fragment.setArguments(bundle);
+                utils.setIdOfQuestion(details, fragment);
                 utils.replaceFragment(fragment);
             }
         });
@@ -322,10 +291,9 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.MyViewHolder> 
             @Override
             public void onClick(View view) {
                 Fragment fragment = new CommentPeopleDetail();
-                Bundle bundle = new Bundle();
-                bundle.putString("queid", details.getQueId());
-                fragment.setArguments(bundle);
+                utils.setIdOfQuestion(details, fragment);
                 utils.replaceFragment(fragment);
+
             }
         });
         holder.imgComment.setOnClickListener(new View.OnClickListener() {
@@ -333,7 +301,10 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.MyViewHolder> 
             public void onClick(View view) {
                 // TODO: 3/27/2017 store the comment
                 commentText = holder.edCommentText.getText().toString().replaceAll(" ", "%20");
-                new CommentPost(holder, arrayList, loginUserId, details.getQueId(), commentText).execute();
+                if (commentText.length() > 0) {
+                    //not empty comment
+                    new CommentPost(holder, arrayList, loginUserId, details.getQueId(), commentText).execute();
+                }
             }
         });
 
@@ -342,17 +313,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.MyViewHolder> 
             @Override
             public void onClick(View view) {
                 String liketask = " ";
-                String isLiked = details.getQueLikeStatus();
-                liketask = isLiked.equalsIgnoreCase("1") ? "remove" : "add";
-                if (liketask.equalsIgnoreCase("add")) {
-                    arrayList.get(position).setQueLikeStatus("1");
-                    holder.imgLike.setImageDrawable(ContextCompat.getDrawable(context, R.mipmap.ic_like_icon));
-                    arrayList.get(position).setQueLikeTotalCount(arrayList.get(position).getQueLikeTotalCount() + 1);
-                } else {
-                    arrayList.get(position).setQueLikeStatus("0");
-                    holder.imgLike.setImageDrawable(ContextCompat.getDrawable(context, R.mipmap.ic_unlike_icon));
-                    arrayList.get(position).setQueLikeTotalCount(arrayList.get(position).getQueLikeTotalCount() - 1);
-                }
+                utils.setDynamicLikeUnLike(details, position, arrayList, holder.imgLike, liketask);
                 notifyDataSetChanged();
                 new LikePost(position, holder, arrayList, loginUserId, details.getQueId(), liketask).execute();
             }
@@ -362,15 +323,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.MyViewHolder> 
             @Override
             public void onClick(View view) {
                 Answer = Utils.ReadSharePrefrence(context, Constant.ANSWER);
-                String isVoteStatus = details.getQueVoteStatus();
-                String isCanVote = details.getUserCanVote();
-                if (isVoteStatus.equalsIgnoreCase("1")) {
-                    if (isCanVote.equalsIgnoreCase("1")) {
-                        arrayList.get(position).setUserCanVote("0");
-                        arrayList.get(position).setQueVoteTotalCount(arrayList.get(position).getQueVoteTotalCount() + 1);
-                        holder.txtVote.setVisibility(View.GONE);
-                    }
-                }
+                utils.dynamicVoting(details, position, arrayList, holder.txtVote);
                 notifyDataSetChanged();
                 new SubmitVote(holder, position, loginUserId, details.getQueId(), Answer, arrayList).execute();
             }
@@ -380,9 +333,15 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.MyViewHolder> 
             @Override
             public void onClick(View view) {
                 Fragment fragment = new OtherUserProfile();
-                Bundle bundle = new Bundle();
-                bundle.putString("id", details.getUserId());
-                fragment.setArguments(bundle);
+                utils.setIdOfPostUser(details, fragment);
+                utils.replaceFragment(fragment);
+            }
+        });
+        holder.imgProfilePic.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Fragment fragment = new OtherUserProfile();
+                utils.setIdOfPostUser(details, fragment);
                 utils.replaceFragment(fragment);
             }
         });
@@ -391,9 +350,7 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.MyViewHolder> 
             @Override
             public void onClick(View view) {
                 Fragment fragment = new OtherUserProfile();
-                Bundle bundle = new Bundle();
-                bundle.putString("id", details.getQueCommentUserId());
-                fragment.setArguments(bundle);
+                utils.setIdOfCommentUser(details, fragment);
                 utils.replaceFragment(fragment);
             }
         });
@@ -429,11 +386,12 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.MyViewHolder> 
             @Override
             public void onClick(View view) {
                 new SharePost(holder, position, loginUserId, followingPeopleId, details.getQueId(), arrayList).execute();
+                //Toast.makeText(context, "Please select user to share.", Toast.LENGTH_SHORT).show();
+
             }
         });
 // TODO: 5/25/2017 ********************** End ************************
     }
-
 
     @Override
     public int getItemCount() {
@@ -450,298 +408,244 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.MyViewHolder> 
         PackageManager pm = context.getPackageManager();
         switch (v.getId()) {
             case R.id.adapter_home_list_layoutfb:
-                Intent ifeb = new Intent("android.intent.category.LAUNCHER");
+                /*Intent ifeb = new Intent("android.intent.category.LAUNCHER");
                 ifeb.setClassName("com.facebook.katana", "com.facebook.katana.LoginActivity");
-                context.startActivity(ifeb);
+                context.startActivity(ifeb);*/
+                try {
+                    Intent i = new Intent(Intent.ACTION_SEND);
+                    i.setClassName("com.facebook.katana", "com.facebook.katana.LoginActivity");
+                    i.putExtra(Intent.EXTRA_SUBJECT, "Daberny");
+                    String sAux = "\nLet me recommend you this application\n\n";
+                    sAux = sAux + "https://play.google.com/store/apps/details?id=com.example.raviarchi\n\n";
+                    i.putExtra(Intent.EXTRA_TEXT, "https://i.diawi.com/UBMuRn");
+                    context.startActivity(Intent.createChooser(i, "choose one"));
+                } catch (Exception e) {
+                    //e.toString();
+                }
                 break;
 
             case R.id.adapter_home_list_layouttwitter:
-                Intent intent = new Intent(Intent.ACTION_VIEW);
+               /* Intent intent = new Intent(Intent.ACTION_VIEW);
                 intent.setClassName("com.twitter.android", "com.twitter.android.LoginActivity");
                 context.startActivity(intent);
+                *///to share application link via twitter
+                try {
+                    Intent i = new Intent(Intent.ACTION_SEND);
+                    i.setClassName("com.twitter.android", "com.twitter.android.LoginActivity");
+                    i.putExtra(Intent.EXTRA_SUBJECT, "Daberny");
+                    String sAux = "\nLet me recommend you this application\n\n";
+                    sAux = sAux + "https://play.google.com/store/apps/details?id=com.example.raviarchi\n\n";
+                    i.putExtra(Intent.EXTRA_TEXT, "https://i.diawi.com/UBMuRn");
+                    context.startActivity(Intent.createChooser(i, "choose one"));
+                } catch (Exception e) {
+                    //e.toString();
+                }
                 break;
         }
     }
 
     @Override
     public void onItemsSelected(boolean[] selected) {
-        ArrayList<String> newGetId = new ArrayList<>();
-        for (int i = 0; i < selected.length; i++) {
-            if (selected[i]) {
-                newGetId.add(arrayfollowingUserIdList.get(i));
-            }
-            followingPeopleId = "";
-            for (int j = 0; j < newGetId.size(); j++) {
-                if (followingPeopleId.length() > 0) {
-                    followingPeopleId = followingPeopleId + "," + newGetId.get(j);
-                } else {
-                    followingPeopleId = newGetId.get(j);
-                }
-            }
+        utils.getSelectedFriendsId(selected, arrayfollowingUserIdList, followingPeopleId);
+    }
+
+    public class MyViewHolder extends RecyclerView.ViewHolder {
+        @BindView(R.id.adapter_home_list_spinnerFollowing)
+        MultiSelectSpinner spinnnerFollowing;
+        @BindView(R.id.adapter_home_list_layoutfb)
+        LinearLayout layoutFacebook;
+        @BindView(R.id.adapter_home_list_layoutshare)
+        LinearLayout layoutShare;
+        @BindView(R.id.adapter_home_list_btnshare)
+        Button btnShare;
+        @BindView(R.id.adapter_home_list_layout_all_voteresult)
+        LinearLayout layoutAllVoteResult;
+        @BindView(R.id.adapter_home_list_layoutCommentText)
+        LinearLayout layoutCommentText;
+        @BindView(R.id.adapter_home_list_layouttwitter)
+        LinearLayout layoutTwitter;
+        @BindView(R.id.adapter_home_list_txtusername)
+        TextView txtUserName;
+        @BindView(R.id.adapter_home_list_txthour)
+        TextView txtHour;
+        @BindView(R.id.adapter_home_list_txtminute)
+        TextView txtMinute;
+        @BindView(R.id.adapter_home_list_txtsecond)
+        TextView txtSecond;
+        @BindView(R.id.adapter_home_list_txtinterest1)
+        TextView txtInterest1;
+        @BindView(R.id.adapter_home_list_txtinterest2)
+        TextView txtInterest2;
+        @BindView(R.id.adapter_home_list_txtinterest3)
+        TextView txtInterest3;
+        @BindView(R.id.adapter_home_list_txtlevel1)
+        TextView txtLevel1;
+        @BindView(R.id.adapter_home_list_txtlevel2)
+        TextView txtLevel2;
+        @BindView(R.id.adapter_home_list_txtlevel3)
+        TextView txtLevel3;
+        @BindView(R.id.adapter_home_list_txtvotecount)
+        TextView txtVoteCount;
+        @BindView(R.id.adapter_home_list_txtvote)
+        TextView txtVote;
+        @BindView(R.id.adapter_home_list_txtvotesucess)
+        TextView txtVoteSucess;
+        @BindView(R.id.adapter_home_list_imgcomment)
+        ImageView imgComment;
+        @BindView(R.id.adapter_home_list_imgcommmentprofilepic)
+        ImageView imgCommentUserProfilePic;
+        @BindView(R.id.adapter_home_list_edcomment)
+        EditText edCommentText;
+        @BindView(R.id.adapter_home_list_txtque)
+        TextView txtQuetion;
+        @BindView(R.id.adapter_home_list_txttag)
+        TextView txtQuetionTag;
+        @BindView(R.id.adapter_home_list_txtcategory)
+        TextView txtCategory;
+        @BindView(R.id.adapter_home_list_txtdate)
+        TextView txtPostDate;
+        @BindView(R.id.adapter_home_list_txtvotepercentage1)
+        TextView txtVotePercentage1;
+        @BindView(R.id.adapter_home_list_txtvotepercentage2)
+        TextView txtVotePercentage2;
+        @BindView(R.id.adapter_home_list_txtvotepercentage3)
+        TextView txtVotePercentage3;
+        @BindView(R.id.adapter_home_list_txtvotepercentage4)
+        TextView txtVotePercentage4;
+        @BindView(R.id.adapter_home_list_txtvotequecount1)
+        TextView txtVoteQueCount1;
+        @BindView(R.id.adapter_home_list_txtvotequecount2)
+        TextView txtVoteQueCount2;
+        @BindView(R.id.adapter_home_list_txtvotequecount3)
+        TextView txtVoteQueCount3;
+        @BindView(R.id.adapter_home_list_txtvotequecount4)
+        TextView txtVoteQueCount4;
+        @BindView(R.id.adapter_home_list_txtcommenttext)
+        TextView txtCommentText;
+        @BindView(R.id.adapter_home_list_txtcommentuser)
+        TextView txtCommentUser;
+        @BindView(R.id.adapter_home_list_txtviewallcomments)
+        TextView txtViewAllComments;
+        @BindView(R.id.adapter_home_list_txtlikecount)
+        TextView txtLikeCount;
+        @BindView(R.id.adapter_home_list_rdoption1)
+        RadioButton rdAnswer1;
+        @BindView(R.id.adapter_home_list_rdoption2)
+        RadioButton rdAnswer2;
+        @BindView(R.id.adapter_home_list_rdoption3)
+        RadioButton rdAnswer3;
+        @BindView(R.id.adapter_home_list_rdoption4)
+        RadioButton rdAnswer4;
+        @BindView(R.id.adapter_home_list_txtoption1)
+        TextView txtAnswer1;
+        @BindView(R.id.adapter_home_list_txtoption2)
+        TextView txtAnswer2;
+        @BindView(R.id.adapter_home_list_txtoption3)
+        TextView txtAnswer3;
+        @BindView(R.id.adapter_home_list_txtoption4)
+        TextView txtAnswer4;
+        @BindView(R.id.adapter_home_list_imgquepic)
+        ImageView imgQuestionPic;
+        @BindView(R.id.adapter_home_list_imgprofilepic)
+        ImageView imgProfilePic;
+        @BindView(R.id.adapter_home_list_vdquevideo)
+        VideoView vdProfile;
+        @BindView(R.id.adapter_home_list_imglike)
+        ImageView imgLike;
+        @BindView(R.id.adapter_home_list_layout_like)
+        LinearLayout layoutLike;
+        @BindView(R.id.adapter_home_list_layout_comment)
+        LinearLayout layoutComment;
+        @BindView(R.id.adapter_home_list_layout_vote)
+        LinearLayout layoutVote;
+        @BindView(R.id.adapter_home_list_layoutvoteresult1)
+        LinearLayout layoutVoteResult1;
+        @BindView(R.id.adapter_home_list_layoutvoteresult2)
+        LinearLayout layoutVoteResult2;
+        @BindView(R.id.adapter_home_list_layoutvoteresult3)
+        LinearLayout layoutVoteResult3;
+        @BindView(R.id.adapter_home_list_layoutvoteresult4)
+        LinearLayout layoutVoteResult4;
+        @BindView(R.id.adapter_home_list_media)
+        LinearLayout layoutMedia;
+        @BindView(R.id.adapter_home_list_layoutinterest1)
+        LinearLayout layoutInterest1;
+        @BindView(R.id.adapter_home_list_layoutinterest2)
+        LinearLayout layoutInterest2;
+        @BindView(R.id.adapter_home_list_layoutinterest3)
+        LinearLayout layoutInterest3;
+        @BindView(R.id.adapter_home_list_radiogroup)
+        RadioGroup radioGroup;
+        MultiSelectionSpinner multiSelectionSpinnerFollowing;
+        @BindView(R.id.adapter_home_list_beforecounter)
+        LinearLayout layoutCounter;
+        @BindView(R.id.adapter_home_list_progressbar1)
+        RoundCornerProgressBar optionProgress1;
+        @BindView(R.id.adapter_home_list_progressbar2)
+        RoundCornerProgressBar optionProgress2;
+        @BindView(R.id.adapter_home_list_progressbar3)
+        RoundCornerProgressBar optionProgress3;
+        @BindView(R.id.adapter_home_list_progressbar4)
+        RoundCornerProgressBar optionProgress4;
+
+        public MyViewHolder(View itemView) {
+            super(itemView);
+            ButterKnife.bind(this, itemView);
         }
     }
 
-        public class MyViewHolder extends RecyclerView.ViewHolder {
-            @BindView(R.id.adapter_home_list_spinnerFollowing)
-            MultiSelectSpinner spinnnerFollowing;
-            @BindView(R.id.adapter_home_list_layoutfb)
-            LinearLayout layoutFacebook;
-            @BindView(R.id.adapter_home_list_btnshare)
-            Button btnShare;
-            @BindView(R.id.adapter_home_list_layout_all_voteresult)
-            LinearLayout layoutAllVoteResult;
-            @BindView(R.id.adapter_home_list_layoutCommentText)
-            LinearLayout layoutCommentText;
-            @BindView(R.id.adapter_home_list_layouttwitter)
-            LinearLayout layoutTwitter;
-            @BindView(R.id.adapter_home_list_txtusername)
-            TextView txtUserName;
-            @BindView(R.id.adapter_home_list_txthour)
-            TextView txtHour;
-            @BindView(R.id.adapter_home_list_txtminute)
-            TextView txtMinute;
-            @BindView(R.id.adapter_home_list_txtsecond)
-            TextView txtSecond;
-            @BindView(R.id.adapter_home_list_txtinterest1)
-            TextView txtInterest1;
-            @BindView(R.id.adapter_home_list_txtinterest2)
-            TextView txtInterest2;
-            @BindView(R.id.adapter_home_list_txtinterest3)
-            TextView txtInterest3;
-            @BindView(R.id.adapter_home_list_txtlevel1)
-            TextView txtLevel1;
-            @BindView(R.id.adapter_home_list_txtlevel2)
-            TextView txtLevel2;
-            @BindView(R.id.adapter_home_list_txtlevel3)
-            TextView txtLevel3;
-            @BindView(R.id.adapter_home_list_txtvotecount)
-            TextView txtVoteCount;
-            @BindView(R.id.adapter_home_list_txtvote)
-            TextView txtVote;
-            @BindView(R.id.adapter_home_list_txtvotesucess)
-            TextView txtVoteSucess;
-            @BindView(R.id.adapter_home_list_imgcomment)
-            ImageView imgComment;
-            @BindView(R.id.adapter_home_list_imgcommmentprofilepic)
-            ImageView imgCommentUserProfilePic;
-            @BindView(R.id.adapter_home_list_edcomment)
-            EditText edCommentText;
-            @BindView(R.id.adapter_home_list_txtque)
-            TextView txtQuetion;
-            @BindView(R.id.adapter_home_list_txttag)
-            TextView txtQuetionTag;
-            @BindView(R.id.adapter_home_list_txtcategory)
-            TextView txtCategory;
-            @BindView(R.id.adapter_home_list_txtdate)
-            TextView txtPostDate;
-            @BindView(R.id.adapter_home_list_txtvotepercentage1)
-            TextView txtVotePercentage1;
-            @BindView(R.id.adapter_home_list_txtvotepercentage2)
-            TextView txtVotePercentage2;
-            @BindView(R.id.adapter_home_list_txtvotepercentage3)
-            TextView txtVotePercentage3;
-            @BindView(R.id.adapter_home_list_txtvotepercentage4)
-            TextView txtVotePercentage4;
-            @BindView(R.id.adapter_home_list_txtvotequecount1)
-            TextView txtVoteQueCount1;
-            @BindView(R.id.adapter_home_list_txtvotequecount2)
-            TextView txtVoteQueCount2;
-            @BindView(R.id.adapter_home_list_txtvotequecount3)
-            TextView txtVoteQueCount3;
-            @BindView(R.id.adapter_home_list_txtvotequecount4)
-            TextView txtVoteQueCount4;
-            @BindView(R.id.adapter_home_list_txtcommenttext)
-            TextView txtCommentText;
-            @BindView(R.id.adapter_home_list_txtcommentuser)
-            TextView txtCommentUser;
-            @BindView(R.id.adapter_home_list_txtviewallcomments)
-            TextView txtViewAllComments;
-            @BindView(R.id.adapter_home_list_txtlikecount)
-            TextView txtLikeCount;
-            @BindView(R.id.adapter_home_list_rdoption1)
-            RadioButton rdAnswer1;
-            @BindView(R.id.adapter_home_list_rdoption2)
-            RadioButton rdAnswer2;
-            @BindView(R.id.adapter_home_list_rdoption3)
-            RadioButton rdAnswer3;
-            @BindView(R.id.adapter_home_list_rdoption4)
-            RadioButton rdAnswer4;
-            @BindView(R.id.adapter_home_list_txtoption1)
-            TextView txtAnswer1;
-            @BindView(R.id.adapter_home_list_txtoption2)
-            TextView txtAnswer2;
-            @BindView(R.id.adapter_home_list_txtoption3)
-            TextView txtAnswer3;
-            @BindView(R.id.adapter_home_list_txtoption4)
-            TextView txtAnswer4;
-            @BindView(R.id.adapter_home_list_imgquepic)
-            ImageView imgQuestionPic;
-            @BindView(R.id.adapter_home_list_imgprofilepic)
-            ImageView imgProfilePic;
-            @BindView(R.id.adapter_home_list_vdquevideo)
-            VideoView vdProfile;
-            @BindView(R.id.adapter_home_list_imglike)
-            ImageView imgLike;
-            @BindView(R.id.adapter_home_list_layout_like)
-            LinearLayout layoutLike;
-            @BindView(R.id.adapter_home_list_layout_comment)
-            LinearLayout layoutComment;
-            @BindView(R.id.adapter_home_list_layout_vote)
-            LinearLayout layoutVote;
-            @BindView(R.id.adapter_home_list_layoutvoteresult1)
-            LinearLayout layoutVoteResult1;
-            @BindView(R.id.adapter_home_list_layoutvoteresult2)
-            LinearLayout layoutVoteResult2;
-            @BindView(R.id.adapter_home_list_layoutvoteresult3)
-            LinearLayout layoutVoteResult3;
-            @BindView(R.id.adapter_home_list_layoutvoteresult4)
-            LinearLayout layoutVoteResult4;
-            @BindView(R.id.adapter_home_list_media)
-            LinearLayout layoutMedia;
-            @BindView(R.id.adapter_home_list_layoutinterest1)
-            LinearLayout layoutInterest1;
-            @BindView(R.id.adapter_home_list_layoutinterest2)
-            LinearLayout layoutInterest2;
-            @BindView(R.id.adapter_home_list_layoutinterest3)
-            LinearLayout layoutInterest3;
-            @BindView(R.id.adapter_home_list_radiogroup)
-            RadioGroup radioGroup;
-            MultiSelectionSpinner multiSelectionSpinnerFollowing;
-            @BindView(R.id.adapter_home_list_beforecounter)
-            LinearLayout layoutCounter;
-            @BindView(R.id.adapter_home_list_progressbar1)
-            RoundCornerProgressBar optionProgress1;
-            @BindView(R.id.adapter_home_list_progressbar2)
-            RoundCornerProgressBar optionProgress2;
-            @BindView(R.id.adapter_home_list_progressbar3)
-            RoundCornerProgressBar optionProgress3;
-            @BindView(R.id.adapter_home_list_progressbar4)
-            RoundCornerProgressBar optionProgress4;
 
-            public MyViewHolder(View itemView) {
-                super(itemView);
-                ButterKnife.bind(this, itemView);
-            }
+    // TODO: 3/23/2017 submit vote
+    private class SubmitVote extends AsyncTask<String, String, String> {
+        String id, queId, answer;
+        ProgressDialog pd;
+        int position;
+        ArrayList<UserProfileDetails> arrayList;
+        MyViewHolder holder;
+
+        public SubmitVote(MyViewHolder holder, int position, String id, String queId, String answer, ArrayList<UserProfileDetails> arrayList) {
+            this.holder = holder;
+            this.position = position;
+            this.id = id;
+            this.queId = queId;
+            this.answer = answer;
+            this.arrayList = arrayList;
+            notifyDataSetChanged();
         }
 
-
-        // TODO: 3/23/2017 submit vote
-        private class SubmitVote extends AsyncTask<String, String, String> {
-            String id, queId, answer;
-            ProgressDialog pd;
-            int position;
-            ArrayList<UserProfileDetails> arrayList;
-            MyViewHolder holder;
-
-            public SubmitVote(MyViewHolder holder, int position, String id, String queId, String answer, ArrayList<UserProfileDetails> arrayList) {
-                this.holder = holder;
-                this.position = position;
-                this.id = id;
-                this.queId = queId;
-                this.answer = answer;
-                this.arrayList = arrayList;
-                notifyDataSetChanged();
-            }
-
-            @Override
-            protected void onPreExecute() {
-                super.onPreExecute();
-                arrayList = new ArrayList<>();
-                pd = new ProgressDialog(context);
-                pd.setMessage("Loading");
-                pd.setCancelable(false);
-                pd.show();
-            }
-
-            @Override
-            protected String doInBackground(String... strings) {
-                //http://181.224.157.105/~hirepeop/host2/surveys/api/qustion_wotting/666/66/4
-                return Utils.getResponseofGet(Constant.QUESTION_BASE_URL + "qustion_wotting/" + id + "/" + queId + "/" + answer);
-            }
-
-            @Override
-            protected void onPostExecute(String s) {
-                super.onPostExecute(s);
-                pd.dismiss();
-                Log.d("RESPONSE", "Voting..." + s);
-                try {
-                    JSONObject jsonObject = new JSONObject(s);
-                    if (jsonObject.getString("status").equalsIgnoreCase("true")) {
-                        JSONObject voteObject = jsonObject.getJSONObject("inserted_data");
-                        UserProfileDetails details = new UserProfileDetails();
-                        details.setQueAnswer(voteObject.getString("vote_opn_val"));
-                        arrayList.add(details);
-                        //Toast.makeText(context, "Success! Thanks for vote..", Toast.LENGTH_SHORT).show();
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                if (arrayList.size() > 0) {
-                    holder.txtVote.setVisibility(View.GONE);
-                } else {
-                    new ExceptionCallback() {
-                        @Override
-                        public void onException(Exception e) {
-                            Log.d("E", "" + e);
-                        }
-                    };
-                }
-            }
-
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            arrayList = new ArrayList<>();
+            pd = new ProgressDialog(context);
+            pd.setMessage("Loading");
+            pd.setCancelable(false);
+            pd.show();
         }
 
-        private class SharePost extends AsyncTask<String, String, String> {
-            String id, que_id, otheruser_id, loginuser_id;
-            ProgressDialog pd;
-            int position;
-            ArrayList<UserProfileDetails> arrayList;
-            MyViewHolder holder;
+        @Override
+        protected String doInBackground(String... strings) {
+            //http://181.224.157.105/~hirepeop/host2/surveys/api/qustion_wotting/666/66/4
+            return Utils.getResponseofGet(Constant.QUESTION_BASE_URL + "qustion_wotting/" + id + "/" + queId + "/" + answer);
+        }
 
-            private SharePost(MyViewHolder holder, int position, String userid, String otheruserId, String queId, ArrayList<UserProfileDetails> arrayList) {
-                this.holder = holder;
-                this.position = position;
-                this.loginuser_id = userid;
-                this.otheruser_id = otheruserId;
-                this.que_id = queId;
-                this.arrayList = arrayList;
-                notifyDataSetChanged();
-            }
-
-            @Override
-            protected void onPreExecute() {
-                super.onPreExecute();
-                arrayList = new ArrayList<>();
-                pd = new ProgressDialog(context);
-                pd.setMessage("Loading");
-                pd.setCancelable(false);
-                pd.show();
-            }
-
-            @Override
-            protected String doInBackground(String... strings) {
-                //http://181.224.157.105/~hirepeop/host2/surveys/api/question_share_data/752/669,885/709
-                // return Utils.getResponseofGet(Constant.QUESTION_BASE_URL + "question_share_data/" + loginuser_id + "/" + otheruser_id + "/" + que_id);
-                return Utils.getResponseofGet(Constant.QUESTION_BASE_URL + "question_share_data/" + loginuser_id + "/" + otheruser_id + "/" + que_id);
-            }
-
-            @Override
-            protected void onPostExecute(String s) {
-                super.onPostExecute(s);
-                pd.dismiss();
-                Log.d("RESPONSE", "Share Post..." + s);
-                try {
-                    JSONObject jsonObject = new JSONObject(s);
-                    if (jsonObject.getString("status").equalsIgnoreCase("true")) {
-                        JSONObject voteObject = jsonObject.getJSONObject("data");
-                        //arrayList.add(details);
-                        Toast.makeText(context, jsonObject.getString("msg"), Toast.LENGTH_SHORT).show();
-                    } else {
-                        Toast.makeText(context, jsonObject.getString("msg"), Toast.LENGTH_SHORT).show();
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+            pd.dismiss();
+            Log.d("RESPONSE", "Voting..." + s);
+            try {
+                JSONObject jsonObject = new JSONObject(s);
+                if (jsonObject.getString("status").equalsIgnoreCase("true")) {
+                    JSONObject voteObject = jsonObject.getJSONObject("inserted_data");
+                    UserProfileDetails details = new UserProfileDetails();
+                    details.setQueAnswer(voteObject.getString("vote_opn_val"));
+                    arrayList.add(details);
                 }
-            /*if (arrayList.size() > 0) {
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            if (arrayList.size() > 0) {
                 holder.txtVote.setVisibility(View.GONE);
             } else {
                 new ExceptionCallback() {
@@ -750,160 +654,212 @@ public class HomeAdapter extends RecyclerView.Adapter<HomeAdapter.MyViewHolder> 
                         Log.d("E", "" + e);
                     }
                 };
-            }*/
             }
         }
 
-        // TODO: 3/28/2017  like and dislike the post
-        private class LikePost extends AsyncTask<String, String, String> {
-            String user_id, que_id, task;
-            ProgressDialog pd;
-            int position;
-            ArrayList<UserProfileDetails> arrayList;
-            MyViewHolder holder;
+    }
 
-            public LikePost(int position, MyViewHolder holder, ArrayList<UserProfileDetails> arrayList, String id, String queId, String task) {
-                this.position = position;
-                this.holder = holder;
-                this.user_id = id;
-                this.que_id = queId;
-                this.task = task;
-                this.arrayList = arrayList;
-                notifyDataSetChanged();
-            }
+    private class SharePost extends AsyncTask<String, String, String> {
+        String id, que_id, otheruser_id, loginuser_id;
+        ProgressDialog pd;
+        int position;
+        ArrayList<UserProfileDetails> arrayList;
+        MyViewHolder holder;
 
-            @Override
-            protected void onPreExecute() {
-                super.onPreExecute();
-                arrayList = new ArrayList<>();
-                pd = new ProgressDialog(context);
-                pd.setMessage("Loading");
-                pd.setCancelable(false);
-                pd.show();
-            }
-
-            @Override
-            protected String doInBackground(String... strings) {
-                //http://181.224.157.105/~hirepeop/host2/surveys/api/like_un_like/805/15
-                return Utils.getResponseofGet(Constant.QUESTION_BASE_URL + "like_un_like/" + user_id + "/" + que_id);
-            }
-
-            @Override
-            protected void onPostExecute(String s) {
-                super.onPostExecute(s);
-                pd.dismiss();
-                Log.d("RESPONSE", "Like Post..." + s);
-                try {
-                    JSONObject jsonObject = new JSONObject(s);
-                    if (jsonObject.getString("status").equalsIgnoreCase("true")) {
-                        JSONObject likeObject = jsonObject.getJSONObject("inserted_data");
-                    } else {
-                        if (task.equalsIgnoreCase("add")) {
-                            details.setQueLikeStatus("0");
-                            details.setQueLikeTotalCount(details.getQueVoteTotalCount() - 1);
-                        } else {
-                            details.setQueLikeStatus("1");
-                            details.setQueLikeTotalCount(details.getQueVoteTotalCount() + 1);
-                        }
-                        arrayList.add(details);
-                        notifyDataSetChanged();
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                if (arrayList.size() > 0) {
-                    if (details.getQueLikeStatus().equalsIgnoreCase("0")) {
-                        holder.imgLike.setImageDrawable(ContextCompat.getDrawable(context, R.mipmap.ic_unlike_icon));
-                    } else {
-                        holder.imgLike.setImageDrawable(ContextCompat.getDrawable(context, R.mipmap.ic_like_icon));
-                    }
-                } else {
-                    new ExceptionCallback() {
-                        @Override
-                        public void onException(Exception e) {
-                            Log.d("exp", "" + e);
-                        }
-                    };
-                }
-            }
+        private SharePost(MyViewHolder holder, int position, String userid, String otheruserId, String queId, ArrayList<UserProfileDetails> arrayList) {
+            this.holder = holder;
+            this.position = position;
+            this.loginuser_id = userid;
+            this.otheruser_id = otheruserId;
+            this.que_id = queId;
+            this.arrayList = arrayList;
+            notifyDataSetChanged();
         }
 
-        // TODO: 3/27/2017 store the comments
-        private class CommentPost extends AsyncTask<String, String, String> {
-            String id, queId, comment;
-            ProgressDialog pd;
-            ArrayList<UserProfileDetails> arrayList;
-            MyViewHolder holder;
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            arrayList = new ArrayList<>();
+            pd = new ProgressDialog(context);
+            pd.setMessage("Loading");
+            pd.setCancelable(false);
+            pd.show();
+        }
 
-            public CommentPost(MyViewHolder holder, ArrayList<UserProfileDetails> arrayList, String id, String queId, String comment) {
-                this.id = id;
-                this.queId = queId;
-                this.comment = comment;
-                this.arrayList = arrayList;
-                this.holder = holder;
-            }
+        @Override
+        protected String doInBackground(String... strings) {
+            //http://181.224.157.105/~hirepeop/host2/surveys/api/question_share_data/752/669,885/709
+            return Utils.getResponseofGet(Constant.QUESTION_BASE_URL + "question_share_data/" + loginuser_id + "/" + otheruser_id + "/" + que_id);
+        }
 
-            @Override
-            protected void onPreExecute() {
-                super.onPreExecute();
-                arrayList = new ArrayList<>();
-                pd = new ProgressDialog(context);
-                pd.setMessage("Loading");
-                pd.setCancelable(false);
-                pd.show();
-            }
-
-            @Override
-            protected String doInBackground(String... strings) {
-                //http://181.224.157.105/~hirepeop/host2/surveys/api/add_comment/806/161/hello%20niki
-                try {
-                    return Utils.getResponseofGet(Constant.QUESTION_BASE_URL + "add_comment/" + id + "/" + queId + "/" + URLEncoder.encode(comment, "utf-8"));
-                } catch (UnsupportedEncodingException e) {
-                    e.printStackTrace();
-                    return "";
-                }
-            }
-
-            @Override
-            protected void onPostExecute(String s) {
-                super.onPostExecute(s);
-                pd.dismiss();
-                Log.d("RESPONSE", "Comment the Post..." + s);
-                try {
-                    JSONObject jsonObject = new JSONObject(s);
-                    if (jsonObject.getString("status").equalsIgnoreCase("true")) {
-                        JSONArray commentArray = jsonObject.getJSONArray("inserted_data");
-                        for (int i = 0; i < commentArray.length(); i++) {
-                            JSONObject commentObject = commentArray.getJSONObject(i);
-                            details = new UserProfileDetails();
-                            details.setQueComment(commentObject.getString("comment_text"));
-                            details.setQueCommentUserProfilePic(commentObject.getString("image"));
-                            details.setQueCommentUser(commentObject.getString("username"));
-                            details.setQueCommentUserId(commentObject.getString("uid"));
-                            arrayList.add(details);
-                        }
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                if (arrayList.size() > 0) {
-                    holder.edCommentText.setText(" ");
-                    holder.layoutCommentText.setVisibility(View.VISIBLE);
-                    holder.txtCommentText.setText(details.getQueComment().replaceAll("%20", " "));
-                    holder.txtCommentUser.setText(details.getQueCommentUser());
-                    Picasso.with(context).load(details.getQueCommentUserProfilePic())
-                            .transform(new RoundedTransformation(120, 2)).placeholder(R.drawable.ic_placeholder)
-                            .into(holder.imgCommentUserProfilePic);
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+            pd.dismiss();
+            Log.d("RESPONSE", "Share Post..." + s);
+            try {
+                JSONObject jsonObject = new JSONObject(s);
+                if (jsonObject.getString("status").equalsIgnoreCase("true")) {
+                    Toast.makeText(context, "Success! Post shared to selected users", Toast.LENGTH_SHORT).show();
                 } else {
-                    new ExceptionCallback() {
-                        @Override
-                        public void onException(Exception e) {
-                            Log.d("exception", "" + e);
-                        }
-                    };
+                    Toast.makeText(context, jsonObject.getString("msg"), Toast.LENGTH_SHORT).show();
                 }
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
-
         }
     }
+
+    // TODO: 3/28/2017  like and dislike the post
+    private class LikePost extends AsyncTask<String, String, String> {
+        String user_id, que_id, task;
+        ProgressDialog pd;
+        int position;
+        ArrayList<UserProfileDetails> arrayList;
+        MyViewHolder holder;
+
+        private LikePost(int position, MyViewHolder holder, ArrayList<UserProfileDetails> arrayList, String id, String queId, String task) {
+            this.position = position;
+            this.holder = holder;
+            this.user_id = id;
+            this.que_id = queId;
+            this.task = task;
+            this.arrayList = arrayList;
+            notifyDataSetChanged();
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            arrayList = new ArrayList<>();
+            pd = new ProgressDialog(context);
+            pd.setMessage("Loading");
+            pd.setCancelable(false);
+            pd.show();
+        }
+
+        @Override
+        protected String doInBackground(String... strings) {
+            //http://181.224.157.105/~hirepeop/host2/surveys/api/like_un_like/805/15
+            return Utils.getResponseofGet(Constant.QUESTION_BASE_URL + "like_un_like/" + user_id + "/" + que_id);
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+            pd.dismiss();
+            Log.d("RESPONSE", "Like Post..." + s);
+            try {
+                JSONObject jsonObject = new JSONObject(s);
+                if (jsonObject.getString("status").equalsIgnoreCase("true")) {
+                    JSONObject likeObject = jsonObject.getJSONObject("inserted_data");
+                } else {
+                    if (task.equalsIgnoreCase("add")) {
+                        details.setQueLikeStatus("0");
+                        details.setQueLikeTotalCount(details.getQueVoteTotalCount() - 1);
+                    } else {
+                        details.setQueLikeStatus("1");
+                        details.setQueLikeTotalCount(details.getQueVoteTotalCount() + 1);
+                    }
+                    arrayList.add(details);
+                    notifyDataSetChanged();
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            if (arrayList.size() > 0) {
+                if (details.getQueLikeStatus().equalsIgnoreCase("0")) {
+                    holder.imgLike.setImageDrawable(ContextCompat.getDrawable(context, R.mipmap.ic_unlike_icon));
+                } else {
+                    holder.imgLike.setImageDrawable(ContextCompat.getDrawable(context, R.mipmap.ic_like_icon));
+                }
+            } else {
+                new ExceptionCallback() {
+                    @Override
+                    public void onException(Exception e) {
+                        Log.d("exp", "" + e);
+                    }
+                };
+            }
+        }
+    }
+
+    // TODO: 3/27/2017 store the comments
+    private class CommentPost extends AsyncTask<String, String, String> {
+        String id, queId, comment;
+        ProgressDialog pd;
+        ArrayList<UserProfileDetails> arrayList;
+        MyViewHolder holder;
+
+        public CommentPost(MyViewHolder holder, ArrayList<UserProfileDetails> arrayList, String id, String queId, String comment) {
+            this.id = id;
+            this.queId = queId;
+            this.comment = comment;
+            this.arrayList = arrayList;
+            this.holder = holder;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            arrayList = new ArrayList<>();
+            pd = new ProgressDialog(context);
+            pd.setMessage("Loading");
+            pd.setCancelable(false);
+            pd.show();
+        }
+
+        @Override
+        protected String doInBackground(String... strings) {
+            //http://181.224.157.105/~hirepeop/host2/surveys/api/add_comment/806/161/hello%20niki
+            try {
+                return Utils.getResponseofGet(Constant.QUESTION_BASE_URL + "add_comment/" + id + "/" + queId + "/" + URLEncoder.encode(comment, "utf-8"));
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+                return "";
+            }
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+            pd.dismiss();
+            Log.d("RESPONSE", "Comment the Post..." + s);
+            try {
+                JSONObject jsonObject = new JSONObject(s);
+                if (jsonObject.getString("status").equalsIgnoreCase("true")) {
+                    JSONArray commentArray = jsonObject.getJSONArray("inserted_data");
+                    for (int i = 0; i < commentArray.length(); i++) {
+                        JSONObject commentObject = commentArray.getJSONObject(i);
+                        details = new UserProfileDetails();
+                        details.setQueComment(commentObject.getString("comment_text"));
+                        details.setQueCommentUserProfilePic(commentObject.getString("image"));
+                        details.setQueCommentUser(commentObject.getString("username"));
+                        details.setQueCommentUserId(commentObject.getString("uid"));
+                        arrayList.add(details);
+                    }
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            if (arrayList.size() > 0) {
+                holder.edCommentText.setText(" ");
+                holder.layoutCommentText.setVisibility(View.VISIBLE);
+                holder.txtCommentText.setText(details.getQueComment().replaceAll("%20", " "));
+                holder.txtCommentUser.setText(details.getQueCommentUser());
+                Picasso.with(context).load(details.getQueCommentUserProfilePic())
+                        .transform(new RoundedTransformation(120, 2)).placeholder(R.drawable.ic_placeholder)
+                        .into(holder.imgCommentUserProfilePic);
+            } else {
+                new ExceptionCallback() {
+                    @Override
+                    public void onException(Exception e) {
+                        Log.d("exception", "" + e);
+                    }
+                };
+            }
+        }
+
+    }
+}
 

@@ -6,25 +6,38 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.Typeface;
+import android.graphics.drawable.ColorDrawable;
 import android.location.Location;
 import android.net.ConnectivityManager;
 import android.net.Network;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.StrictMode;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.MediaController;
+import android.widget.RadioButton;
+import android.widget.TextView;
+import android.widget.VideoView;
 
+import com.example.raviarchi.daberny.Activity.Model.UserProfileDetails;
 import com.example.raviarchi.daberny.R;
+import com.squareup.picasso.Picasso;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -123,9 +136,9 @@ public class Utils {
         long months = (different - years * 365 * 60 * 60 * 24) / (30 * 60 * 60 * 24);
         long days = (different - years * 365 * 60 * 60 * 24 - months * 30 * 60 * 60 * 24) / (60 * 60 * 24);
         long hours = (different - years * 365 * 60 * 60 * 24 - months * 30 * 60 * 60 * 24 - days * 60 * 60 * 24) / (60 * 60);
-        long minuts = (different - years * 365 * 60 * 60 * 24 - months * 30 * 60 * 60 * 24 - days * 60 * 60 * 24 - hours * 60 * 60) / 60;
-        long seconds = (different - years * 365 * 60 * 60 * 24 - months * 30 * 60 * 60 * 24 - days * 60 * 60 * 24 - hours * 60 * 60 - minuts * 60);
-        return " " + years + ":" + months + ":" + days + ":" + hours + ":" + minuts + ":" + seconds;
+        long minutes = (different - years * 365 * 60 * 60 * 24 - months * 30 * 60 * 60 * 24 - days * 60 * 60 * 24 - hours * 60 * 60) / 60;
+        long seconds = (different - years * 365 * 60 * 60 * 24 - months * 30 * 60 * 60 * 24 - days * 60 * 60 * 24 - hours * 60 * 60 - minutes * 60);
+        return " " + years + ":" + months + ":" + days + ":" + hours + ":" + minutes + ":" + seconds;
 
     }
 
@@ -250,7 +263,7 @@ public class Utils {
         Log.d("reg_put", "key" + Constant.ISFIRSTTIMEREG + "value" + firstTime);
     }
 
-    public Boolean getReadSharedPrefrenceIsFirstTime(/*Context context, String key*/) {
+    public Boolean getReadSharedPrefrenceIsFirstTime(Context context, String key) {
         Boolean response = sp.getBoolean(Constant.ISFIRSTTIMEREG, false);
         Log.d("reg_get", "key" + Constant.ISFIRSTTIMEREG);
         return response;
@@ -260,6 +273,7 @@ public class Utils {
         sp.edit().clear().apply();
 
     }
+
 
     public void getSelectedInterest(ArrayList<String> interestList, String interest) {
         interest = "";
@@ -284,7 +298,7 @@ public class Utils {
         transaction.commit();
     }
 
-    public void setAdapterForList(RecyclerView recyclerView, RecyclerView.Adapter adapter){
+    public void setAdapterForList(RecyclerView recyclerView, RecyclerView.Adapter adapter) {
         LinearLayoutManager layoutManager = new LinearLayoutManager(context);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(context);
         recyclerView.setLayoutManager(mLayoutManager);
@@ -293,6 +307,134 @@ public class Utils {
         adapter.notifyDataSetChanged();
     }
 
+    public void setPostImageVideo(UserProfileDetails details, ImageView imgQuestionPic, VideoView vdProfile, LinearLayout layoutMedia) {
+        if (details.getQueImageName().length() > 0) {
+
+            if (details.getQueImage() != null) {
+                imgQuestionPic.setVisibility(View.VISIBLE);
+                vdProfile.setVisibility(View.VISIBLE);
+                layoutMedia.setVisibility(View.VISIBLE);
+                if (details.getQueType().equalsIgnoreCase("0")) {
+                    layoutMedia.setVisibility(View.GONE);
+                } else if (details.getQueType().equalsIgnoreCase("1")) {
+                    vdProfile.setVisibility(View.GONE);
+                    Picasso.with(context).load(details.getQueImage()).placeholder(R.drawable.ic_placeholder).into(imgQuestionPic);
+                } else if (details.getQueType().equalsIgnoreCase("2")) {
+                    imgQuestionPic.setVisibility(View.GONE);
+                    vdProfile.setVideoURI(Uri.parse(details.getQueImage()));
+                    vdProfile.setMediaController(new MediaController(context));
+                    vdProfile.requestFocus();
+                    vdProfile.start();
+                }
+            }
+        } else {
+            layoutMedia.setVisibility(View.GONE);
+        }
+    }
+
+    public void setCommentUserImageInPicasso(UserProfileDetails details, ImageView imgCommentUserProfilePic) {
+        if (details.getQueCommentUserProfilePic() != null) {
+            if (details.getQueCommentUserProfilePic().length() > 0) {
+                Picasso.with(context).load(details.getQueCommentUserProfilePic()).
+                        transform(new RoundedTransformation(120, 2)).
+                        placeholder(R.drawable.ic_placeholder).into(imgCommentUserProfilePic);
+            } else {
+                Picasso.with(context).load(R.drawable.ic_placeholder).
+                        transform(new RoundedTransformation(120, 2)).
+                        placeholder(R.drawable.ic_placeholder).into(imgCommentUserProfilePic);
+            }
+        }
+    }
+    public void getSelectedFriendsId(boolean[] selected,
+                                     ArrayList<String> arrayfollowingUserIdList, String followingPeopleId){
+        ArrayList<String> newGetId = new ArrayList<>();
+        for (int i = 0; i < selected.length; i++) {
+            if (selected[i]) {
+                newGetId.add(arrayfollowingUserIdList.get(i));
+            }
+            followingPeopleId = "";
+            for (int j = 0; j < newGetId.size(); j++) {
+                if (followingPeopleId.length() > 0) {
+                    followingPeopleId = followingPeopleId + "," + newGetId.get(j);
+                } else {
+                    followingPeopleId = newGetId.get(j);
+                }
+            }
+        }
+    }
+    public void setPostUserImageInPicasso(UserProfileDetails details, ImageView imgProfilePic) {
+        if (details.getUserImage() != null) {
+            if (details.getUserImage().length() > 0) {
+                Picasso.with(context).load(details.getUserImage()).
+                        transform(new RoundedTransformation(120, 2)).
+                        placeholder(R.drawable.ic_placeholder).into(imgProfilePic);
+            } else {
+                Picasso.with(context).load(R.mipmap.ic_launcher).
+                        transform(new RoundedTransformation(120, 2)).
+                        placeholder(R.drawable.ic_placeholder).into(imgProfilePic);
+            }
+        }
+    }
+
+    public void dynamicVoting(UserProfileDetails details, int position, ArrayList<UserProfileDetails> arrayList, TextView txtVote) {
+        String isVoteStatus = details.getQueVoteStatus();
+        String isCanVote = details.getUserCanVote();
+        if (isVoteStatus.equalsIgnoreCase("1")) {
+            if (isCanVote.equalsIgnoreCase("1")) {
+                arrayList.get(position).setUserCanVote("0");
+                arrayList.get(position).setQueVoteTotalCount(arrayList.get(position).getQueVoteTotalCount() + 1);
+                txtVote.setVisibility(View.GONE);
+            }
+        }
+    }
+
+    public void setIdOfQuestion(UserProfileDetails details, Fragment fragment) {
+        Bundle bundle = new Bundle();
+        bundle.putString("queid", details.getQueId());
+        fragment.setArguments(bundle);
+    }
+
+    public void setIdOfCommentUser(UserProfileDetails details, Fragment fragment) {
+        Bundle bundle = new Bundle();
+        bundle.putString("id", details.getQueCommentUserId());
+        fragment.setArguments(bundle);
+    }
+
+    public void setIdOfPostUser(UserProfileDetails details, Fragment fragment) {
+        Bundle bundle = new Bundle();
+        bundle.putString("id", details.getUserId());
+        fragment.setArguments(bundle);
+    }
+
+    public void setDynamicLikeUnLike(UserProfileDetails details, int position, ArrayList<UserProfileDetails> arrayList, ImageView imgLike, String liketask) {
+        String isLiked = details.getQueLikeStatus();
+        liketask = isLiked.equalsIgnoreCase("1") ? "remove" : "add";
+        if (liketask.equalsIgnoreCase("add")) {
+            arrayList.get(position).setQueLikeStatus("1");
+            imgLike.setImageDrawable(ContextCompat.getDrawable(context, R.mipmap.ic_like_icon));
+            arrayList.get(position).setQueLikeTotalCount(arrayList.get(position).getQueLikeTotalCount() + 1);
+        } else {
+            arrayList.get(position).setQueLikeStatus("0");
+            imgLike.setImageDrawable(ContextCompat.getDrawable(context, R.mipmap.ic_unlike_icon));
+            arrayList.get(position).setQueLikeTotalCount(arrayList.get(position).getQueLikeTotalCount() - 1);
+        }
+    }
+
+    public void setRadioButtonAsPerVote(RadioButton rdAnswer1, RadioButton rdAnswer2, RadioButton
+            rdAnswer3, RadioButton rdAnswer4) {
+        rdAnswer1.setButtonDrawable(new ColorDrawable(0xFFFFFF));
+        rdAnswer2.setButtonDrawable(new ColorDrawable(0xFFFFFF));
+        rdAnswer3.setButtonDrawable(new ColorDrawable(0xFFFFFF));
+        rdAnswer4.setButtonDrawable(new ColorDrawable(0xFFFFFF));
+    }
+
+    public void setTextOfInboxList(UserProfileDetails userdetails, TextView txtMessage) {
+        if (userdetails.getUserMsgStatus().equalsIgnoreCase("1")) {
+            txtMessage.setTypeface(null, Typeface.BOLD);
+        } else {
+            txtMessage.setTypeface(null, Typeface.NORMAL);
+        }
+    }
 
     public String MakeServiceCall(String URLSTR) {
         StringBuilder response = null;

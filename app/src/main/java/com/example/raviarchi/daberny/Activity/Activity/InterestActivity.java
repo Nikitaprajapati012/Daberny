@@ -15,6 +15,7 @@ import com.example.raviarchi.daberny.Activity.Utils.Constant;
 import com.example.raviarchi.daberny.Activity.Utils.Utils;
 import com.example.raviarchi.daberny.R;
 import com.example.raviarchi.multiplespinner.MultiSelectionSpinner;
+import com.koushikdutta.async.http.socketio.ExceptionCallback;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -86,15 +87,17 @@ public class InterestActivity extends AppCompatActivity implements View.OnClickL
                     }
                 }
                 Log.d("interest_id", InterestId);
-
-                // Toast.makeText(this, "interest id =" + InterestId + "\n" + "interest name" + InterestName, Toast.LENGTH_SHORT).show();
                 if (InterestId.length() > 0) {
                     new StoreInterest(InterestId).execute();
                     Intent isave = new Intent(InterestActivity.this, MainActivity.class);
-                    Utils.WriteSharePrefrence(InterestActivity.this, Constant.INTERESTID, InterestId);
                     startActivity(isave);
                 } else {
-                  //  Toast.makeText(this, "Interest not Stored,Please try again", Toast.LENGTH_SHORT).show();
+                    new ExceptionCallback() {
+                        @Override
+                        public void onException(Exception e) {
+                            Log.d("EXP",""+e);
+                        }
+                    };
                 }
                 break;
         }
@@ -191,7 +194,7 @@ public class InterestActivity extends AppCompatActivity implements View.OnClickL
         @Override
         protected String doInBackground(String... strings) {
             //http://181.224.157.105/~hirepeop/host2/surveys/api/add_with_interest/815/1,2,3
-            return utils.getResponseofGet(Constant.QUESTION_BASE_URL + "add_with_interest/" + ID + "/" + InterestId);
+            return Utils.getResponseofGet(Constant.QUESTION_BASE_URL + "add_with_interest/" + ID + "/" + InterestId);
         }
 
         @Override

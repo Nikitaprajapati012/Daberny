@@ -1,12 +1,6 @@
 package com.example.raviarchi.daberny.Activity.Adapter;
 
 import android.content.Context;
-import android.content.Intent;
-import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,9 +9,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.example.raviarchi.daberny.Activity.Activity.SettingActivity;
-import com.example.raviarchi.daberny.Activity.Fragment.OtherUserProfile;
-import com.example.raviarchi.daberny.Activity.Model.UserProfileDetails;
+import com.example.raviarchi.daberny.Activity.Model.dataPojo;
 import com.example.raviarchi.daberny.Activity.Utils.RoundedTransformation;
 import com.example.raviarchi.daberny.Activity.Utils.Utils;
 import com.example.raviarchi.daberny.R;
@@ -29,16 +21,17 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-/** * Created by Ravi archi on 2/21/2017.
+/**
+ * Created by Ravi archi on 2/21/2017.
  */
 
 public class FriendsContactAdapter extends RecyclerView.Adapter<FriendsContactAdapter.MyViewHolder> {
     public String Id, interest;
     public Utils utils;
-    private List<UserProfileDetails> arrayUserList;
+    private List<dataPojo> arrayUserList;
     private Context context;
 
-    public FriendsContactAdapter(Context context, ArrayList<UserProfileDetails> arraylist) {
+    public FriendsContactAdapter(Context context, ArrayList<dataPojo> arraylist) {
         this.context = context;
         this.arrayUserList = arraylist;
         notifyDataSetChanged();
@@ -53,21 +46,22 @@ public class FriendsContactAdapter extends RecyclerView.Adapter<FriendsContactAd
 
     @Override
     public void onBindViewHolder(MyViewHolder holder, final int position) {
-        final UserProfileDetails userdetails = arrayUserList.get(position);
-        Id = userdetails.getUserId();
-        holder.txtUsername.setText(userdetails.getUserContactName());
-        /*holder.txtFullname.setText(userdetails.getUserFullName());
-        if (userdetails.getUserImage().length() > 0) {
-            Picasso.with(context).load(userdetails.getUserImage()).
-                    transform(new RoundedTransformation(120,2)).
+        final dataPojo userdetails = arrayUserList.get(position);
+        Id = userdetails.getId();
+        holder.txtUsername.setText(userdetails.getUsername());
+        holder.txtFullname.setText(userdetails.getFullname());
+        if (userdetails.getImage().length() > 0) {
+            Picasso.with(context).load(userdetails.getImage()).
+                    transform(new RoundedTransformation(120,2))
+                    .onlyScaleDown().
                     placeholder(R.drawable.ic_placeholder).into(holder.imgProfile);
         } else {
             Picasso.with(context).load(R.drawable.ic_placeholder).
-            transform(new RoundedTransformation(120,2)).
-            placeholder(R.drawable.ic_placeholder).into(holder.imgProfile);
+                    transform(new RoundedTransformation(120,2)).
+                    placeholder(R.drawable.ic_placeholder).into(holder.imgProfile);
         }
 
-        holder.linearLayoutPeople.setOnClickListener(new View.OnClickListener() {
+        /*holder.linearLayoutPeople.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Fragment fragment = new OtherUserProfile();
@@ -82,15 +76,8 @@ public class FriendsContactAdapter extends RecyclerView.Adapter<FriendsContactAd
                     transaction.commit();
                 }
             }
-        });*/
-        holder.linearLayoutPeople.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent=new Intent(context, SettingActivity.class);
-                context.startActivity(intent);
-            }
         });
-
+*/
     }
 
     @Override

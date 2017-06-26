@@ -9,9 +9,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.Toolbar;
@@ -19,7 +16,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -40,7 +36,6 @@ import com.example.raviarchi.daberny.Activity.Utils.CountDownTimerClass;
 import com.example.raviarchi.daberny.Activity.Utils.RoundedTransformation;
 import com.example.raviarchi.daberny.Activity.Utils.Utils;
 import com.example.raviarchi.daberny.R;
-import com.example.raviarchi.multiplespinner.MultiSelectionSpinner;
 import com.google.gson.Gson;
 import com.koushikdutta.async.http.socketio.ExceptionCallback;
 import com.squareup.picasso.Picasso;
@@ -209,7 +204,7 @@ public class Tag extends Fragment implements View.OnClickListener, MultiSelectSp
     private ArrayList<String> arrayFollowingNameList, arrayFollowingIdList, arrayInterestList,
             arrayStartNameList, arrayEndNameList, followingList;
     private Object[] getFollowingIdListSpinner;
-    private String loginUserId, queId, Answer, followingPeopleName, followingPeopleId, commentText;
+    private String loginUserId, questionId, Answer, followingPeopleName, followingPeopleId, commentText;
     private CountDownTimerClass timer;
     private int seconds, minutes, hours;
     private Handler handler;
@@ -239,23 +234,20 @@ public class Tag extends Fragment implements View.OnClickListener, MultiSelectSp
     // TODO: 2/21/2017 initilization
     private void init() {
         loginUserId = Utils.ReadSharePrefrence(getActivity(), Constant.USERID);
-        arrayUserList = new ArrayList<>();
         if (getArguments() != null) {
             Gson gson = new Gson();
             String strObj = getArguments().getString("userprofiledetails");
-            details = gson.fromJson(strObj, UserProfileDetails.class);
-            queId = details.getQueId();
-            Log.d("QUEID",""+details.getQueId());
-            new GetQuetionList(loginUserId, details.getQueId()).execute();
+            UserProfileDetails userdetails = gson.fromJson(strObj, UserProfileDetails.class);
+            questionId = userdetails.getQueId();
+            Utils.WriteSharePrefrence(getActivity(), Constant.QUESTION_ID, userdetails.getQueId());
+            new GetQuetionList(loginUserId, userdetails.getQueId()).execute();
         }
     }
 
     private void openQuetionList() {
         // TODO: 6/16/2017 set the question details
-
         loginUserId = Utils.ReadSharePrefrence(getActivity(), Constant.USERID);
         String isRemainTime = Utils.ReadSharePrefrence(getActivity(), Constant.REMAINTIME);
-        queId = details.getQueId();
         Long time;
         if (isRemainTime.length() > 0) {
             remainTime = details.getQueRemainTime();
@@ -305,10 +297,8 @@ public class Tag extends Fragment implements View.OnClickListener, MultiSelectSp
                 txtVote.setVisibility(View.VISIBLE);
             } else {
                 txtVote.setVisibility(View.INVISIBLE);
-                rdAnswer1.setButtonDrawable(new ColorDrawable(0xFFFFFF));
-                rdAnswer2.setButtonDrawable(new ColorDrawable(0xFFFFFF));
-                rdAnswer3.setButtonDrawable(new ColorDrawable(0xFFFFFF));
-                rdAnswer4.setButtonDrawable(new ColorDrawable(0xFFFFFF));
+                utils.setRadioButtonAsPerVote( rdAnswer1,rdAnswer2,rdAnswer3,rdAnswer4);
+
                 if (details.getUserId().equalsIgnoreCase(loginUserId)) {
                     txtVoteSucess.setVisibility(View.GONE);
                 } else {
@@ -318,10 +308,7 @@ public class Tag extends Fragment implements View.OnClickListener, MultiSelectSp
         } else {
             txtVote.setVisibility(View.INVISIBLE);
             txtVoteSucess.setVisibility(View.GONE);
-            rdAnswer1.setButtonDrawable(new ColorDrawable(0xFFFFFF));
-            rdAnswer2.setButtonDrawable(new ColorDrawable(0xFFFFFF));
-            rdAnswer3.setButtonDrawable(new ColorDrawable(0xFFFFFF));
-            rdAnswer4.setButtonDrawable(new ColorDrawable(0xFFFFFF));
+            utils.setRadioButtonAsPerVote( rdAnswer1,rdAnswer2,rdAnswer3,rdAnswer4);
         }
 
         if (details.getQueComment() != null) {
@@ -483,7 +470,7 @@ public class Tag extends Fragment implements View.OnClickListener, MultiSelectSp
             public void onClick(View view) {
                 // TODO: 3/27/2017 store the comment
                 commentText = edCommentText.getText().toString().replaceAll(" ", "%20");
-                new CommentPost(arrayUserList, loginUserId, details.getQueId(), commentText).execute();
+                new CommentPost(arrayUserList, loginUserId, Utils.ReadSharePrefrence(getActivity(), Constant.QUESTION_ID), commentText).execute();
             }
         });
 
@@ -493,23 +480,24 @@ public class Tag extends Fragment implements View.OnClickListener, MultiSelectSp
             public void onClick(View view) {
                 String liketask = " ";
                 String isLiked = details.getQueLikeStatus();
-                liketask = isLiked.equalsIgnoreCase("1") ? "remove" : "add";
-                if (liketask.equalsIgnoreCase("add")) {
+                Log.d("LIKE_STATUS@@", "" + details.getQueLikeStatus());
+                int likeTotalCount = details.getQueLikeTotalCount();
+                if (isLiked != null && isLiked.equalsIgnoreCase("0")) {
                     details.setQueLikeStatus("1");
-                    imgLike.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.mipmap.ic_like_icon));
-                    details.setQueLikeTotalCount(details.getQueLikeTotalCount() + 1);
+                    details.setQueLikeTotalCount(likeTotalCount + 1);
                 } else {
                     details.setQueLikeStatus("0");
-                    imgLike.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.mipmap.ic_unlike_icon));
-                    details.setQueLikeTotalCount(details.getQueLikeTotalCount() - 1);
+                    details.setQueLikeTotalCount(likeTotalCount - 1);
                 }
-                new LikePost(arrayUserList, loginUserId, details.getQueId(), liketask).execute();
+                liketask = (isLiked != null && isLiked.equalsIgnoreCase("0")) ? "add" : "remove";
+                new LikePost(loginUserId, Utils.ReadSharePrefrence(getActivity(), Constant.QUESTION_ID), liketask).execute();
             }
         });
 
         txtVote.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 Answer = Utils.ReadSharePrefrence(getActivity(), Constant.ANSWER);
                 String isVoteStatus = details.getQueVoteStatus();
                 String isCanVote = details.getUserCanVote();
@@ -520,8 +508,7 @@ public class Tag extends Fragment implements View.OnClickListener, MultiSelectSp
                         txtVote.setVisibility(View.GONE);
                     }
                 }
-
-                new SubmitVote(loginUserId, details.getQueId(), Answer, arrayUserList).execute();
+                new SubmitVote(loginUserId, Utils.ReadSharePrefrence(getActivity(), Constant.QUESTION_ID), Answer, arrayUserList).execute();
             }
         });
 
@@ -529,9 +516,16 @@ public class Tag extends Fragment implements View.OnClickListener, MultiSelectSp
             @Override
             public void onClick(View view) {
                 Fragment fragment = new OtherUserProfile();
-                Bundle bundle = new Bundle();
-                bundle.putString("id", details.getUserId());
-                fragment.setArguments(bundle);
+                utils.setIdOfPostUser(details, fragment);
+                utils.replaceFragment(fragment);
+            }
+        });
+
+        imgProfilePic.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Fragment fragment = new OtherUserProfile();
+                utils.setIdOfPostUser(details, fragment);
                 utils.replaceFragment(fragment);
             }
         });
@@ -540,9 +534,7 @@ public class Tag extends Fragment implements View.OnClickListener, MultiSelectSp
             @Override
             public void onClick(View view) {
                 Fragment fragment = new OtherUserProfile();
-                Bundle bundle = new Bundle();
-                bundle.putString("id", details.getQueCommentUserId());
-                fragment.setArguments(bundle);
+                utils.setIdOfCommentUser(details, fragment);
                 utils.replaceFragment(fragment);
             }
         });
@@ -577,7 +569,7 @@ public class Tag extends Fragment implements View.OnClickListener, MultiSelectSp
         btnShare.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                new SharePost(loginUserId, followingPeopleId, details.getQueId(), arrayUserList).execute();
+                new SharePost(loginUserId, followingPeopleId, Utils.ReadSharePrefrence(getActivity(), Constant.QUESTION_ID), arrayUserList).execute();
             }
         });
 // TODO: 16/6/2017 ********************** End ************************
@@ -589,15 +581,38 @@ public class Tag extends Fragment implements View.OnClickListener, MultiSelectSp
         PackageManager pm = getActivity().getPackageManager();
         switch (v.getId()) {
             case R.id.adapter_home_list_layoutfb:
-                Intent ifeb = new Intent("android.intent.category.LAUNCHER");
+                /*Intent ifeb = new Intent("android.intent.category.LAUNCHER");
                 ifeb.setClassName("com.facebook.katana", "com.facebook.katana.LoginActivity");
-                startActivity(ifeb);
+                startActivity(ifeb);*/
+                try {
+                    Intent i = new Intent(Intent.ACTION_SEND);
+                    i.setClassName("com.facebook.katana", "com.facebook.katana.LoginActivity");
+                    i.putExtra(Intent.EXTRA_SUBJECT, "Daberny");
+                    String sAux = "\nLet me recommend you this application\n\n";
+                    sAux = sAux + "https://play.google.com/store/apps/details?id=com.example.raviarchi\n\n";
+                    i.putExtra(Intent.EXTRA_TEXT, "https://i.diawi.com/UBMuRn");
+                    startActivity(Intent.createChooser(i, "choose one"));
+                } catch(Exception e) {
+                    //e.toString();
+                }
                 break;
 
             case R.id.adapter_home_list_layouttwitter:
-                Intent intent = new Intent(Intent.ACTION_VIEW);
+                /*Intent intent = new Intent(Intent.ACTION_VIEW);
                 intent.setClassName("com.twitter.android", "com.twitter.android.LoginActivity");
-                startActivity(intent);
+                startActivity(intent);*/
+                try {
+                    Intent i = new Intent(Intent.ACTION_SEND);
+                    //i.setType("text/plain");
+                    i.setClassName("com.twitter.android", "com.twitter.android.LoginActivity");
+                    i.putExtra(Intent.EXTRA_SUBJECT, "Daberny");
+                    String sAux = "\nLet me recommend you this application\n\n";
+                    sAux = sAux + "https://play.google.com/store/apps/details?id=com.example.raviarchi\n\n";
+                    i.putExtra(Intent.EXTRA_TEXT, "https://i.diawi.com/UBMuRn");
+                    startActivity(Intent.createChooser(i, "choose one"));
+                } catch(Exception e) {
+                    //e.toString();
+                }
                 break;
         }
     }
@@ -628,7 +643,7 @@ public class Tag extends Fragment implements View.OnClickListener, MultiSelectSp
         ArrayList<UserProfileDetails> arrayList;
 
 
-        public SubmitVote(String id, String queId, String answer, ArrayList<UserProfileDetails> arrayList) {
+        private SubmitVote(String id, String queId, String answer, ArrayList<UserProfileDetails> arrayList) {
             this.id = id;
             this.queId = queId;
             this.answer = answer;
@@ -675,7 +690,7 @@ public class Tag extends Fragment implements View.OnClickListener, MultiSelectSp
                 new ExceptionCallback() {
                     @Override
                     public void onException(Exception e) {
-                        Log.d("E", "" + e);
+                        Log.d("Exp", "" + e);
                     }
                 };
             }
@@ -694,7 +709,6 @@ public class Tag extends Fragment implements View.OnClickListener, MultiSelectSp
             this.otheruser_id = otheruserId;
             this.que_id = queId;
             this.arrayList = arrayList;
-
         }
 
         @Override
@@ -710,8 +724,7 @@ public class Tag extends Fragment implements View.OnClickListener, MultiSelectSp
         @Override
         protected String doInBackground(String... strings) {
             //http://181.224.157.105/~hirepeop/host2/surveys/api/question_share_data/752/669,885/709
-            // return Utils.getResponseofGet(Constant.QUESTION_BASE_URL + "question_share_data/" + loginuser_id + "/" + otheruser_id + "/" + que_id);
-            return Utils.getResponseofGet(Constant.QUESTION_BASE_URL + "question_share_data/" + loginuser_id + "/669,6/" + que_id);
+            return Utils.getResponseofGet(Constant.QUESTION_BASE_URL + "question_share_data/" + loginuser_id + "/" + otheruser_id + "/" + que_id);
         }
 
         @Override
@@ -723,24 +736,14 @@ public class Tag extends Fragment implements View.OnClickListener, MultiSelectSp
                 JSONObject jsonObject = new JSONObject(s);
                 if (jsonObject.getString("status").equalsIgnoreCase("true")) {
                     JSONObject voteObject = jsonObject.getJSONObject("data");
-                    //arrayUserList.add(details);
-                    Toast.makeText(getActivity(), jsonObject.getString("msg"), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), "Success! Post shared to selected users", Toast.LENGTH_SHORT).show();
                 } else {
                     Toast.makeText(getActivity(), jsonObject.getString("msg"), Toast.LENGTH_SHORT).show();
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            /*if (arrayUserList.size() > 0) {
-                txtVote.setVisibility(View.GONE);
-            } else {
-                new ExceptionCallback() {
-                    @Override
-                    public void onException(Exception e) {
-                        Log.d("E", "" + e);
-                    }
-                };
-            }*/
+
         }
     }
 
@@ -748,21 +751,17 @@ public class Tag extends Fragment implements View.OnClickListener, MultiSelectSp
     private class LikePost extends AsyncTask<String, String, String> {
         String user_id, que_id, task;
         ProgressDialog pd;
-        ArrayList<UserProfileDetails> arrayList;
 
-
-        public LikePost(ArrayList<UserProfileDetails> arrayList, String id, String queId, String task) {
+        private LikePost(String id, String queId, String task) {
             this.user_id = id;
             this.que_id = queId;
             this.task = task;
-            this.arrayList = arrayList;
-
         }
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            arrayList = new ArrayList<>();
+            arrayUserList = new ArrayList<>();
             pd = new ProgressDialog(getActivity());
             pd.setMessage("Loading");
             pd.setCancelable(false);
@@ -783,17 +782,17 @@ public class Tag extends Fragment implements View.OnClickListener, MultiSelectSp
             try {
                 JSONObject jsonObject = new JSONObject(s);
                 if (jsonObject.getString("status").equalsIgnoreCase("true")) {
-                    JSONObject likeObject = jsonObject.getJSONObject("inserted_data");
-                } else {
-                    if (task.equalsIgnoreCase("add")) {
+                    JSONObject userObject = jsonObject.getJSONObject("inserted_data");
+                    details = new UserProfileDetails();
+                    details.setQueLikeStatus(userObject.getString("liked"));
+                    details.setQueLikeTotalCount(userObject.getInt("likes_count"));
+                    boolean isSucess = task.equalsIgnoreCase("add") ? false : true;
+                    if (isSucess) {
                         details.setQueLikeStatus("0");
-                        details.setQueLikeTotalCount(details.getQueVoteTotalCount() - 1);
                     } else {
                         details.setQueLikeStatus("1");
-                        details.setQueLikeTotalCount(details.getQueVoteTotalCount() + 1);
                     }
                     arrayUserList.add(details);
-
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -801,8 +800,10 @@ public class Tag extends Fragment implements View.OnClickListener, MultiSelectSp
             if (arrayUserList.size() > 0) {
                 if (details.getQueLikeStatus().equalsIgnoreCase("0")) {
                     imgLike.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.mipmap.ic_unlike_icon));
+                    txtLikeCount.setText(String.valueOf(details.getQueLikeTotalCount()));
                 } else {
                     imgLike.setImageDrawable(ContextCompat.getDrawable(getActivity(), R.mipmap.ic_like_icon));
+                    txtLikeCount.setText(String.valueOf(details.getQueLikeTotalCount()));
                 }
             } else {
                 new ExceptionCallback() {
@@ -822,7 +823,7 @@ public class Tag extends Fragment implements View.OnClickListener, MultiSelectSp
         ArrayList<UserProfileDetails> arrayList;
 
 
-        public CommentPost(ArrayList<UserProfileDetails> arrayList, String id, String queId, String comment) {
+        private CommentPost(ArrayList<UserProfileDetails> arrayList, String id, String queId, String comment) {
             this.id = id;
             this.queId = queId;
             this.comment = comment;
@@ -891,168 +892,169 @@ public class Tag extends Fragment implements View.OnClickListener, MultiSelectSp
         }
     }
 
-        // TODO: 6/16/2017 get list of Question from URL
-        private class GetQuetionList extends AsyncTask<String, String, String> {
-            ProgressDialog pd;
-            String timing, remainTime, user_id, que_id;
+    // TODO: 6/16/2017 get list of Question from URL
+    private class GetQuetionList extends AsyncTask<String, String, String> {
+        ProgressDialog pd;
+        String timing, remainTime, user_id, que_id;
 
-            public GetQuetionList(String userId, String queId) {
-                this.user_id = userId;
-                this.que_id = queId;
-            }
+        private GetQuetionList(String userId, String queId) {
+            this.user_id = userId;
+            this.que_id = queId;
+        }
 
-            @Override
-            protected void onPreExecute() {
-                super.onPreExecute();
-                arrayUserList = new ArrayList<>();
-                arrayFollowingIdList = new ArrayList<>();
-                arrayFollowingNameList = new ArrayList<>();
-                pd = new ProgressDialog(getActivity());
-                pd.setMessage("Loading");
-                pd.setCancelable(false);
-                pd.show();
-            }
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            arrayUserList = new ArrayList<>();
+            arrayFollowingIdList = new ArrayList<>();
+            arrayFollowingNameList = new ArrayList<>();
+            pd = new ProgressDialog(getActivity());
+            pd.setMessage("Loading");
+            pd.setCancelable(false);
+            pd.show();
+        }
 
-            @Override
-            protected String doInBackground(String... s) {
-                //http://181.224.157.105/~hirepeop/host2/surveys/api/question_tag_data/752/181
-                String response = Utils.getResponseofGet(Constant.QUESTION_BASE_URL + "question_tag_data/" + user_id + "/" + que_id);
-                Log.d("RESPONSE", "Tag Question..." + response);
-                try {
-                    JSONObject jsonObject = new JSONObject(response);
-                    if (jsonObject.getString("status").equalsIgnoreCase("true")) {
-                        JSONObject questionObject = jsonObject.getJSONObject("data");
-                        details = new UserProfileDetails();
-                        details.setQueId(questionObject.getString("id"));
-                        details.setQueTitle(questionObject.getString("title"));
-                        details.setQueTag(questionObject.getString("tags"));
-                        details.setQuePostDate(questionObject.getString("post_date"));
-                        details.setQueOptionFirst(questionObject.getString("option1"));
-                        details.setQueOptionSecond(questionObject.getString("option2"));
-                        details.setQueOptionThird(questionObject.getString("option3"));
-                        details.setQueOptionFourth(questionObject.getString("option4"));
-                        details.setUserId(questionObject.getString("user_id"));
-                        details.setUserInterestId(questionObject.getString("in_id"));
-                        details.setQueVoteStatus(questionObject.getString("vote_status"));
-                        details.setUserCanVote(questionObject.getString("can_vote"));
+        @Override
+        protected String doInBackground(String... s) {
+            //http://181.224.157.105/~hirepeop/host2/surveys/api/question_tag_data/752/181
+            String response = Utils.getResponseofGet(Constant.QUESTION_BASE_URL + "question_tag_data/" + user_id + "/" + que_id);
+            Log.d("RESPONSE", "Tag Question..." + response);
+            try {
+                JSONObject jsonObject = new JSONObject(response);
+                if (jsonObject.getString("status").equalsIgnoreCase("true")) {
+                    JSONObject questionObject = jsonObject.getJSONObject("data");
+                    details = new UserProfileDetails();
+                    details.setQueId(questionObject.getString("id"));
+                    details.setQueTitle(questionObject.getString("title"));
+                    details.setQueTag(questionObject.getString("tags"));
+                    details.setQuePostDate(questionObject.getString("post_date"));
+                    details.setQueOptionFirst(questionObject.getString("option1"));
+                    details.setQueOptionSecond(questionObject.getString("option2"));
+                    details.setQueOptionThird(questionObject.getString("option3"));
+                    details.setQueOptionFourth(questionObject.getString("option4"));
+                    details.setUserId(questionObject.getString("user_id"));
+                    details.setUserInterestId(questionObject.getString("in_id"));
+                    details.setQueVoteStatus(questionObject.getString("vote_status"));
+                    details.setUserCanVote(questionObject.getString("can_vote"));
 
-                        // TODO: 6/6/2017 set remain time
-                        JSONObject remaintimeObj = questionObject.getJSONObject("remain_time");
-                        Utils.WriteSharePrefrence(getActivity(), Constant.REMAINTIME, remaintimeObj.toString());
-                        if (remaintimeObj.length() > 0) {
-                            remainTime = remaintimeObj.getString("remain_time");
-                            SimpleDateFormat df = new SimpleDateFormat("HH:mm:ss");
-                            try {
-                                Date d = df.parse(remainTime);
-                                long timeStamp = Math.abs(d.getTime());
-                                details.setQueRemainTime(timeStamp);
-                            } catch (ParseException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                        // TODO: 3/29/2017 get remaining  time
-                        details.setQueCategory(questionObject.getString("name"));
-                        details.setQueType(questionObject.getString("type"));
-                        details.setQueImageName(questionObject.getString("picture"));
-                        if (!questionObject.getString("picture").equalsIgnoreCase("")) {
-                            if (questionObject.getString("type").equalsIgnoreCase("0")) {
-                                details.setQueImage(questionObject.getString("picture_url"));
-                            } else if (questionObject.getString("type").equalsIgnoreCase("1")) {
-                                details.setQueImage(questionObject.getString("picture_url"));
-                            } else if (questionObject.getString("type").equalsIgnoreCase("2")) {
-                                details.setQueImage(questionObject.getString("picture_url"));
-                            }
-                        }
-                        JSONObject answerObj = questionObject.getJSONObject("answers");
-                        details.setQueVoteTotalCount(answerObj.getInt("total_count"));
-                        details.setQueLikeStatus(answerObj.getString("liked"));
-                        details.setQueLikeTotalCount(answerObj.getInt("likes_count"));
-
-                        // TODO: 5/26/2017 set vote count of particular question
-                        JSONObject answerCountObj = answerObj.getJSONObject("answers_count");
-                        details.setQueVoteCount1(answerCountObj.getString("1"));
-                        details.setQueVoteCount2(answerCountObj.getString("2"));
-                        details.setQueVoteCount3(answerCountObj.getString("3"));
-                        details.setQueVoteCount4(answerCountObj.getString("4"));
-
-                        // TODO: 5/26/2017 set vote percentage of particular question
-                        JSONObject percentageCountObj = answerObj.getJSONObject("percentage_count");
-                        details.setQueVotePercentage1(percentageCountObj.getString("1"));
-                        details.setQueVotePercentage2(percentageCountObj.getString("2"));
-                        details.setQueVotePercentage3(percentageCountObj.getString("3"));
-                        details.setQueVotePercentage4(percentageCountObj.getString("4"));
-
-                        // TODO: 3/22/2017 get user details
-                        JSONObject userObject = questionObject.getJSONObject("user");
-                        details.setUserImage(userObject.getString("user_image"));
-                        details.setUserUserName(userObject.getString("username"));
-
-                        // TODO: 3/22/2017 get comment details
-                        JSONArray commentArray = questionObject.getJSONArray("comments");
-                        if (commentArray.length() > 0) {
-                            for (int c = 0; c < commentArray.length(); c++) {
-                                JSONObject countcommentObject = commentArray.getJSONObject(c);
-                                details.setQueComment(countcommentObject.getString("comment_text"));
-                                details.setQueCommentId(countcommentObject.getString("id"));
-                                details.setQueId(countcommentObject.getString("qid"));
-                                details.setQueCommentUser(countcommentObject.getString("username"));
-                                details.setQueCommentUserProfilePic(countcommentObject.getString("image"));
-                                details.setQueCommentUserId(countcommentObject.getString("uid"));
-                            }
-                        }
-                        // TODO: 3/22/2017 get data of rank_interest
-                        JSONArray rankArray = questionObject.getJSONArray("rank_interest");
-                        arrayInterestList = new ArrayList<>();
-                        arrayStartNameList = new ArrayList<>();
-                        arrayEndNameList = new ArrayList<>();
-                        for (int r = 0; r < rankArray.length(); r++) {
-                            JSONObject rankdetailObj = rankArray.getJSONObject(r);
-                            arrayInterestList.add(rankdetailObj.getString("int_name"));
-                            arrayStartNameList.add(rankdetailObj.getString("start_name"));
-                            arrayEndNameList.add(rankdetailObj.getString("end_name"));
-                        }
-                        details.setIntName(arrayInterestList);
-                        details.setStartRankName(arrayStartNameList);
-                        details.setEndRankName(arrayEndNameList);
-
-                        // TODO: 3/29/2017 take timing into miliseconds
-                        String created_time = questionObject.getString("created_time");
-                        details.setQueCreatedTime(Long.valueOf(created_time));
-                        timing = questionObject.getString("timing");
+                    // TODO: 6/6/2017 set remain time
+                    JSONObject remaintimeObj = questionObject.getJSONObject("remain_time");
+                    Utils.WriteSharePrefrence(getActivity(), Constant.REMAINTIME, remaintimeObj.toString());
+                    if (remaintimeObj.length() > 0) {
+                        remainTime = remaintimeObj.getString("remain_time");
                         SimpleDateFormat df = new SimpleDateFormat("HH:mm:ss");
                         try {
-                            Date d = df.parse(timing);
+                            Date d = df.parse(remainTime);
                             long timeStamp = Math.abs(d.getTime());
-                            details.setQueTiming(timeStamp);
+                            details.setQueRemainTime(timeStamp);
                         } catch (ParseException e) {
                             e.printStackTrace();
                         }
-                        arrayUserList.add(details);
                     }
-                    // TODO: 3/27/2017 get the list of following
-                    JSONArray followingArray = jsonObject.getJSONArray("following");
-                    if (followingArray.length() > 0) {
-                        for (int f = 0; f < followingArray.length(); f++) {
-                            JSONObject followingObject = followingArray.getJSONObject(f);
-                            arrayFollowingIdList.add(followingObject.getString("follow_user_id"));
-                            arrayFollowingNameList.add(followingObject.getString("username"));
+                    // TODO: 3/29/2017 get remaining  time
+                    details.setQueCategory(questionObject.getString("name"));
+                    details.setQueType(questionObject.getString("type"));
+                    details.setQueImageName(questionObject.getString("picture"));
+                    if (!questionObject.getString("picture").equalsIgnoreCase("")) {
+                        if (questionObject.getString("type").equalsIgnoreCase("0")) {
+                            details.setQueImage(questionObject.getString("picture_url"));
+                        } else if (questionObject.getString("type").equalsIgnoreCase("1")) {
+                            details.setQueImage(questionObject.getString("picture_url"));
+                        } else if (questionObject.getString("type").equalsIgnoreCase("2")) {
+                            details.setQueImage(questionObject.getString("picture_url"));
                         }
                     }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-                return response;
-            }
+                    JSONObject answerObj = questionObject.getJSONObject("answers");
+                    details.setQueVoteTotalCount(answerObj.getInt("total_count"));
+                    details.setQueLikeStatus(answerObj.getString("liked"));
+                    details.setQueLikeTotalCount(answerObj.getInt("likes_count"));
+                    Log.d("LIKECOUNT", "@@" + answerObj.getInt("likes_count"));
 
-            @Override
-            protected void onPostExecute(String s) {
-                super.onPostExecute(s);
-                pd.dismiss();
-                if (arrayUserList.size() > 0) {
-                    openQuetionList();
-                } else {
-                    Toast.makeText(getActivity(), "No Question Found", Toast.LENGTH_SHORT).show();
+                    // TODO: 5/26/2017 set vote count of particular question
+                    JSONObject answerCountObj = answerObj.getJSONObject("answers_count");
+                    details.setQueVoteCount1(answerCountObj.getString("1"));
+                    details.setQueVoteCount2(answerCountObj.getString("2"));
+                    details.setQueVoteCount3(answerCountObj.getString("3"));
+                    details.setQueVoteCount4(answerCountObj.getString("4"));
+
+                    // TODO: 5/26/2017 set vote percentage of particular question
+                    JSONObject percentageCountObj = answerObj.getJSONObject("percentage_count");
+                    details.setQueVotePercentage1(percentageCountObj.getString("1"));
+                    details.setQueVotePercentage2(percentageCountObj.getString("2"));
+                    details.setQueVotePercentage3(percentageCountObj.getString("3"));
+                    details.setQueVotePercentage4(percentageCountObj.getString("4"));
+
+                    // TODO: 3/22/2017 get user details
+                    JSONObject userObject = questionObject.getJSONObject("user");
+                    details.setUserImage(userObject.getString("user_image"));
+                    details.setUserUserName(userObject.getString("username"));
+
+                    // TODO: 3/22/2017 get comment details
+                    JSONArray commentArray = questionObject.getJSONArray("comments");
+                    if (commentArray.length() > 0) {
+                        for (int c = 0; c < commentArray.length(); c++) {
+                            JSONObject countcommentObject = commentArray.getJSONObject(c);
+                            details.setQueComment(countcommentObject.getString("comment_text"));
+                            details.setQueCommentId(countcommentObject.getString("id"));
+                            details.setQueId(countcommentObject.getString("qid"));
+                            details.setQueCommentUser(countcommentObject.getString("username"));
+                            details.setQueCommentUserProfilePic(countcommentObject.getString("image"));
+                            details.setQueCommentUserId(countcommentObject.getString("uid"));
+                        }
+                    }
+                    // TODO: 3/22/2017 get data of rank_interest
+                    JSONArray rankArray = questionObject.getJSONArray("rank_interest");
+                    arrayInterestList = new ArrayList<>();
+                    arrayStartNameList = new ArrayList<>();
+                    arrayEndNameList = new ArrayList<>();
+                    for (int r = 0; r < rankArray.length(); r++) {
+                        JSONObject rankdetailObj = rankArray.getJSONObject(r);
+                        arrayInterestList.add(rankdetailObj.getString("int_name"));
+                        arrayStartNameList.add(rankdetailObj.getString("start_name"));
+                        arrayEndNameList.add(rankdetailObj.getString("end_name"));
+                    }
+                    details.setIntName(arrayInterestList);
+                    details.setStartRankName(arrayStartNameList);
+                    details.setEndRankName(arrayEndNameList);
+
+                    // TODO: 3/29/2017 take timing into miliseconds
+                    String created_time = questionObject.getString("created_time");
+                    details.setQueCreatedTime(Long.valueOf(created_time));
+                    timing = questionObject.getString("timing");
+                    SimpleDateFormat df = new SimpleDateFormat("HH:mm:ss");
+                    try {
+                        Date d = df.parse(timing);
+                        long timeStamp = Math.abs(d.getTime());
+                        details.setQueTiming(timeStamp);
+                    } catch (ParseException e) {
+                        e.printStackTrace();
+                    }
+                    arrayUserList.add(details);
                 }
+                // TODO: 3/27/2017 get the list of following
+                JSONArray followingArray = jsonObject.getJSONArray("following");
+                if (followingArray.length() > 0) {
+                    for (int f = 0; f < followingArray.length(); f++) {
+                        JSONObject followingObject = followingArray.getJSONObject(f);
+                        arrayFollowingIdList.add(followingObject.getString("follow_user_id"));
+                        arrayFollowingNameList.add(followingObject.getString("username"));
+                    }
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            return response;
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+            pd.dismiss();
+            if (arrayUserList.size() > 0) {
+                openQuetionList();
+            } else {
+                Toast.makeText(getActivity(), "No Question Found", Toast.LENGTH_SHORT).show();
             }
         }
+    }
 }

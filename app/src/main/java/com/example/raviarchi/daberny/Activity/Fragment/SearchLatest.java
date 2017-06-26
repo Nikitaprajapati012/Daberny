@@ -80,10 +80,6 @@ public class SearchLatest extends Fragment {
                 if (edSearch.getText().toString().length() > 0) {
                     adapter = new SearchLatestAdapter(getActivity(), searchedArraylist);
                     utils.setAdapterForList(recyclerViewPeople, adapter);
-                }else
-                {
-                    //clear the search listt
-                    searchedArraylist.clear();
                 }
             }
         });

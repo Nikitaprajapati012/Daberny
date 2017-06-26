@@ -66,27 +66,47 @@ public class MultiSelectionSpinner extends android.support.v7.widget.AppCompatSp
 
 
     public void onClick(DialogInterface dialog, int which, boolean isChecked) {
-
-        if (mSelection != null && which < mSelection.length) {
-            if (getSelectedIndices().size() > 1) {
-                if (getSelectedIndices().size() < 4) {
-                    mSelection[which] = isChecked;
+        if (!isChecked) {
+            final android.support.v7.app.AlertDialog.Builder dialog1 = new android.support.v7.app.AlertDialog.Builder(getContext());
+            dialog1.setMessage("Are you sure you want to remove? Note: Removing this interest will result in losing achieved points");
+            dialog1.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
                     simple_adapter.clear();
                     simple_adapter.add(buildSelectedItemString());
+                }
+            });
+
+            dialog1.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+
+                }
+            });
+
+            dialog1.show();
+        } else {
+            if (mSelection != null && which < mSelection.length) {
+                if (getSelectedIndices().size() > 1) {
+                    if (getSelectedIndices().size() < 4) {
+                        mSelection[which] = isChecked;
+                        simple_adapter.clear();
+                        simple_adapter.add(buildSelectedItemString());
+                    } else {
+                        Toast.makeText(getContext(), "You can select maximum 3 Interests", Toast.LENGTH_SHORT).show();
+                        setDeselection(which);
+                    }
                 } else {
-                    Toast.makeText(getContext(), "You can select maximum 3 Interests", Toast.LENGTH_SHORT).show();
-                    setDeselection(which);
+                    Toast.makeText(getContext(), "Please select minimum 1 Interests", Toast.LENGTH_SHORT).show();
+                    setAllowDeselection(which);
                 }
             } else {
-                Toast.makeText(getContext(), "Please select minimum 1 Interests", Toast.LENGTH_SHORT).show();
-                setAllowDeselection(which);
+                throw new IllegalArgumentException(
+                        "Argument 'which' is out of bounds.");
             }
-        } else {
-            throw new IllegalArgumentException(
-                    "Argument 'which' is out of bounds.");
-        }
 
-        Log.d("which", "" + which);
+            Log.d("which", "" + which);
+        }
     }
 
     public void setDeselection(int index) {
@@ -172,8 +192,8 @@ public class MultiSelectionSpinner extends android.support.v7.widget.AppCompatSp
                         searchItems.add(_items[i]);
                     }
                 }
-                simple_adapter = new ArrayAdapter<String>(getContext(), Integer.parseInt(String.valueOf(searchItems)));
-                listView.setAdapter(simple_adapter);
+                //simple_adapter = new ArrayAdapter<String>(getContext(), Integer.parseInt(String.valueOf(searchItems)));
+                //listView.setAdapter(simple_adapter);
             }
         });
 

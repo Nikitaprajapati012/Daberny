@@ -110,10 +110,10 @@ public class RegistrationActivity extends AppCompatActivity implements View.OnCl
             case R.id.activity_register_layoutsignup:
 
                 // TODO: 2/21/2017 get user entered details
-                FullName = edFullName.getText().toString().trim();
-                UserName = edUserName.getText().toString().trim();
+                FullName = edFullName.getText().toString().replaceAll(" ","%20");
+                UserName = edUserName.getText().toString().replaceAll(" ","%20");
                 Email = edEmail.getText().toString().trim().trim();
-                Password = edPassword.getText().toString().trim();
+                Password = edPassword.getText().toString().replaceAll(" ","%20");
 
                 if (!FullName.equalsIgnoreCase("")) {
                     if (!UserName.equalsIgnoreCase("")) {
@@ -146,7 +146,7 @@ public class RegistrationActivity extends AppCompatActivity implements View.OnCl
         ProgressDialog pd;
         String fullname, username, email, password, country;
 
-        public SignUp(String fullName, String userName, String email, String password, String country) {
+        private SignUp(String fullName, String userName, String email, String password, String country) {
             this.fullname = fullName;
             this.username = userName;
             this.email = email;
@@ -166,7 +166,7 @@ public class RegistrationActivity extends AppCompatActivity implements View.OnCl
         protected String doInBackground(String... strings) {
             //http://181.224.157.105/~hirepeop/host2/surveys/api/register/rahul/rahul77/rssweqsnidhi%40gmail.com/srnidhi/4
             try {
-                return utils.getResponseofGet(Constant.QUESTION_BASE_URL + "register/" + fullname + "/" + username
+                return Utils.getResponseofGet(Constant.QUESTION_BASE_URL + "register/" + fullname + "/" + username
                         + "/" + URLEncoder.encode(email, "UTF-8") + "/" + password + "/" + country);
 
             } catch (UnsupportedEncodingException e) {

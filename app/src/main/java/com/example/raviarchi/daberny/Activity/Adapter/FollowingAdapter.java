@@ -41,6 +41,7 @@ public class FollowingAdapter extends RecyclerView.Adapter<FollowingAdapter.MyVi
     public FollowingAdapter(Context context, ArrayList<UserProfileDetails> arraylist) {
         this.context = context;
         this.arrayUserList = arraylist;
+        this.utils =new Utils(context);
         notifyDataSetChanged();
     }
 

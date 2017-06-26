@@ -11,7 +11,6 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -50,7 +49,7 @@ public class FriendsContact extends Fragment {
 
     private ArrayList<dataPojo> contactName;
     private ArrayList<String> ContactNumber;
-    private ArrayList<String> ContactNumberPhone;
+    private ArrayList<getContactListPojo> ContactNumberPhone;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -65,18 +64,6 @@ public class FriendsContact extends Fragment {
     private void setContacts() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && getActivity().checkSelfPermission(Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
             requestPermissions(new String[]{Manifest.permission.READ_CONTACTS}, PERMISSIONS_REQUEST_READ_CONTACTS);
-        } else {
-            Toast.makeText(getActivity(), "permission granted", Toast.LENGTH_SHORT).show();
-//            ArrayList<UserProfileDetails> contacts = getFriendsFromContacts();
-//            if (arrayUserList.size() > 0) {
-//
-//                adapter = new FriendsContactAdapter(getActivity(), contacts);
-//                RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
-//                recyclerViewPeople.setLayoutManager(mLayoutManager);
-//                recyclerViewPeople.setItemAnimator(new DefaultItemAnimator());
-//                recyclerViewPeople.setAdapter(adapter);
-//                adapter.notifyDataSetChanged();
-//            }
         }
     }
 
@@ -136,6 +123,7 @@ public class FriendsContact extends Fragment {
         arrayUserList = new ArrayList<>();
         contactName = new ArrayList<>();
         ContactNumber = new ArrayList<>();
+        ContactNumberPhone = new ArrayList<>();
         callGetContactList();
         userId = Utils.ReadSharePrefrence(getActivity(), Constant.USERID);
     }
@@ -149,27 +137,24 @@ public class FriendsContact extends Fragment {
             @Override
             public void onResponse(Call<getContactListPojo> call, Response<getContactListPojo> response) {
 
-                Toast.makeText(getActivity(), "hello"+response.body().getMsg(), Toast.LENGTH_SHORT).show();
                 if (response.body() != null && response.body().getStatus().equals("true")) {
+
                     contactName = response.body().getData();
-                    for (int i = 0; i < contactName.size(); i++) {
-                        ContactNumber.add(contactName.get(i).getFullname());
-                    }
-                    Log.d("contact number array", "&&"+ContactNumber);
+
                     contacts = getFriendsFromContacts();
-                    Log.d("contact number phone", "&&" +contacts);
 
-                    for(int j=0; j<contacts.size(); j++){
-                        ContactNumberPhone.add(contacts.get(j).getUserContactName());
+                    ArrayList<dataPojo> newREsult = new ArrayList<dataPojo>();
+                    for (int i = 0; i < contactName.size(); i++) {
+
+                        for (int j = 0; j < contacts.size(); j++) {
+                            if(contactName.get(i).getMobile_no().equalsIgnoreCase(contacts.get(j).getUserContactNumber().replaceAll("\\(","").replaceAll("\\)","").replaceAll("-","").replaceAll(" ",""))){
+                                newREsult.add(contactName.get(i));
+                            }
+                        }
                     }
 
-                    if(contacts.equals(ContactNumber)){
-                        Toast.makeText(getActivity(), "all contact get", Toast.LENGTH_SHORT).show();
-                    }
-
-                    if (arrayUserList.size() > 0) {
-
-                        adapter = new FriendsContactAdapter(getActivity(), contacts);
+                    if (newREsult.size() > 0) {
+                        adapter = new FriendsContactAdapter(getActivity(), newREsult);
                         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
                         recyclerViewPeople.setLayoutManager(mLayoutManager);
                         recyclerViewPeople.setItemAnimator(new DefaultItemAnimator());
@@ -177,16 +162,13 @@ public class FriendsContact extends Fragment {
                         adapter.notifyDataSetChanged();
                     }
 
-                    Toast.makeText(getActivity(), response.body().getMsg(), Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(Call<getContactListPojo> call, Throwable t) {
 
-                Toast.makeText(getActivity(), t.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
     }
-
 }

@@ -5,13 +5,12 @@ import android.app.ProgressDialog;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -28,8 +27,6 @@ import android.widget.Toast;
 
 import com.example.raviarchi.daberny.Activity.Adapter.ChatAdapter;
 import com.example.raviarchi.daberny.Activity.Model.UserProfileDetails;
-import com.example.raviarchi.daberny.Activity.Retrofit.ApiClient;
-import com.example.raviarchi.daberny.Activity.Retrofit.ApiInterface;
 import com.example.raviarchi.daberny.Activity.Utils.Constant;
 import com.example.raviarchi.daberny.Activity.Utils.Utils;
 import com.example.raviarchi.daberny.R;
@@ -48,9 +45,6 @@ import java.util.HashMap;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 
 public class ChatActivity extends AppCompatActivity implements View.OnClickListener {
     public ChatAdapter chatAdapter;
@@ -59,12 +53,15 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
     public String strMsg, picturepath;
     public Uri uri;
     public int REQUEST_CAMERA = 0, SELECT_FILE = 1;
+    public boolean result;
     @BindView(R.id.activity_chat_msg_edmsg)
     EditText edMessage;
     @BindView(R.id.activity_chat_txtsend)
     TextView txtSend;
     @BindView(R.id.activity_chat_imggallery)
     ImageView imgGallery;
+    @BindView(R.id.activity_chat_imglike)
+    ImageView imgLike;
     @BindView(R.id.headerview)
     RelativeLayout headerChatView;
     @BindView(R.id.activity_chat_layoutattachment)
@@ -97,6 +94,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
         txtSend.setOnClickListener(this);
         imgBack.setOnClickListener(this);
         imgGallery.setOnClickListener(this);
+        imgLike.setOnClickListener(this);
         edMessage.addTextChangedListener(new TextWatcher() {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
@@ -161,18 +159,13 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
                 if (picturepath != null) {
                     sendmessageImage(loginUserId, receiverId, strMsg, picturepath);
                 }
+                new GetChat(loginUserId, receiverId).execute();
             } catch (Exception e) {
                 e.printStackTrace();
             }
         } else {
             Toast.makeText(this, "No Data Found", Toast.LENGTH_SHORT).show();
         }
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        new GetChat(loginUserId, receiverId).execute();
     }
 
     public String getStringImage(Bitmap bmp) {
@@ -188,6 +181,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
         details = new UserProfileDetails();
         utils = new Utils(this);
         loginUserId = Utils.ReadSharePrefrence(this, Constant.USERID);
+        result = Boolean.parseBoolean(Utils.ReadSharePref(ChatActivity.this, Constant.PERMISSION));
         if (getIntent().getExtras() != null) {
             Gson gson = new Gson();
             String strdetails = getIntent().getExtras().getString("userprofiledetails");
@@ -207,17 +201,41 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.activity_chat_imggallery:
-                galleryIntent();
+                if (result)
+                    galleryIntent();
+                break;
+            case R.id.activity_chat_imglike:
+                Utils.WriteSharePrefrence(ChatActivity.this,Constant.CHAT_LIKE,"1");
+                Uri imageUri = null;
+                try {
+                    imageUri = Uri.parse(MediaStore.Images.Media.insertImage(this.getContentResolver(),
+                            BitmapFactory.decodeResource(getResources(), R.mipmap.ic_sendheart), null, null));
+                    String[] filePathColumn = {MediaStore.Images.Media.DATA};
+                    Cursor cursor = getContentResolver().query(imageUri,
+                            filePathColumn, null, null, null);
+                    if (cursor == null || cursor.getCount() < 1) {
+                        return; // no cursor or no record. DO YOUR ERROR HANDLING
+                    }
+                    cursor.moveToFirst();
+                    int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+                    picturepath = cursor.getString(columnIndex);
+                    if (picturepath != null) {
+                        sendmessageImage(loginUserId, receiverId, strMsg, picturepath);
+                    }
+                    new GetChat(loginUserId, receiverId).execute();
+                } catch (NullPointerException e) {
+                }
                 break;
 
             case R.id.activity_chat_txtsend:
                 strMsg = edMessage.getText().toString().replaceAll(" ", "%20");
                 if (strMsg != null) {
-                   //sendmessageImage(loginUserId, receiverId, strMsg, picturepath);
-                    new SendMessage(arrayUserList,loginUserId, receiverId, strMsg).execute();
+                    //sendmessageImage(loginUserId, receiverId, strMsg, picturepath);
+                    new SendMessage(arrayUserList, loginUserId, receiverId, strMsg).execute();
                 }
                 new GetChat(loginUserId, receiverId).execute();
                 break;
+
 
             case R.id.header_icon:
                 onBackPressed();
@@ -229,6 +247,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
     private void galleryIntent() {
         Intent intentPickImage = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         startActivityForResult(intentPickImage, SELECT_FILE);
+
     }
 
     // TODO: 6/2/2017 send the message as well as image in chat
@@ -281,7 +300,7 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
     // TODO: 5/30/2017 bind the list with adapter
     private void openChatDetailsList() {
         chatAdapter = new ChatAdapter(ChatActivity.this, arrayUserList);
-        utils.setAdapterForList(recyclerView,chatAdapter);
+        utils.setAdapterForList(recyclerView, chatAdapter);
     }
 
     private class GetChat extends AsyncTask<String, String, String> {
@@ -368,16 +387,17 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
+            arrayUserList = new ArrayList<>();
         }
 
         @Override
         protected String doInBackground(String... params) {
             //http://181.224.157.105/~hirepeop/host2/surveys/api/insert_chat_msg/677/669/hello
-            HashMap<String,String> hashMap = new HashMap<>();
-            hashMap.put("sender_id",loginUserId);
-            hashMap.put("receiver_id",receiver_Id);
-            hashMap.put("msg",strMessage);
-            return Utils.getResponseofPost(Constant.QUESTION_BASE_URL + "insert_chat_msg/" ,hashMap);
+            HashMap<String, String> hashMap = new HashMap<>();
+            hashMap.put("sender_id", loginUserId);
+            hashMap.put("receiver_id", receiver_Id);
+            hashMap.put("msg", strMessage);
+            return Utils.getResponseofPost(Constant.QUESTION_BASE_URL + "insert_chat_msg/", hashMap);
         }
 
         @Override

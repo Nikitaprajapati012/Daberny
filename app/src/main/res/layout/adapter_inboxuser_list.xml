@@ -41,7 +41,7 @@
                 android:id="@+id/adapter_inboxuser_list_txtusername"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/username"
+                android:text=" "
                 android:textColor="@color/logintext"
                 android:textSize="@dimen/_11sdp"
                 android:textStyle="bold" />
@@ -59,7 +59,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="@dimen/_15sdp"
                     android:gravity="center|left"
-                    android:text="hi how are you "
+                    android:text=" "
                     android:textColor="@color/logintext"
                     android:textSize="@dimen/_8sdp" />
 
@@ -68,7 +68,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="@dimen/_15sdp"
                     android:gravity="center|left"
-                    android:text="1 mint ago"
+                    android:text=" "
                     android:layout_marginLeft="@dimen/_5sdp"
                     android:textColor="@color/logintext"
                     android:textSize="@dimen/_8sdp" />

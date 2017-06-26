@@ -52,6 +52,7 @@ public class UserProfileDetails {
     private String queTitle;
     private String queTag;
     private String queId;
+    private String contentId;
     private String queOptionFirst;
     private String queOptionSecond;
     private String queOptionThird;
@@ -96,12 +97,27 @@ public class UserProfileDetails {
     private String userContactName;
     private String userContactNumber;
     private Message inserted_data;
-
     public UserProfileDetails() {
     }
     public UserProfileDetails(String quename, boolean isSelected) {
         this.queTitle = quename;
         this.isSelected = isSelected;
+    }
+
+    public String getContentId() {
+        return contentId;
+    }
+
+    public void setContentId(String contentId) {
+        this.contentId = contentId;
+    }
+
+    public Message getInserted_data() {
+        return inserted_data;
+    }
+
+    public void setInserted_data(Message inserted_data) {
+        this.inserted_data = inserted_data;
     }
 
     public ArrayList<String> getGetjsonData() {

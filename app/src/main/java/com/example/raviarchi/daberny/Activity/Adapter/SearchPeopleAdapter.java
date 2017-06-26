@@ -40,6 +40,7 @@ public class SearchPeopleAdapter extends RecyclerView.Adapter<SearchPeopleAdapte
     public SearchPeopleAdapter(Context context, ArrayList<UserProfileDetails> arraylist) {
         this.context = context;
         this.arrayUserList = arraylist;
+        this.utils =new Utils(context);
         notifyDataSetChanged();
     }
 

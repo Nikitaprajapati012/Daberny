@@ -75,7 +75,6 @@ public class General extends Fragment {
         txtTitle.setText(R.string.general);
     }
 
-
     // TODO: 2/21/2017 initilization
     private void init() {
         utils = new Utils(getActivity());
@@ -83,11 +82,9 @@ public class General extends Fragment {
 
     private void openQuetionList() {
         // TODO: 2/21/2017 bind list and show in adapter
-        Collections.reverse(arrayUserList);
         GeneralAdapter adapter = new GeneralAdapter(getActivity(), arrayUserList,arrayFollowingNameList,arrayFollowingIdList);
         utils.setAdapterForList(recyclerViewposts,adapter);
     }
-
 
     // TODO: 2/21/2017 get list of Question from URL
     private class GetQuetionList extends AsyncTask<String, String, String> {
@@ -187,8 +184,10 @@ public class General extends Fragment {
 
                             // TODO: 3/22/2017 get user details
                             JSONObject userObject = questionObject.getJSONObject("user");
-                            details.setUserImage(userObject.getString("user_image"));
-                            details.setUserUserName(userObject.getString("username"));
+                            if (userObject.length() > 0) {
+                                details.setUserImage(userObject.getString("user_image"));
+                                details.setUserUserName(userObject.getString("username"));
+                            }
 
                             // TODO: 3/22/2017 get comment details
                             JSONArray commentArray = questionObject.getJSONArray("comments");
@@ -238,12 +237,15 @@ public class General extends Fragment {
                             for (int f = 0; f < followingArray.length(); f++) {
                                 JSONObject followingObject = followingArray.getJSONObject(f);
                                 arrayFollowingIdList.add(followingObject.getString("follow_user_id"));
-                                arrayFollowingNameList.add(followingObject.getString("username"));
+                                String follower = followingObject.getString("username");
+                                arrayFollowingNameList.add(follower);
+                                Utils.WriteSharePrefrence(getActivity(), Constant.USER_FOLLOWING, follower);
                             }
                         }
                     }
                 }
-            } catch (JSONException e) {
+            }
+            catch (JSONException e) {
                 e.printStackTrace();
             }
             if (arrayUserList.size() > 0) {

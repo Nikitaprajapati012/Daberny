@@ -4,8 +4,6 @@ import android.app.ProgressDialog;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -14,7 +12,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.raviarchi.daberny.Activity.Adapter.SearchLatestAdapter;
 import com.example.raviarchi.daberny.Activity.Adapter.SearchTagAdapter;
 import com.example.raviarchi.daberny.Activity.Model.UserProfileDetails;
 import com.example.raviarchi.daberny.Activity.Utils.Constant;
@@ -26,9 +23,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.regex.Pattern;
 
 import static com.example.raviarchi.daberny.Activity.Fragment.Search.edSearch;
-import static com.facebook.FacebookSdk.getApplicationContext;
 
 
 /**
@@ -42,7 +39,7 @@ public class SearchTag extends Fragment {
     public String userId;
     public SearchTagAdapter adapter;
     public String SearchRecent;
-    private ArrayList<UserProfileDetails> arrayUserList,searchedArraylist;
+    private ArrayList<UserProfileDetails> arrayUserList, searchedArraylist;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -56,7 +53,7 @@ public class SearchTag extends Fragment {
     // TODO: 2/22/2017 bind data with field
     private void findViewId(View view) {
         recyclerViewTag = (RecyclerView) view.findViewById(R.id.fragment_search_recyclertaglist);
-            }
+    }
 
     // TODO: 2/21/2017 initilization
     private void init() {
@@ -76,15 +73,18 @@ public class SearchTag extends Fragment {
 
             @Override
             public void afterTextChanged(Editable editable) {
-                SearchRecent = edSearch.getText().toString().replaceAll("#", "%23");
+                SearchRecent = edSearch.getText().toString();
                 searchedArraylist = new ArrayList<>();
-                for (int i = 0; i < arrayUserList.size(); i++) {
-                    if (arrayUserList.get(i).getQueTag().toLowerCase().startsWith(SearchRecent.toLowerCase())) {
-                        searchedArraylist.add(arrayUserList.get(i));
+                Pattern regex = Pattern.compile("[$&+,:;=\\\\?@#|/'<>.^*()%!-]");
+                if (regex.matcher(SearchRecent).find()) {
+                    for (int i = 0; i < arrayUserList.size(); i++) {
+                        if (arrayUserList.get(i).getQueTag().toLowerCase().startsWith(SearchRecent.toLowerCase())) {
+                            searchedArraylist.add(arrayUserList.get(i));
+                        }
                     }
                 }
                 adapter = new SearchTagAdapter(getActivity(), searchedArraylist);
-                utils.setAdapterForList(recyclerViewTag,adapter);
+                utils.setAdapterForList(recyclerViewTag, adapter);
             }
         });
     }
@@ -92,13 +92,13 @@ public class SearchTag extends Fragment {
     private void openRecentList() {
         // TODO: 2/21/2017 bind list and show in adapter
         adapter = new SearchTagAdapter(getActivity(), arrayUserList);
-        utils.setAdapterForList(recyclerViewTag,adapter);
+        utils.setAdapterForList(recyclerViewTag, adapter);
     }
 
     // TODO: 2/21/2017 get list of Question from URL
     private class GetTagList extends AsyncTask<String, String, String> {
         ProgressDialog pd;
-        String  user_id;
+        String user_id;
 
         public GetTagList(String userId) {
             this.user_id = userId;

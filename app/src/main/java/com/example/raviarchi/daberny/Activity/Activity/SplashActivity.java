@@ -14,6 +14,7 @@ import com.example.raviarchi.daberny.R;
 
 public class SplashActivity extends AppCompatActivity implements View.OnClickListener {
     public TextView txtLogin, txtSignup;
+    boolean result = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,6 +22,9 @@ public class SplashActivity extends AppCompatActivity implements View.OnClickLis
         setContentView(R.layout.activity_splash);
         boolean result = BitUtility.checkPermission(SplashActivity.this);
         Utils.WriteSharePre(SplashActivity.this, Constant.PERMISSION, String.valueOf(result));
+        if (Utils.ReadSharePrefrence(SplashActivity.this, Constant.PERMISSION).equalsIgnoreCase("true")){
+            Utils.WriteSharePrefrence(SplashActivity.this,Constant.ISFIRSTTIMEREG,"1");
+        }
         findById();
         click();
     }

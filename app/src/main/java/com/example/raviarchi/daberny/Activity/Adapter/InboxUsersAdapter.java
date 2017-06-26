@@ -1,17 +1,21 @@
 package com.example.raviarchi.daberny.Activity.Adapter;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Typeface;
+import android.os.AsyncTask;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.raviarchi.daberny.Activity.Activity.ChatActivity;
 import com.example.raviarchi.daberny.Activity.Model.UserProfileDetails;
@@ -20,7 +24,11 @@ import com.example.raviarchi.daberny.Activity.Utils.RoundedTransformation;
 import com.example.raviarchi.daberny.Activity.Utils.Utils;
 import com.example.raviarchi.daberny.R;
 import com.google.gson.Gson;
+import com.koushikdutta.async.http.socketio.ExceptionCallback;
 import com.squareup.picasso.Picasso;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,9 +41,9 @@ import butterknife.ButterKnife;
  */
 
 public class InboxUsersAdapter extends RecyclerView.Adapter<InboxUsersAdapter.MyViewHolder> {
-    public String Id, loginUserId, interest;
+    private String Id, loginUserId, interest;
     public Utils utils;
-    private List<UserProfileDetails> arrayUserList;
+    private ArrayList<UserProfileDetails> arrayUserList;
     private Context context;
 
     public InboxUsersAdapter(Context context, ArrayList<UserProfileDetails> arraylist) {
@@ -61,6 +69,12 @@ public class InboxUsersAdapter extends RecyclerView.Adapter<InboxUsersAdapter.My
             // TODO: 6/12/2017 set the details of the other user which is in sender
             Utils.WriteSharePrefrence(context, Constant.OTHER_USERID, userdetails.getOtherUserId());
             holder.txtUsername.setText(userdetails.getOtherUserName());
+            if (userdetails.getUserMsgType().equalsIgnoreCase("image")) {
+                holder.txtMessage.setText(R.string.yousentmsg);
+            } else {
+                utils.setTextOfInboxList(userdetails,holder.txtMessage);
+                holder.txtMessage.setText(userdetails.getUserMsgSender());
+            }
             if (userdetails.getOtherUserImage().length() > 0) {
                 Picasso.with(context).load(userdetails.getOtherUserImage()).
                         transform(new RoundedTransformation(120, 2)).placeholder(R.drawable.ic_placeholder).into(holder.imgProfile);
@@ -71,17 +85,13 @@ public class InboxUsersAdapter extends RecyclerView.Adapter<InboxUsersAdapter.My
         } else {
             // TODO: 6/12/2017 set the details of the other user which is in receiver
             Utils.WriteSharePrefrence(context, Constant.OTHER_USERID, userdetails.getUserId());
-               if (userdetails.getUserMsgType().equalsIgnoreCase("image")) {
+            holder.txtUsername.setText(userdetails.getUserUserName());
+            if (userdetails.getUserMsgType().equalsIgnoreCase("image")) {
                 holder.txtMessage.setText(R.string.yousentmsg);
             } else {
-                if (userdetails.getUserMsgStatus().equalsIgnoreCase("1")) {
-                    holder.txtMessage.setTypeface(null, Typeface.BOLD);
-                } else {
-                    holder.txtMessage.setTypeface(null, Typeface.NORMAL);
-                }
+                utils.setTextOfInboxList(userdetails,holder.txtMessage);
                 holder.txtMessage.setText(userdetails.getUserMsgReceiver());
             }
-            holder.txtUsername.setText(userdetails.getUserUserName());
             if (userdetails.getUserImage().length() > 0) {
                 Picasso.with(context).load(userdetails.getUserImage()).
                         transform(new RoundedTransformation(120, 2)).placeholder(R.drawable.ic_placeholder).into(holder.imgProfile);
@@ -90,7 +100,7 @@ public class InboxUsersAdapter extends RecyclerView.Adapter<InboxUsersAdapter.My
                         .placeholder(R.drawable.ic_placeholder).into(holder.imgProfile);
             }
         }
-
+        final String otherUserId=Utils.ReadSharePrefrence(context,Constant.OTHER_USERID);
         holder.layoutInbox.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -115,10 +125,11 @@ public class InboxUsersAdapter extends RecyclerView.Adapter<InboxUsersAdapter.My
                                             int which) {
                                         arrayUserList.remove(position);
                                         notifyDataSetChanged();
+                                        new DeleteConverstion(loginUserId,otherUserId,position,arrayUserList).execute();
                                         dialog.cancel();
                                     }
                                 }).show();
-                return false;
+                return true;
             }
         });
     }
@@ -160,6 +171,63 @@ public class InboxUsersAdapter extends RecyclerView.Adapter<InboxUsersAdapter.My
         public MyViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
+        }
+    }
+
+    private class DeleteConverstion extends AsyncTask<String, String, String> {
+        String userId, otheruserId;
+        ProgressDialog pd;
+        int position;
+        ArrayList<UserProfileDetails> arrayUserList;
+
+        private DeleteConverstion(String id, String queId, int position, ArrayList<UserProfileDetails> arrayUserList) {
+            this.userId = id;
+            this.otheruserId = queId;
+            this.position=position;
+            this.arrayUserList=arrayUserList;
+            notifyDataSetChanged();
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            arrayUserList = new ArrayList<>();
+            pd = new ProgressDialog(context);
+            pd.setMessage("Loading");
+            pd.setCancelable(false);
+            pd.show();
+        }
+
+        @Override
+        protected String doInBackground(String... strings) {
+            //http://181.224.157.105/~hirepeop/host2/surveys/api/delete_conversion/752/864
+            return Utils.getResponseofGet(Constant.QUESTION_BASE_URL + "delete_conversion/" + userId + "/" + otheruserId );
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+            pd.dismiss();
+            Log.d("RESPONSE", "Delete Converstion..." + s);
+            try {
+                JSONObject jsonObject = new JSONObject(s);
+                if (jsonObject.getString("status").equalsIgnoreCase("true")) {
+                    Toast.makeText(context, jsonObject.getString("msg"), Toast.LENGTH_SHORT).show();
+                    JSONObject voteObject = jsonObject.getJSONObject("data");
+                    if (voteObject.length() > 0) {
+                        UserProfileDetails details = new UserProfileDetails();
+                        details.setUserImage(voteObject.getString("user_image"));
+                        arrayUserList.add(details);
+                        notifyDataSetChanged();
+                    }
+                }
+                else
+                {
+                    Toast.makeText(context, jsonObject.getString("msg"), Toast.LENGTH_SHORT).show();
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
         }
     }
 }

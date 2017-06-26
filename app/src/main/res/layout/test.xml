@@ -385,6 +385,7 @@
                                 android:layout_gravity="center"
                                 android:layout_weight="1.8"
                                 android:gravity="center"
+                                android:visibility="gone"
                                 android:orientation="horizontal"
                                 android:weightSum="2">
 
@@ -509,6 +510,7 @@
                                 android:layout_gravity="center"
                                 android:layout_weight="1.8"
                                 android:gravity="center"
+                                android:visibility="gone"
                                 android:orientation="horizontal"
                                 android:weightSum="2">
 
@@ -634,6 +636,7 @@
                                 android:layout_gravity="center"
                                 android:layout_weight="1.8"
                                 android:gravity="center"
+                                android:visibility="gone"
                                 android:orientation="horizontal"
                                 android:weightSum="2">
 
@@ -757,6 +760,7 @@
                                 android:layout_gravity="center"
                                 android:layout_weight="1.8"
                                 android:gravity="center"
+                                android:visibility="gone"
                                 android:orientation="horizontal"
                                 android:weightSum="2">
 
@@ -901,7 +905,6 @@
                         android:text="@string/votesucess"
                         android:textColor="@color/black"
                         android:textSize="@dimen/_10sdp" />
-
                 </LinearLayout>
             </LinearLayout>
 
@@ -920,7 +923,7 @@
                     <LinearLayout
                         android:id="@+id/adapter_home_list_layout_vote"
                         android:layout_width="@dimen/_80sdp"
-                        android:layout_height="@dimen/_25sdp"
+                        android:layout_height="@dimen/_20sdp"
                         android:orientation="horizontal">
 
                         <TextView
@@ -974,8 +977,8 @@
 
                     <LinearLayout
                         android:id="@+id/adapter_home_list_layoutfb"
-                        android:layout_width="@dimen/_70sdp"
-                        android:layout_height="@dimen/_25sdp"
+                        android:layout_width="@dimen/_65sdp"
+                        android:layout_height="@dimen/_20sdp"
                         android:layout_margin="@dimen/_2sdp"
                         android:background="@drawable/facebook_bg"
                         android:orientation="horizontal"
@@ -998,13 +1001,12 @@
                             android:text="@string/home_fb"
                             android:textColor="@color/white"
                             android:textSize="@dimen/_10sdp" />
-
                     </LinearLayout>
 
                     <LinearLayout
                         android:id="@+id/adapter_home_list_layouttwitter"
                         android:layout_width="@dimen/_60sdp"
-                        android:layout_height="@dimen/_25sdp"
+                        android:layout_height="@dimen/_20sdp"
                         android:layout_margin="@dimen/_2sdp"
                         android:background="@drawable/twitter_bg"
                         android:orientation="horizontal">
@@ -1038,6 +1040,7 @@
                     android:background="@color/blue" />
 
                 <LinearLayout
+                    android:id="@+id/adapter_home_list_layoutshare"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/_25sdp"
                     android:layout_marginTop="@dimen/_1sdp"

@@ -385,6 +385,7 @@
                                 android:layout_gravity="center"
                                 android:layout_weight="1.8"
                                 android:gravity="center"
+                                android:visibility="gone"
                                 android:orientation="horizontal"
                                 android:weightSum="2">
 
@@ -509,6 +510,7 @@
                                 android:layout_gravity="center"
                                 android:layout_weight="1.8"
                                 android:gravity="center"
+                                android:visibility="gone"
                                 android:orientation="horizontal"
                                 android:weightSum="2">
 
@@ -634,6 +636,7 @@
                                 android:layout_gravity="center"
                                 android:layout_weight="1.8"
                                 android:gravity="center"
+                                android:visibility="gone"
                                 android:orientation="horizontal"
                                 android:weightSum="2">
 
@@ -757,6 +760,7 @@
                                 android:layout_gravity="center"
                                 android:layout_weight="1.8"
                                 android:gravity="center"
+                                android:visibility="gone"
                                 android:orientation="horizontal"
                                 android:weightSum="2">
 
@@ -914,7 +918,7 @@
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="@dimen/_25sdp"
                     android:orientation="horizontal">
 
                     <LinearLayout
@@ -933,7 +937,6 @@
                             android:text="Vote"
                             android:textColor="@color/white"
                             android:textSize="@dimen/_11sdp" />
-
                     </LinearLayout>
 
                     <LinearLayout
@@ -974,7 +977,7 @@
 
                     <LinearLayout
                         android:id="@+id/adapter_home_list_layoutfb"
-                        android:layout_width="@dimen/_70sdp"
+                        android:layout_width="@dimen/_65sdp"
                         android:layout_height="match_parent"
                         android:layout_margin="@dimen/_2sdp"
                         android:background="@drawable/facebook_bg"

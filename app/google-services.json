@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "700331673463",
+    "firebase_url": "https://daberny-fcf41.firebaseio.com",
+    "project_id": "daberny-fcf41",
+    "storage_bucket": "daberny-fcf41.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:700331673463:android:44002b1605beae0d",
+        "android_client_info": {
+          "package_name": "com.example.raviarchi.daberny"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "700331673463-3u23ec0odtfm2nrel03n3kj7gehhv9j2.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.raviarchi.daberny",
+            "certificate_hash": "801ba83736c2e30b198a494b4c5fae809d383940"
+          }
+        },
+        {
+          "client_id": "700331673463-f8lipogilgi778ooit3dk8ccjiccttvs.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBiYaMQ0hg--Oda-j8ZVeQo97at7HZ4O-s"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "700331673463-f8lipogilgi778ooit3dk8ccjiccttvs.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

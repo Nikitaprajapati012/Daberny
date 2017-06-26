@@ -194,8 +194,10 @@ public class Posts extends Fragment {
 
                         // TODO: 3/22/2017 get user details
                         JSONObject userObject = questionObject.getJSONObject("user");
-                        details.setUserImage(userObject.getString("user_image"));
-                        details.setUserUserName(userObject.getString("username"));
+                        if (userObject.length() > 0 ){
+                            details.setUserImage(userObject.getString("user_image"));
+                            details.setUserUserName(userObject.getString("username"));
+                        }
 
                         // TODO: 3/22/2017 get comment details
                         JSONArray commentArray = questionObject.getJSONArray("comment");
@@ -240,14 +242,17 @@ public class Posts extends Fragment {
                         arrayUserList.add(details);
                     }
                     // TODO: 3/27/2017 get the list of following
-                    JSONArray followingArray = jsonObject.getJSONArray("follow_user");
-                    for (int f = 0; f < followingArray.length(); f++) {
-                        JSONObject followingObject = followingArray.getJSONObject(f);
-                        arrayFollowingIdList.add(followingObject.getString("follow_user_id").trim());
-                        arrayFollowingNameList.add(followingObject.getString("fullname").trim());
+                    JSONArray followingArray = jsonObject.getJSONArray("following");
+                    if (followingArray.length() > 0) {
+                        for (int f = 0; f < followingArray.length(); f++) {
+                            JSONObject followingObject = followingArray.getJSONObject(f);
+                            arrayFollowingIdList.add(followingObject.getString("follow_user_id"));
+                            String follower = followingObject.getString("username");
+                            arrayFollowingNameList.add(follower);
+                            Utils.WriteSharePrefrence(getActivity(), Constant.USER_FOLLOWING, follower);
+                        }
                     }
                 }
-
             } catch (JSONException e) {
                 e.printStackTrace();
             }

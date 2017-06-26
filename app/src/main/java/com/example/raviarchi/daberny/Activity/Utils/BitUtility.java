@@ -40,7 +40,7 @@ public class BitUtility {
                 } else {
                     ActivityCompat.requestPermissions((Activity) context, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA }, MY_PERMISSIONS_REQUEST_READ_WRITE_EXTERNAL_STORAGE_AND_CAMERA);
                 }
-                return false;
+                return true;
             } else {
                 return true;
             }

@@ -38,6 +38,7 @@ public class SearchLatestAdapter extends RecyclerView.Adapter<SearchLatestAdapte
     public SearchLatestAdapter(Context context, ArrayList<UserProfileDetails> arraylist) {
         this.context = context;
         this.arrayUserList = arraylist;
+        this.utils =new Utils(context);
         notifyDataSetChanged();
     }
 
@@ -60,11 +61,8 @@ public class SearchLatestAdapter extends RecyclerView.Adapter<SearchLatestAdapte
                 Bundle bundle = new Bundle();
                 bundle.putString("userprofiledetails", gson.toJson(userdetails));
                 Fragment fragment = new Tag();
-
-                if (fragment != null) {
-                    fragment.setArguments(bundle);
-                    utils.replaceFragment(fragment);
-                }
+                fragment.setArguments(bundle);
+                utils.replaceFragment(fragment);
             }
         });
 

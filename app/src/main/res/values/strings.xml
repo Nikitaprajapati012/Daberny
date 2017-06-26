@@ -116,6 +116,7 @@
     <string name="yousentmsg">You sent a message</string>
     <string name="discoverpeople">Discover People</string>
     <string name="mobile">Mobile Number</string>
+    <string name="nochat">Send private photos,videos and messages to a friend or group</string>
 
     <string-array name="time">
         <item>24:00:00</item>

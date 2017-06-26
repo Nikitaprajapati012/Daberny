@@ -46,22 +46,26 @@ import java.security.NoSuchAlgorithmException;
 
 public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
     private static final String TAG = "LoginActivity";
-    public TextView txtRegHere,txtHeaderTitle;
+    public TextView txtRegHere, txtHeaderTitle;
     public EditText edemail, edpassword;
     public Utils utils;
-    public String email, password,saveLogin;
+    public String email, password, saveLogin;
     public LoginButton btnFbLogin;
     public CallbackManager callbackManager;
-    public LinearLayout layoutFacebookLogin,layoutLogin;
+    public LinearLayout layoutFacebookLogin, layoutLogin;
     public RelativeLayout headerview;
     public ImageView imgIcon;
     public CheckBox ckRememberMe;
     private ProgressDialog mDialog;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        String isFirstTimeReg = Utils.ReadSharePrefrence(LoginActivity.this, Constant.ISFIRSTTIMEREG);
+        if (!isFirstTimeReg.equalsIgnoreCase("1")){
+            Intent i = new Intent(LoginActivity.this, SplashActivity.class);
+            startActivity(i);
+        }
         FacebookSdk.sdkInitialize(getApplicationContext());
         AppEventsLogger.activateApp(this);
         setContentView(R.layout.activity_login);
@@ -118,7 +122,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         edpassword = (EditText) findViewById(R.id.actvity_login_edpassword);
         layoutLogin = (LinearLayout) findViewById(R.id.activity_login_layoutsignin);
         layoutFacebookLogin = (LinearLayout) findViewById(R.id.activity_login_layoutsigninwithfb);
-        ckRememberMe = (CheckBox)findViewById(R.id.activity_login_ckrememberme);
+        ckRememberMe = (CheckBox) findViewById(R.id.activity_login_ckrememberme);
         callbackManager = CallbackManager.Factory.create();
         btnFbLogin = (LoginButton) findViewById(R.id.btnfblogin);
         btnFbLogin.setReadPermissions("public_profile");
@@ -128,10 +132,10 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         txtHeaderTitle = (TextView) findViewById(R.id.header_title);
         imgIcon.setVisibility(View.INVISIBLE);
         txtHeaderTitle.setText(R.string.signin);
-        saveLogin = Utils.ReadSharePref(LoginActivity.this,Constant.REMEMBER_ME);
+        saveLogin = Utils.ReadSharePref(LoginActivity.this, Constant.REMEMBER_ME);
         if (!saveLogin.equalsIgnoreCase("")) {
-            edemail.setText(Utils.ReadSharePref(LoginActivity.this,Constant.USER_EMAIL));
-            edpassword.setText(Utils.ReadSharePref(LoginActivity.this,Constant.USER_PASSWORD));
+            edemail.setText(Utils.ReadSharePref(LoginActivity.this, Constant.USER_EMAIL));
+            edpassword.setText(Utils.ReadSharePref(LoginActivity.this, Constant.USER_PASSWORD));
             ckRememberMe.setChecked(true);
         }
     }
@@ -139,15 +143,15 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     @Override
     public void onClick(View v) {
         if (v == layoutLogin) {
-            InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(edemail.getWindowToken(), 0);
             email = edemail.getText().toString().trim();
             password = edpassword.getText().toString().trim();
 
             if (ckRememberMe.isChecked()) {
-                Utils.WriteSharePrefrence(LoginActivity.this,Constant.REMEMBER_ME,"saveLogin");
-                Utils.WriteSharePrefrence(LoginActivity.this,Constant.USER_USERNAME,email);
-                Utils.WriteSharePrefrence(LoginActivity.this,Constant.USER_PASSWORD,password);
+                Utils.WriteSharePrefrence(LoginActivity.this, Constant.REMEMBER_ME, "saveLogin");
+                Utils.WriteSharePrefrence(LoginActivity.this, Constant.USER_USERNAME, email);
+                Utils.WriteSharePrefrence(LoginActivity.this, Constant.USER_PASSWORD, password);
             }
             doSomethingElse();
         }
@@ -163,9 +167,8 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
             case R.id.activity_login_layoutsignin:
                 // TODO: 2/21/2017 get user entered details
-
-                if (!email.equalsIgnoreCase("")) {
-                    if (!password.equalsIgnoreCase("")) {
+                if (email.length() > 0) {
+                    if (password.length() > 0) {
                         new SignIn(email, password).execute();
                     } else {
                         Toast.makeText(this, "Please Enter Full Name", Toast.LENGTH_SHORT).show();
@@ -178,34 +181,23 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         btnFbLogin.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
-                Log.d("LOGIN_RESULT", "@@" + loginResult);
-                String token = loginResult.getAccessToken().getToken();
-
-                Utils.WriteSharePrefrence(LoginActivity.this, Constant.FB_ACCESS_TOKEN, loginResult.getAccessToken().toString());
-
+                Log.d("LOGIN_RESULT", "@@" + loginResult.toString());
+                final String token = loginResult.getAccessToken().getToken();
                 Toast.makeText(LoginActivity.this, "Facebook Login", Toast.LENGTH_SHORT).show();
                 GraphRequest request = GraphRequest.newMeRequest(loginResult.getAccessToken(), new GraphRequest.GraphJSONObjectCallback() {
                     @Override
                     public void onCompleted(JSONObject object, GraphResponse response) {
-                        Log.d("LoginActivity Response ", response.toString() + " -- " + object.toString());
                         try {
-                            String FbName = object.getString("name");
-                            String Fbemail = object.getString("email");
-                            String FbId = object.getString("id");
-//                            new GetLogin().execute();
-                            Toast.makeText(LoginActivity.this, "id :" + FbId, Toast.LENGTH_SHORT).show();
-//                            JSONArray rawName = response.getJSONObject().getJSONArray("data");
-//                                    intent.putExtra("jsondata", rawName.toString());
-//                                    startActivity(intent);
-                            Utils.WriteSharePrefrence(LoginActivity.this, Constant.FB_USER_ID, FbId);
-
-                            Intent imain = new Intent(LoginActivity.this, MainActivity.class);
-                            startActivity(imain);
-
-                            Log.d("Data", FbId + " -- " + Fbemail + " -- " + FbName);
+                            String FbName = object.getString("name").replaceAll(" ", "%20");
+                            String Fbemail = URLEncoder.encode(object.getString("email"), "UTF-8");
+                            String FbId = object.getString("id").replaceAll(" ", "%20");
+                            Utils.WriteSharePrefrence(LoginActivity.this, Constant.FB_ACCESS_TOKEN,FbId);
+                            new GetFacebookLogin(FbName, Fbemail, FbId).execute();
                         } catch (JSONException e) {
                             e.printStackTrace();
                             Toast.makeText(LoginActivity.this, "Dat " + e.toString(), Toast.LENGTH_SHORT).show();
+                        } catch (UnsupportedEncodingException e) {
+                            e.printStackTrace();
                         }
                     }
                 });
@@ -232,14 +224,31 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         startActivity(new Intent(LoginActivity.this, MainActivity.class));
         LoginActivity.this.finish();
     }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
         callbackManager.onActivityResult(requestCode, resultCode, data);
     }
-    /*private class GetFacebookLogin extends AsyncTask<String, String, String> {
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mDialog = null;
+        if ((mDialog != null) && mDialog.isShowing())
+            mDialog.dismiss();
+        mDialog = null;
+    }
+
+    private class GetFacebookLogin extends AsyncTask<String, String, String> {
         ProgressDialog pd;
+        String fbName, fbemail, fbId;
+
+        private GetFacebookLogin(String fbName, String fbemail, String fbId) {
+            this.fbName = fbName;
+            this.fbemail = fbemail;
+            this.fbId = fbId;
+        }
 
         @Override
         protected void onPreExecute() {
@@ -253,57 +262,54 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
             pd.dismiss();
-            Log.d("Response", s);
-
-            JSONObject object = null;
+            Log.d("ResponseFB", s);
             try {
-                object = new JSONObject(s);
-                if (object.getString("status").equalsIgnoreCase("true")) {
-                    JSONObject userObject = object.getJSONObject("data");
-                   // Utils.WriteSharePrefrence(LoginActivity.this, Constant.USERID, userObject.getString("id"));
-                  //  Utils.WriteSharePrefrence(LoginActivity.this, Constant.ISFACEBOOK, "1");
-                    Intent in = new Intent(LoginActivity.this, MainActivity.class);
-                    in.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                   *//* in.putExtra("id", userObject.getString("id"));*//*
-                    startActivity(in);
-                    finish();
-                }
+                JSONObject jsonObject = new JSONObject(s);
+                if (jsonObject.getString("status").equalsIgnoreCase("true")) {
+                    JSONObject jsonSecondObject = jsonObject.getJSONObject("user_details");
+                    if (jsonSecondObject.length() > 0) {
+                        Utils.WriteSharePrefrence(LoginActivity.this, Constant.USERID, jsonSecondObject.getString("id"));
+                        Utils.WriteSharePrefrence(LoginActivity.this, Constant.USER_EMAIL, jsonSecondObject.getString("email"));
+                        Utils.WriteSharePrefrence(LoginActivity.this, Constant.NOTIFICATION, jsonSecondObject.getString("notification_count"));
+                        JSONArray jsonArray = jsonSecondObject.getJSONArray("ranks");
+                        if (jsonArray.length() > 0) {
+                            for (int i = 0; i < jsonArray.length(); i++) {
+                                JSONObject interestObject = jsonArray.getJSONObject(i);
+                                String interest = interestObject.getString("int_name");
+                                Utils.WriteSharePrefrence(LoginActivity.this, Constant.USER_INTERESTS, interest);
+                                Intent imain = new Intent(LoginActivity.this, MainActivity.class);
+                                imain.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                                startActivity(imain);
+                            }
+                        } else {
+                            Intent i = new Intent(LoginActivity.this, InterestActivity.class);
+                            startActivity(i);
+                        }
+                    } else {
+                        Toast.makeText(LoginActivity.this, jsonObject.getString("msg"), Toast.LENGTH_SHORT).show();
 
+                    }
+                } else {
+                    Toast.makeText(LoginActivity.this, jsonObject.getString("msg"), Toast.LENGTH_SHORT).show();
+                }
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-
         }
 
         @Override
         protected String doInBackground(String... strings) {
-
-            HashMap map = new HashMap();
-            //   map.put("email", Fbemail);
-            //   map.put("token_id", FbId);
-            //  map.put("full_name", FbName);
-
-            // return utils.getResponseofPost(Constant.BASE_URL + "login_with_facebook.php", map);
-
-            return null;
+            //http://181.224.157.105/~hirepeop/host2/surveys/api/fblogin/sss/archirayan18%40gmail.com/ssddd
+            return Utils.getResponseofGet(Constant.QUESTION_BASE_URL + "fblogin/"
+                    + fbName + "/" + fbemail + "/" + fbId);
         }
-    }*/
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-       mDialog = null;
-                   if ((mDialog != null) && mDialog.isShowing())
-                mDialog.dismiss();
-            mDialog = null;
-        }
-
+    }
 
     // TODO: 2/21/2017 make user login
     private class SignIn extends AsyncTask<String, String, String> {
         String email, password;
 
-        public SignIn(String email, String password) {
+        private SignIn(String email, String password) {
             this.email = email;
             this.password = password;
         }
@@ -320,13 +326,15 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         protected String doInBackground(String... strings) {
             //http://181.224.157.105/~hirepeop/host2/surveys/api/login/archirayan40%40gmail.com/archirayan40
             try {
-                return Utils.getResponseofGet(Constant.QUESTION_BASE_URL + "login1/" + URLEncoder.encode(email, "UTF-8") + "/" + password);
-
+                return Utils.getResponseofGet(Constant.QUESTION_BASE_URL
+                        + "login1/" + URLEncoder.encode(email, "UTF-8")
+                        + "/" + password);
             } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();
                 return "";
             }
         }
+
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
@@ -336,27 +344,30 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
             try {
                 Log.d("RESPONSE" + "LOGIN", "" + s);
                 JSONObject jsonObject = new JSONObject(s);
-                JSONObject jsonSecondOnject = jsonObject.getJSONObject("user_details");
                 if (jsonObject.getString("status").equalsIgnoreCase("true")) {
                     Toast.makeText(LoginActivity.this, jsonObject.getString("msg"), Toast.LENGTH_SHORT).show();
-                    Utils.WriteSharePrefrence(LoginActivity.this, Constant.USERID, jsonSecondOnject.getString("id"));
-                    Utils.WriteSharePrefrence(LoginActivity.this, Constant.USER_EMAIL, jsonSecondOnject.getString("email"));
-                    Utils.WriteSharePrefrence(LoginActivity.this, Constant.NOTIFICATION, jsonSecondOnject.getString("notification_count"));
-                    JSONArray jsonArray = jsonSecondOnject.getJSONArray("ranks");
-                    if (jsonArray.length() > 0) {
-                        for (int i = 0; i < jsonArray.length(); i++) {
-                            JSONObject interestObject = jsonArray.getJSONObject(i);
-                            String interest = interestObject.getString("int_name");
-                            Utils.WriteSharePrefrence(LoginActivity.this, Constant.USER_INTERESTS, interest);
-                            Intent imain = new Intent(LoginActivity.this, MainActivity.class);
-                            imain.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-                            startActivity(imain);
-                            //finish();
+                    JSONObject jsonSecondOnject = jsonObject.getJSONObject("user_details");
+                    if (jsonSecondOnject.length() > 0) {
+                        Utils.WriteSharePrefrence(LoginActivity.this, Constant.USERID, jsonSecondOnject.getString("id"));
+                        Utils.WriteSharePrefrence(LoginActivity.this, Constant.USER_EMAIL, jsonSecondOnject.getString("email"));
+                        Utils.WriteSharePrefrence(LoginActivity.this, Constant.NOTIFICATION, jsonSecondOnject.getString("notification_count"));
+                        JSONArray jsonArray = jsonSecondOnject.getJSONArray("ranks");
+                        if (jsonArray.length() > 0) {
+                            for (int i = 0; i < jsonArray.length(); i++) {
+                                JSONObject interestObject = jsonArray.getJSONObject(i);
+                                String interest = interestObject.getString("int_name");
+                                Utils.WriteSharePrefrence(LoginActivity.this, Constant.USER_INTERESTS, interest);
+                                Intent imain = new Intent(LoginActivity.this, MainActivity.class);
+                                imain.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                                startActivity(imain);
+                            }
+                        } else {
+                            Intent i = new Intent(LoginActivity.this, InterestActivity.class);
+                            startActivity(i);
                         }
-                    }else {
-                        Intent i = new Intent(LoginActivity.this, InterestActivity.class);
-                        startActivity(i);
-                        //finish();
+                    } else {
+                        Toast.makeText(LoginActivity.this, jsonObject.getString("msg"), Toast.LENGTH_SHORT).show();
+
                     }
                 } else {
                     Toast.makeText(LoginActivity.this, jsonObject.getString("msg"), Toast.LENGTH_SHORT).show();

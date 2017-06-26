@@ -16,11 +16,13 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.raviarchi.daberny.Activity.Activity.LoginActivity;
 import com.example.raviarchi.daberny.Activity.Adapter.HomeAdapter;
 import com.example.raviarchi.daberny.Activity.Model.UserProfileDetails;
 import com.example.raviarchi.daberny.Activity.Utils.Constant;
 import com.example.raviarchi.daberny.Activity.Utils.Utils;
 import com.example.raviarchi.daberny.R;
+import com.koushikdutta.async.http.socketio.ExceptionCallback;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -76,7 +78,6 @@ public class Home extends Fragment {
     // TODO: 2/21/2017 initilization
     private void init() {
         utils = new Utils(getActivity());
-        Interest = Utils.ReadSharePrefrence(getActivity(), Constant.INTERESTID);
         userId = Utils.ReadSharePrefrence(getActivity(), Constant.USERID);
     }
 
@@ -176,8 +177,10 @@ public class Home extends Fragment {
 
                         // TODO: 3/22/2017 get user details
                         JSONObject userObject = questionObject.getJSONObject("user");
-                        details.setUserImage(userObject.getString("user_image"));
-                        details.setUserUserName(userObject.getString("username"));
+                        if (userObject.length() > 0 ){
+                            details.setUserImage(userObject.getString("user_image"));
+                            details.setUserUserName(userObject.getString("username"));
+                        }
 
                         // TODO: 3/22/2017 get comment details
                         JSONArray commentArray = questionObject.getJSONArray("comments");
@@ -227,7 +230,9 @@ public class Home extends Fragment {
                         for (int f = 0; f < followingArray.length(); f++) {
                             JSONObject followingObject = followingArray.getJSONObject(f);
                             arrayFollowingIdList.add(followingObject.getString("follow_user_id"));
-                            arrayFollowingNameList.add(followingObject.getString("username"));
+                            String follower = followingObject.getString("username");
+                            arrayFollowingNameList.add(follower);
+                            Utils.WriteSharePrefrence(getActivity(), Constant.USER_FOLLOWING, follower);
                         }
                     }
                 }
@@ -243,9 +248,13 @@ public class Home extends Fragment {
             pd.dismiss();
             if (arrayUserList.size() > 0) {
                 openQuetionList();
-
             } else {
-                Toast.makeText(getActivity(), "No Question Found", Toast.LENGTH_SHORT).show();
+                new ExceptionCallback() {
+                    @Override
+                    public void onException(Exception e) {
+                        Log.d("EXP",""+e.toString());
+                    }
+                };
             }
         }
     }

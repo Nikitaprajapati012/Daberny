@@ -28,8 +28,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-/**
- * Created by Ravi archi on 2/21/2017.
+/** * Created by Ravi archi on 2/21/2017.
  */
 
 public class FollowerAdapter extends RecyclerView.Adapter<FollowerAdapter.MyViewHolder> {
@@ -42,6 +41,7 @@ public class FollowerAdapter extends RecyclerView.Adapter<FollowerAdapter.MyView
     public FollowerAdapter(Context context, ArrayList<UserProfileDetails> arraylist) {
         this.context = context;
         this.arrayUserList = arraylist;
+        this.utils =new Utils(context);
         notifyDataSetChanged();
         Log.d("Length", "" + arrayUserList.size());
     }

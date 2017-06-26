@@ -47,9 +47,12 @@ public class InboxUsers extends Fragment implements View.OnClickListener {
     ImageView imgAdd;
     @BindView(R.id.header_title)
     TextView txtTitle;
+    @BindView(R.id.fragment_inboxuser_txtnochat)
+    TextView txtNoChat;
     private ArrayList<UserProfileDetails> arrayUserList;
     public Toolbar toolBar;
     public RelativeLayout headerView;
+    public InboxUsersAdapter adapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -96,7 +99,7 @@ public class InboxUsers extends Fragment implements View.OnClickListener {
 
     private void openInboxPeopleDetailsList() {
         // TODO: 2/28/2017 set following peoplelist
-        InboxUsersAdapter adapter = new InboxUsersAdapter(getActivity(), arrayUserList);
+        adapter = new InboxUsersAdapter(getActivity(), arrayUserList);
         utils.setAdapterForList(recyclerViewInboxUsers,adapter);
     }
 
@@ -126,30 +129,37 @@ public class InboxUsers extends Fragment implements View.OnClickListener {
             try {
                 JSONObject jsonObject = new JSONObject(s);
                 if (jsonObject.getString("status").equalsIgnoreCase("true")) {
+                    txtNoChat.setVisibility(View.GONE);
                     JSONObject inboxDetailsObj = jsonObject.getJSONObject("inbox_details");
-                    JSONArray inboxArray = inboxDetailsObj.getJSONArray("data");
-                    for (int i = 0; i < inboxArray.length(); i++) {
-                        JSONObject followingObject = inboxArray.getJSONObject(i);
-                        details = new UserProfileDetails();
-                        details.setUserId(followingObject.getString("sender_id"));
-                        details.setUserUserName(followingObject.getString("username"));
-                        details.setUserFullName(followingObject.getString("fullname"));
-                        details.setUserImage(followingObject.getString("image"));
-                        details.setUserMsgPostDate(followingObject.getString("post_date"));
-                        details.setOtherUserId(followingObject.getString("recipient_id"));
-                        details.setOtherUserFullName(followingObject.getString("r_fullname"));
-                        details.setOtherUserName(followingObject.getString("r_username"));
-                        details.setOtherUserImage(followingObject.getString("r_image"));
-                        details.setUserMsgReceiver(followingObject.getString("recipient_msg"));
-                        details.setUserMsgSender(followingObject.getString("sender_msg"));
-                        details.setUserMsgPostDate(followingObject.getString("post_date"));
-                        details.setUserMsgType(followingObject.getString("type"));
-                        details.setUserMsgStatus(followingObject.getString("read_status"));
-                        arrayUserList.add(details);
+                    if (inboxDetailsObj.length()>0) {
+                        JSONArray inboxArray = inboxDetailsObj.getJSONArray("data");
+                        for (int i = 0; i < inboxArray.length(); i++) {
+                            JSONObject followingObject = inboxArray.getJSONObject(i);
+                            details = new UserProfileDetails();
+                            details.setUserId(followingObject.getString("sender_id"));
+                            details.setUserUserName(followingObject.getString("username"));
+                            details.setUserFullName(followingObject.getString("fullname"));
+                            details.setUserImage(followingObject.getString("image"));
+                            details.setUserMsgPostDate(followingObject.getString("post_date"));
+                            details.setOtherUserId(followingObject.getString("recipient_id"));
+                            details.setOtherUserFullName(followingObject.getString("r_fullname"));
+                            details.setOtherUserName(followingObject.getString("r_username"));
+                            details.setOtherUserImage(followingObject.getString("r_image"));
+                            details.setUserMsgReceiver(followingObject.getString("recipient_msg"));
+                            details.setUserMsgSender(followingObject.getString("sender_msg"));
+                            details.setUserMsgPostDate(followingObject.getString("post_date"));
+                            details.setUserMsgType(followingObject.getString("type"));
+                            details.setUserMsgStatus(followingObject.getString("read_status"));
+                            arrayUserList.add(details);
+                        }
                     }
                     if (arrayUserList.size() > 0) {
                         openInboxPeopleDetailsList();
                     }
+                }
+                else
+                {
+                    txtNoChat.setVisibility(View.VISIBLE);
                 }
             } catch (JSONException e) {
                 e.printStackTrace();

@@ -66,18 +66,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         utils = new Utils(MainActivity.this);
         userId = ReadSharePrefrence(this, Constant.USERID);
         fbUserId = ReadSharePrefrence(this, Constant.FB_USER_ID);
-        String interest = ReadSharePrefrence(this, Constant.INTERESTID);
-        Boolean isFirstTimeReg = utils.getReadSharedPrefrenceIsFirstTime();
-        if (userId.equals("")&& fbUserId.equals("")) {
-            Intent i = new Intent(MainActivity.this, SplashActivity.class);
-            startActivity(i);
+        String interest = ReadSharePrefrence(this, Constant.USER_INTERESTS);
+        if (userId.equalsIgnoreCase("") && fbUserId.equalsIgnoreCase("")) {
+                Intent i = new Intent(MainActivity.this, LoginActivity.class);
+                startActivity(i);
         } else {
             if (interest.length() < 0) {
-                if (isFirstTimeReg.equals(true)) {
                     Intent i = new Intent(MainActivity.this, InterestActivity.class);
                     startActivity(i);
                     utils.clearSharedPreferenceData();
-                }
             } else {
                 //TODO: 2/22/2017 actvitity main start
                 setContentView(R.layout.activity_main);
@@ -285,6 +282,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 Intent ilogout = new Intent(MainActivity.this, LoginActivity.class);
                 ilogout.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 Utils.ClearSharePref(MainActivity.this, Constant.USERID);
+                Utils.ClearSharePref(MainActivity.this, Constant.FB_USER_ID);
+                LoginManager.getInstance().logOut();
                 startActivity(ilogout);
                 break;
         }

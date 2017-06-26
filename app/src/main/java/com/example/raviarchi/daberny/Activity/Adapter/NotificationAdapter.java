@@ -53,6 +53,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
     public NotificationAdapter(Context context, ArrayList<UserProfileDetails> arraylist) {
         this.context = context;
         this.arrayUserList = arraylist;
+        this.utils =new Utils(context);
         notifyDataSetChanged();
     }
 
@@ -83,7 +84,15 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
             holder.txtNotification.setBackgroundColor(ContextCompat.getColor(context, R.color.home_bg));
             holder.txtNotification.setTextColor(ContextCompat.getColor(context, R.color.black));
         }
+        holder.imgProfilepic.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Fragment fragment = new OtherUserProfile();
+                utils.setIdOfPostUser(userdetails, fragment);
+                utils.replaceFragment(fragment);
 
+            }
+        });
         if (!notificationType.equalsIgnoreCase("")) {
             if (notificationType.equalsIgnoreCase("share")) {
                 notification = " Share Your Post";

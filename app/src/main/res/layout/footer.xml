@@ -44,7 +44,6 @@
             android:id="@+id/badge_layout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-
             android:layout_weight="1">
 
             <RelativeLayout
@@ -67,6 +66,9 @@
                 android:layout_alignRight="@id/relative_layout"
                 android:background="@drawable/item_count_num"
                 android:text=" "
+                android:layout_marginBottom="@dimen/_5sdp"
+                android:gravity="center"
+                android:layout_gravity="center"
                 android:visibility="visible"
                 android:textColor="@color/signinbg"
                 android:textSize="@dimen/_10sdp" />
