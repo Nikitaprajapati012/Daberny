@@ -3,9 +3,7 @@ package com.example.raviarchi.daberny.Activity.Fragment;
 import android.app.ProgressDialog;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -31,8 +29,6 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-import static com.facebook.FacebookSdk.getApplicationContext;
-
 /**
  * Created by Ravi archi on 1/10/2017.
  */
@@ -44,7 +40,7 @@ public class FriendsFacebook extends Fragment {
     public String userId;
     public SearchLatestAdapter adapter;
     public String SearchLatest;
-    JSONArray rawName;
+    public JSONArray rawName = new JSONArray();
     ArrayList<String> friendList;
     private ArrayList<UserProfileDetails> arrayUserList;
     private String fbAccessToken;
@@ -72,17 +68,15 @@ public class FriendsFacebook extends Fragment {
 
     private void openLatestList() {
         // TODO: 2/21/2017 bind list and show in adapter
-        adapter = new SearchLatestAdapter(getActivity(), arrayUserList);
-        utils.setAdapterForList(recyclerViewPeople,adapter);
+        adapter = new SearchLatestAdapter(getActivity().getSupportFragmentManager(), getActivity(), arrayUserList);
+        utils.setAdapterForList(recyclerViewPeople, adapter);
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+    public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
         fbAccessToken = Utils.ReadSharePrefrence(getActivity(), Constant.FB_USER_ID);
         friendList = new ArrayList<>();
-
         new GraphRequest(
                 AccessToken.getCurrentAccessToken(),
                 "/me/friends",
@@ -90,24 +84,25 @@ public class FriendsFacebook extends Fragment {
                 HttpMethod.GET,
                 new GraphRequest.Callback() {
                     public void onCompleted(GraphResponse response) {
-                        try {
-                            rawName = response.getJSONObject().getJSONArray("data");
-                            if (rawName != null) {
-                                for (int l = 0; l < rawName.length(); l++) {
-                                    friendList.add(rawName.getJSONObject(l).getString("name"));
+                        if (response != null)
+                            try {
+                                if (response.getJSONObject() != null)
+                                    rawName = response.getJSONObject().getJSONArray("data");
+                                if (rawName != null) {
+                                    for (int l = 0; l < rawName.length(); l++) {
+                                        friendList.add(rawName.getJSONObject(l).getString("name"));
+                                    }
                                 }
+                                if (friendList.size() > 0) {
+                                    //list
+                                    FriendListAdapter friendAdapter = new FriendListAdapter(getActivity(), friendList);
+                                    recyclerViewPeople.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
+                                    recyclerViewPeople.setAdapter(friendAdapter);
+                                }
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                                Toast.makeText(getActivity(), "" + e.getMessage(), Toast.LENGTH_SHORT).show();
                             }
-                            if (friendList.size() > 0){
-                                FriendListAdapter friendAdapter = new FriendListAdapter(getActivity(), friendList);
-                                recyclerViewPeople.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
-                                recyclerViewPeople.setAdapter(friendAdapter);
-                            }
-
-
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                            Toast.makeText(getActivity(), "" + e.getMessage(), Toast.LENGTH_SHORT).show();
-                        }
                     }
                 }
         ).executeAsync();
