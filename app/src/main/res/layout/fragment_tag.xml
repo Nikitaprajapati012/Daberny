@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
 
     <ScrollView
@@ -16,8 +16,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/_3sdp"
-            android:orientation="vertical"
             android:background="@drawable/loginborder"
+            android:orientation="vertical"
             android:padding="@dimen/_5sdp">
 
             <LinearLayout
@@ -34,14 +34,15 @@
                     android:layout_marginTop="@dimen/_5sdp"
                     android:layout_weight="1.1"
                     android:background="@mipmap/ic_daberny_mainicon"
+                    android:gravity="left"
                     android:orientation="vertical">
 
                     <ImageView
                         android:id="@+id/adapter_home_list_imgprofilepic"
-                        android:layout_width="@dimen/_40sdp"
-                        android:layout_height="@dimen/_40sdp"
+                        android:layout_width="@dimen/_35sdp"
+                        android:layout_height="@dimen/_45sdp"
                         android:layout_gravity="center|right"
-                        android:layout_marginLeft="@dimen/_5sdp"
+                        android:layout_marginLeft="@dimen/_3sdp"
                         android:layout_marginRight="@dimen/_10sdp"
                         android:layout_marginTop="@dimen/_26sdp"
                         android:gravity="center|right"
@@ -53,7 +54,7 @@
                     android:layout_height="match_parent"
                     android:layout_gravity="center"
                     android:layout_marginLeft="@dimen/_5sdp"
-                    android:layout_weight="0.7"
+                    android:layout_weight="0.8"
                     android:gravity="center|center_vertical"
                     android:orientation="vertical">
 
@@ -76,6 +77,7 @@
                         android:layout_gravity="center"
                         android:background="@drawable/interest_bg"
                         android:gravity="center"
+                        android:visibility="gone"
                         android:orientation="horizontal"
                         android:weightSum="2">
 
@@ -116,6 +118,7 @@
                         android:layout_marginTop="@dimen/_5sdp"
                         android:background="@drawable/interest_bg"
                         android:gravity="center"
+                        android:visibility="gone"
                         android:orientation="horizontal"
                         android:weightSum="2">
 
@@ -156,6 +159,7 @@
                         android:layout_marginTop="@dimen/_5sdp"
                         android:background="@drawable/interest_bg"
                         android:gravity="center"
+                        android:visibility="gone"
                         android:orientation="horizontal"
                         android:weightSum="2">
 
@@ -193,28 +197,44 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_weight="1.1"
-                    android:orientation="horizontal"
+                    android:orientation="vertical"
                     android:weightSum="2">
 
                     <ImageView
-                        android:layout_width="match_parent"
+                        android:id="@+id/adapter_home_list_optionmenu"
+                        android:layout_width="wrap_content"
                         android:layout_height="@dimen/_20sdp"
-                        android:layout_gravity="center|right|top"
-                        android:layout_weight="1.6"
-                        android:gravity="center|right"
-                        android:padding="@dimen/_3sdp"
-                        android:src="@drawable/ic_calendar" />
+                        android:layout_gravity="right"
+                        android:layout_weight="1"
+                        android:src="@mipmap/ic_dots"
+                        android:visibility="gone" />
 
-                    <TextView
-                        android:id="@+id/adapter_home_list_txtdate"
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_gravity="center|top"
-                        android:layout_marginTop="@dimen/_5sdp"
-                        android:layout_weight="0.4"
-                        android:gravity="center|left|top"
-                        android:text="11 Minute Ago"
-                        android:textSize="@dimen/_7sdp" />
+                        android:orientation="horizontal"
+                        android:weightSum="2">
+
+                        <ImageView
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/_20sdp"
+                            android:layout_gravity="center|right|top"
+                            android:layout_weight="1.6"
+                            android:gravity="center|right|top"
+                            android:padding="@dimen/_3sdp"
+                            android:src="@drawable/ic_calendar" />
+
+                        <TextView
+                            android:id="@+id/adapter_home_list_txtdate"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_gravity="center|top"
+                            android:layout_marginTop="@dimen/_5sdp"
+                            android:layout_weight="0.4"
+                            android:gravity="center|left|top"
+                            android:text=" "
+                            android:textSize="@dimen/_6sdp" />
+                    </LinearLayout>
                 </LinearLayout>
             </LinearLayout>
 
@@ -295,11 +315,42 @@
                 android:layout_marginTop="@dimen/_5sdp"
                 android:orientation="vertical">
 
-                <VideoView
-                    android:id="@+id/adapter_home_list_vdquevideo"
-                    android:layout_width="@dimen/_310sdp"
-                    android:layout_height="@dimen/_150sdp"
-                    android:layout_gravity="center" />
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <VideoView
+                        android:id="@+id/adapter_home_list_vdquevideo"
+                        android:layout_width="@dimen/_310sdp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center" />
+
+                    <ImageButton
+                        android:id="@+id/adapter_home_list_play_button"
+                        android:layout_width="@dimen/_40sdp"
+                        android:layout_height="@dimen/_40sdp"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="@dimen/_120sdp"
+                        android:layout_marginTop="@dimen/_50sdp"
+                        android:gravity="center"
+                        android:src="@drawable/ic_playbutton" />
+
+                    <ImageButton
+                        android:id="@+id/adapter_home_list_play_sound"
+                        android:layout_width="@dimen/_15sdp"
+                        android:layout_height="@dimen/_15sdp"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true"
+                        android:layout_gravity="center"
+                        android:layout_marginLeft="@dimen/_10sdp"
+                        android:layout_marginTop="@dimen/_130sdp"
+                        android:gravity="center"
+                        android:src="@drawable/ic_placeholder"
+                        android:visibility="gone" />
+
+                </RelativeLayout>
 
                 <ImageView
                     android:id="@+id/adapter_home_list_imgquepic"
@@ -331,7 +382,7 @@
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:orientation="vertical">
+                            android:orientation="horizontal">
 
                             <RelativeLayout
                                 android:layout_width="match_parent"
@@ -342,7 +393,7 @@
                                 <LinearLayout
                                     android:id="@+id/adapter_home_list_progressbar1_linear"
                                     android:layout_width="match_parent"
-                                    android:layout_height="@dimen/_10sdp"
+                                    android:layout_height="@dimen/_12sdp"
                                     android:background="@drawable/whiteborder">
 
                                     <com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar
@@ -354,13 +405,12 @@
                                         android:gravity="center_vertical|clip_horizontal"
                                         app:progress_max="100"
                                         app:rcBackgroundColor="@color/white"
-                                        app:rcProgressColor="@color/signinbg"
+                                        app:rcProgressColor="@color/choosefile"
                                         app:rcRadius="5dp"
                                         app:rcReverse="false"
                                         app:rcSecondaryProgressColor="@color/white" />
 
                                 </LinearLayout>
-
 
                                 <TextView
                                     android:id="@+id/adapter_home_list_txtoption1"
@@ -370,13 +420,12 @@
                                     android:layout_alignLeft="@id/adapter_home_list_progressbar1_linear"
                                     android:layout_alignRight="@id/adapter_home_list_progressbar1_linear"
                                     android:layout_alignTop="@id/adapter_home_list_progressbar1_linear"
+                                    android:layout_marginBottom="@dimen/_2sdp"
                                     android:layout_marginLeft="@dimen/_15sdp"
                                     android:gravity="center|left"
                                     android:text="@string/option1"
-                                    android:textColor="@color/logintext"
-                                    android:textSize="@dimen/_10sdp"
-                                    android:visibility="gone" />
-
+                                    android:textColor="@color/black"
+                                    android:textSize="@dimen/_7sdp" />
                             </RelativeLayout>
 
                             <LinearLayout
@@ -385,8 +434,8 @@
                                 android:layout_gravity="center"
                                 android:layout_weight="1.8"
                                 android:gravity="center"
-                                android:visibility="gone"
                                 android:orientation="horizontal"
+                                android:visibility="gone"
                                 android:weightSum="2">
 
                                 <TextView
@@ -411,6 +460,7 @@
                                     android:textColor="@color/black"
                                     android:textSize="@dimen/_10sdp" />
                             </LinearLayout>
+
                             <LinearLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
@@ -418,7 +468,6 @@
                                 android:layout_weight="1.6"
                                 android:gravity="center|left"
                                 android:orientation="vertical"
-                                android:visibility="gone"
                                 android:weightSum="2">
 
                                 <TextView
@@ -430,7 +479,7 @@
                                     android:gravity="center|left|top"
                                     android:paddingLeft="@dimen/_3sdp"
                                     android:text="@string/vote"
-                                    android:textColor="@color/white"
+                                    android:textColor="@color/black"
                                     android:textSize="@dimen/_6sdp" />
 
                                 <TextView
@@ -442,7 +491,7 @@
                                     android:gravity="center|left|top"
                                     android:paddingLeft="@dimen/_3sdp"
                                     android:text="@string/votecount"
-                                    android:textColor="@color/white"
+                                    android:textColor="@color/black"
                                     android:textSize="@dimen/_6sdp" />
                             </LinearLayout>
                         </LinearLayout>
@@ -459,7 +508,7 @@
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:orientation="vertical">
+                            android:orientation="horizontal">
 
                             <RelativeLayout
                                 android:layout_width="match_parent"
@@ -470,7 +519,7 @@
                                 <LinearLayout
                                     android:id="@+id/adapter_home_list_progressbar2_linear"
                                     android:layout_width="match_parent"
-                                    android:layout_height="@dimen/_10sdp"
+                                    android:layout_height="@dimen/_12sdp"
                                     android:background="@drawable/whiteborder">
 
                                     <com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar
@@ -482,7 +531,7 @@
                                         android:gravity="center_vertical|clip_horizontal"
                                         app:progress_max="100"
                                         app:rcBackgroundColor="@color/white"
-                                        app:rcProgressColor="@color/signinbg"
+                                        app:rcProgressColor="@color/choosefile"
                                         app:rcRadius="5dp"
                                         app:rcReverse="false"
                                         app:rcSecondaryProgressColor="@color/white" />
@@ -496,12 +545,12 @@
                                     android:layout_alignLeft="@id/adapter_home_list_progressbar2_linear"
                                     android:layout_alignRight="@id/adapter_home_list_progressbar2_linear"
                                     android:layout_alignTop="@id/adapter_home_list_progressbar2_linear"
+                                    android:layout_marginBottom="@dimen/_2sdp"
                                     android:layout_marginLeft="@dimen/_15sdp"
                                     android:gravity="center|left"
                                     android:text="@string/option2"
-                                    android:textColor="@color/logintext"
-                                    android:textSize="@dimen/_10sdp"
-                                    android:visibility="gone" />
+                                    android:textColor="@color/black"
+                                    android:textSize="@dimen/_7sdp" />
                             </RelativeLayout>
 
                             <LinearLayout
@@ -510,8 +559,8 @@
                                 android:layout_gravity="center"
                                 android:layout_weight="1.8"
                                 android:gravity="center"
-                                android:visibility="gone"
                                 android:orientation="horizontal"
+                                android:visibility="gone"
                                 android:weightSum="2">
 
                                 <TextView
@@ -536,6 +585,7 @@
                                     android:textColor="@color/black"
                                     android:textSize="@dimen/_10sdp" />
                             </LinearLayout>
+
                             <LinearLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
@@ -543,7 +593,6 @@
                                 android:layout_weight="1.7"
                                 android:gravity="center|left"
                                 android:orientation="vertical"
-                                android:visibility="gone"
                                 android:weightSum="2">
 
                                 <TextView
@@ -555,7 +604,7 @@
                                     android:gravity="center|left|top"
                                     android:paddingLeft="@dimen/_3sdp"
                                     android:text="@string/vote"
-                                    android:textColor="@color/white"
+                                    android:textColor="@color/black"
                                     android:textSize="@dimen/_6sdp" />
 
                                 <TextView
@@ -567,7 +616,7 @@
                                     android:gravity="center|left|top"
                                     android:paddingLeft="@dimen/_3sdp"
                                     android:text="@string/votecount"
-                                    android:textColor="@color/white"
+                                    android:textColor="@color/black"
                                     android:textSize="@dimen/_6sdp" />
                             </LinearLayout>
                         </LinearLayout>
@@ -584,7 +633,7 @@
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:orientation="vertical">
+                            android:orientation="horizontal">
 
                             <RelativeLayout
                                 android:layout_width="match_parent"
@@ -595,7 +644,7 @@
                                 <LinearLayout
                                     android:id="@+id/adapter_home_list_progressbar3_linear"
                                     android:layout_width="match_parent"
-                                    android:layout_height="@dimen/_10sdp"
+                                    android:layout_height="@dimen/_12sdp"
                                     android:background="@drawable/whiteborder">
 
                                     <com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar
@@ -607,7 +656,7 @@
                                         android:gravity="center_vertical|clip_horizontal"
                                         app:progress_max="100"
                                         app:rcBackgroundColor="@color/white"
-                                        app:rcProgressColor="@color/signinbg"
+                                        app:rcProgressColor="@color/choosefile"
                                         app:rcRadius="5dp"
                                         app:rcReverse="false"
                                         app:rcSecondaryProgressColor="@color/white" />
@@ -621,12 +670,12 @@
                                     android:layout_alignLeft="@id/adapter_home_list_progressbar3_linear"
                                     android:layout_alignRight="@id/adapter_home_list_progressbar3_linear"
                                     android:layout_alignTop="@id/adapter_home_list_progressbar3_linear"
+                                    android:layout_marginBottom="@dimen/_2sdp"
                                     android:layout_marginLeft="@dimen/_15sdp"
                                     android:gravity="center|left"
                                     android:text="@string/option3"
-                                    android:textColor="@color/logintext"
-                                    android:textSize="@dimen/_10sdp"
-                                    android:visibility="gone" />
+                                    android:textColor="@color/black"
+                                    android:textSize="@dimen/_7sdp" />
 
                             </RelativeLayout>
 
@@ -636,8 +685,8 @@
                                 android:layout_gravity="center"
                                 android:layout_weight="1.8"
                                 android:gravity="center"
-                                android:visibility="gone"
                                 android:orientation="horizontal"
+                                android:visibility="gone"
                                 android:weightSum="2">
 
                                 <TextView
@@ -662,13 +711,13 @@
                                     android:textColor="@color/black"
                                     android:textSize="@dimen/_10sdp" />
                             </LinearLayout>
+
                             <LinearLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
                                 android:layout_gravity="center|left"
                                 android:layout_weight="1.7"
                                 android:orientation="vertical"
-                                android:visibility="gone"
                                 android:weightSum="2">
 
                                 <TextView
@@ -680,7 +729,7 @@
                                     android:gravity="center|left|top"
                                     android:paddingLeft="@dimen/_3sdp"
                                     android:text="@string/vote"
-                                    android:textColor="@color/white"
+                                    android:textColor="@color/black"
                                     android:textSize="@dimen/_6sdp" />
 
                                 <TextView
@@ -692,7 +741,7 @@
                                     android:gravity="center|left|top"
                                     android:paddingLeft="@dimen/_3sdp"
                                     android:text="@string/votecount"
-                                    android:textColor="@color/white"
+                                    android:textColor="@color/black"
                                     android:textSize="@dimen/_6sdp" />
                             </LinearLayout>
                         </LinearLayout>
@@ -709,7 +758,7 @@
                         <LinearLayout
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:orientation="vertical">
+                            android:orientation="horizontal">
 
                             <RelativeLayout
                                 android:layout_width="match_parent"
@@ -720,7 +769,7 @@
                                 <LinearLayout
                                     android:id="@+id/adapter_home_list_progressbar4_linear"
                                     android:layout_width="match_parent"
-                                    android:layout_height="@dimen/_10sdp"
+                                    android:layout_height="@dimen/_12sdp"
                                     android:background="@drawable/whiteborder">
 
                                     <com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar
@@ -732,7 +781,7 @@
                                         android:gravity="center_vertical|clip_horizontal"
                                         app:progress_max="100"
                                         app:rcBackgroundColor="@color/white"
-                                        app:rcProgressColor="@color/signinbg"
+                                        app:rcProgressColor="@color/choosefile"
                                         app:rcRadius="5dp"
                                         app:rcReverse="false"
                                         app:rcSecondaryProgressColor="@color/white" />
@@ -746,12 +795,12 @@
                                     android:layout_alignLeft="@id/adapter_home_list_progressbar4_linear"
                                     android:layout_alignRight="@id/adapter_home_list_progressbar4_linear"
                                     android:layout_alignTop="@id/adapter_home_list_progressbar4_linear"
+                                    android:layout_marginBottom="@dimen/_2sdp"
                                     android:layout_marginLeft="@dimen/_15sdp"
                                     android:gravity="center|left"
                                     android:text="@string/option4"
-                                    android:visibility="gone"
-                                    android:textColor="@color/logintext"
-                                    android:textSize="@dimen/_10sdp" />
+                                    android:textColor="@color/black"
+                                    android:textSize="@dimen/_7sdp" />
 
                             </RelativeLayout>
 
@@ -761,8 +810,8 @@
                                 android:layout_gravity="center"
                                 android:layout_weight="1.8"
                                 android:gravity="center"
-                                android:visibility="gone"
                                 android:orientation="horizontal"
+                                android:visibility="gone"
                                 android:weightSum="2">
 
                                 <TextView
@@ -787,13 +836,13 @@
                                     android:textColor="@color/black"
                                     android:textSize="@dimen/_10sdp" />
                             </LinearLayout>
+
                             <LinearLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
                                 android:layout_gravity="center|left"
                                 android:layout_weight="1.7"
                                 android:orientation="vertical"
-                                android:visibility="gone"
                                 android:weightSum="2">
 
                                 <TextView
@@ -805,7 +854,7 @@
                                     android:gravity="center|left|top"
                                     android:paddingLeft="@dimen/_3sdp"
                                     android:text="@string/vote"
-                                    android:textColor="@color/white"
+                                    android:textColor="@color/black"
                                     android:textSize="@dimen/_6sdp" />
 
                                 <TextView
@@ -817,7 +866,7 @@
                                     android:gravity="center|left|top"
                                     android:paddingLeft="@dimen/_3sdp"
                                     android:text="@string/votecount"
-                                    android:textColor="@color/white"
+                                    android:textColor="@color/black"
                                     android:textSize="@dimen/_6sdp" />
                             </LinearLayout>
                         </LinearLayout>
@@ -918,7 +967,7 @@
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/_25sdp"
+                    android:layout_height="@dimen/_20sdp"
                     android:orientation="horizontal">
 
                     <LinearLayout
@@ -937,8 +986,14 @@
                             android:text="Vote"
                             android:textColor="@color/white"
                             android:textSize="@dimen/_11sdp" />
-
                     </LinearLayout>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="right"
+                        android:layout_weight="1"
+                        android:gravity="right"
+                        android:orientation="horizontal">
 
                     <LinearLayout
                         android:id="@+id/adapter_home_list_layout_like"
@@ -952,7 +1007,7 @@
                             android:layout_width="@dimen/_21sdp"
                             android:layout_height="match_parent"
                             android:layout_weight="0.5"
-                            android:padding="@dimen/_3sdp"
+                            android:padding="@dimen/_1sdp"
                             android:src="@mipmap/ic_unlike_icon" />
 
                         <TextView
@@ -975,108 +1030,40 @@
                             android:textColor="@color/bluebgcolor"
                             android:textSize="@dimen/_10sdp" />
                     </LinearLayout>
-
-                    <LinearLayout
-                        android:id="@+id/adapter_home_list_layoutfb"
-                        android:layout_width="@dimen/_65sdp"
-                        android:layout_height="@dimen/_20sdp"
-                        android:layout_margin="@dimen/_2sdp"
-                        android:background="@drawable/facebook_bg"
-                        android:orientation="horizontal"
-                        android:weightSum="2">
-
-                        <ImageView
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:layout_marginLeft="@dimen/_2sdp"
-                            android:layout_weight="1.1"
-                            android:padding="@dimen/_3sdp"
-                            android:src="@drawable/ic_whitefbicon" />
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="@dimen/_20sdp"
-                            android:layout_gravity="center|left"
-                            android:layout_weight="0.9"
-                            android:gravity="center|left"
-                            android:text="@string/home_fb"
-                            android:textColor="@color/white"
-                            android:textSize="@dimen/_10sdp" />
                     </LinearLayout>
 
                     <LinearLayout
-                        android:id="@+id/adapter_home_list_layouttwitter"
-                        android:layout_width="@dimen/_60sdp"
-                        android:layout_height="@dimen/_20sdp"
-                        android:layout_margin="@dimen/_2sdp"
-                        android:background="@drawable/twitter_bg"
-                        android:orientation="horizontal">
+                        android:layout_width="match_parent"
+                        android:layout_weight="1"
+                        android:gravity="right"
+                        android:layout_height="match_parent">
 
-                        <ImageView
+                        <Button
+                            android:id="@+id/adapter_home_list_btnshare"
                             android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:layout_weight="1.1"
-                            android:padding="@dimen/_5sdp"
-                            android:src="@drawable/ic_tweeticon" />
-
-                        <TextView
-                            android:layout_width="match_parent"
                             android:layout_height="@dimen/_20sdp"
-                            android:layout_gravity="center|left"
-                            android:layout_weight="0.9"
-                            android:gravity="center|left"
-                            android:text="@string/home_twitter"
+                            android:layout_alignParentRight="true"
+                            android:layout_gravity="right"
+                            android:layout_marginLeft="@dimen/_5sdp"
+                            android:layout_marginRight="@dimen/_5sdp"
+                            android:background="@drawable/share_bg"
+                            android:gravity="center"
+                            android:text="share"
+                            android:textAllCaps="false"
                             android:textColor="@color/white"
-                            android:textSize="@dimen/_10sdp" />
+                            android:textSize="@dimen/_11sdp" />
                     </LinearLayout>
-
                 </LinearLayout>
 
                 <View
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/_1sdp"
+                    android:layout_height="1dp"
                     android:layout_margin="@dimen/_5sdp"
                     android:layout_marginTop="@dimen/_3sdp"
                     android:layout_weight="1"
-                    android:background="@color/blue" />
+                    android:background="@color/login_bg" />
 
                 <LinearLayout
-                    android:id="@+id/adapter_home_list_layoutshare"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/_25sdp"
-                    android:layout_marginTop="@dimen/_1sdp"
-                    android:orientation="horizontal"
-                    android:weightSum="2">
-
-                    <com.example.raviarchi.daberny.Activity.Activity.MultiSelectSpinner
-                        android:id="@+id/adapter_home_list_spinnerFollowing"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_marginLeft="@dimen/_5sdp"
-                        android:layout_marginTop="@dimen/_2sdp"
-                        android:layout_weight="0.5"
-                        android:background="@drawable/loginborder"
-                        android:textColor="@color/logintext"
-                        android:textColorHint="@color/logintext" />
-
-                    <Button
-                        android:id="@+id/adapter_home_list_btnshare"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_gravity="center"
-                        android:layout_marginLeft="@dimen/_5sdp"
-                        android:layout_marginRight="@dimen/_5sdp"
-                        android:layout_weight="1.5"
-                        android:background="@drawable/share_bg"
-                        android:gravity="center"
-                        android:text="share"
-                        android:textAllCaps="false"
-                        android:textColor="@color/white"
-                        android:textSize="@dimen/_11sdp" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/adapter_home_list_beforecounter"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center|left"
@@ -1084,10 +1071,12 @@
                     android:weightSum="2">
 
                     <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:id="@+id/adapter_home_list_beforecounter"
+                        android:layout_width="wrap_content"
+                        android:layout_height="@dimen/_45sdp"
                         android:layout_gravity="center|left"
                         android:layout_marginLeft="@dimen/_3sdp"
+                        android:layout_weight="1.9"
                         android:gravity="center|left"
                         android:orientation="vertical">
 
@@ -1128,12 +1117,12 @@
                                 <TextView
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:layout_gravity="center"
-                                    android:gravity="center"
+                                    android:layout_gravity="center|top"
+                                    android:gravity="center|top"
                                     android:padding="@dimen/_3sdp"
                                     android:text="Hour"
                                     android:textColor="@color/white"
-                                    android:textSize="@dimen/_8sdp" />
+                                    android:textSize="@dimen/_7sdp" />
 
                             </LinearLayout>
 
@@ -1160,12 +1149,12 @@
                                 <TextView
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:layout_gravity="center"
-                                    android:gravity="center"
+                                    android:layout_gravity="center|top"
+                                    android:gravity="center|top"
                                     android:padding="@dimen/_3sdp"
                                     android:text="Minute"
                                     android:textColor="@color/white"
-                                    android:textSize="@dimen/_8sdp" />
+                                    android:textSize="@dimen/_7sdp" />
                             </LinearLayout>
 
                             <LinearLayout
@@ -1191,16 +1180,16 @@
                                 <TextView
                                     android:layout_width="match_parent"
                                     android:layout_height="wrap_content"
-                                    android:layout_gravity="center"
-                                    android:gravity="center"
+                                    android:layout_gravity="center|top"
+                                    android:gravity="center|top"
                                     android:padding="@dimen/_3sdp"
                                     android:text="Second"
                                     android:textColor="@color/white"
-                                    android:textSize="@dimen/_8sdp" />
-
+                                    android:textSize="@dimen/_7sdp" />
                             </LinearLayout>
                         </LinearLayout>
                     </LinearLayout>
+
                 </LinearLayout>
 
                 <LinearLayout
@@ -1297,7 +1286,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="@dimen/_2sdp"
-                        android:layout_marginTop="@dimen/_1sdp"
+                        android:layout_marginTop="@dimen/_5sdp"
                         android:orientation="horizontal"
                         android:weightSum="2">
 
@@ -1316,9 +1305,9 @@
                             android:id="@+id/adapter_home_list_imgcomment"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
+                            android:layout_gravity="left"
                             android:layout_weight="1.7"
                             android:gravity="left"
-                            android:layout_gravity="left"
                             android:src="@mipmap/ic_comment_send" />
 
                     </LinearLayout>
@@ -1326,6 +1315,5 @@
 
             </LinearLayout>
         </LinearLayout>
-
     </ScrollView>
 </LinearLayout>

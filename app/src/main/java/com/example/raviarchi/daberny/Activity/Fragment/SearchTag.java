@@ -26,10 +26,10 @@ import java.util.ArrayList;
 import java.util.regex.Pattern;
 
 import static com.example.raviarchi.daberny.Activity.Fragment.Search.edSearch;
+import static com.facebook.FacebookSdk.getApplicationContext;
 
 
-/**
- * Created by Ravi archi on 1/10/2017.
+/*** Created by Ravi archi on 1/10/2017.
  */
 
 public class SearchTag extends Fragment {
@@ -57,44 +57,47 @@ public class SearchTag extends Fragment {
 
     // TODO: 2/21/2017 initilization
     private void init() {
-        utils = new Utils(getActivity());
-        userId = Utils.ReadSharePrefrence(getActivity(), Constant.USERID);
+        utils = new Utils(getApplicationContext());
+        userId = Utils.ReadSharePrefrence(getApplicationContext(), Constant.USERID);
         new GetTagList(userId).execute();
         edSearch.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
             }
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
             }
 
             @Override
             public void afterTextChanged(Editable editable) {
-                SearchRecent = edSearch.getText().toString();
+                SearchRecent = edSearch.getText().toString().trim();
                 searchedArraylist = new ArrayList<>();
                 Pattern regex = Pattern.compile("[$&+,:;=\\\\?@#|/'<>.^*()%!-]");
-                if (regex.matcher(SearchRecent).find()) {
+                if (regex.matcher(SearchRecent).find() || SearchRecent.length() > 0) {
                     for (int i = 0; i < arrayUserList.size(); i++) {
                         if (arrayUserList.get(i).getQueTag().toLowerCase().startsWith(SearchRecent.toLowerCase())) {
                             searchedArraylist.add(arrayUserList.get(i));
                         }
                     }
                 }
-                adapter = new SearchTagAdapter(getActivity(), searchedArraylist);
-                utils.setAdapterForList(recyclerViewTag, adapter);
+                //   if (SearchRecent.length() > 0) {
+                if (searchedArraylist.size() > 0) {
+                    adapter = new SearchTagAdapter(getActivity().getSupportFragmentManager(), getApplicationContext(), searchedArraylist);
+                    utils.setAdapterForList(recyclerViewTag, adapter);
+                }
+                //   }
             }
         });
     }
 
     private void openRecentList() {
         // TODO: 2/21/2017 bind list and show in adapter
-        if (edSearch.getText().toString().length() > 0) {
-            adapter = new SearchTagAdapter(getActivity(), arrayUserList);
-            utils.setAdapterForList(recyclerViewTag, adapter);
-        }
+        //if (edSearch.getText().toString().length() > 0) {
+        adapter = new SearchTagAdapter(getActivity()
+                .getSupportFragmentManager(), getApplicationContext(), arrayUserList);
+        utils.setAdapterForList(recyclerViewTag, adapter);
+        //}
     }
 
     // TODO: 2/21/2017 get list of Question from URL

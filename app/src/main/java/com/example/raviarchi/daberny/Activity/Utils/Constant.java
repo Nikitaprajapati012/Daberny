@@ -18,14 +18,14 @@ public class Constant {
     public static final String USER_PASSWORD = "userPassword";
     public static final String REMEMBER_ME = "rememberme";
     public static final String USER_INTERESTS = "userInterests";
-    public static final String LIKEPOST= "likePost";
     public static final String PERMISSION = "permission";
     public static final String REMAINTIME = "remainTime";
-    public static final String TIME = "time";
     public static final String ISREAD = "isread";
     public static final String FB_USER_ID = "fb_user_id";
     public static final String CHAT_LIKE = "chatLike";
     public static final String FB_ACCESS_TOKEN = "fb_access_token";
+    public static final String QUE = "que";
+    public static final String SENDER_ID = "senderId";
 
     public static class SHRED_PR {
         public static final String SHARE_PREF = AppName + "_preferences";

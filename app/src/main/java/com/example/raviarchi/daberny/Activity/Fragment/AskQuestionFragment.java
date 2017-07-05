@@ -13,8 +13,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.Toolbar;
 import android.util.Base64;
@@ -27,6 +25,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -74,6 +73,7 @@ public class AskQuestionFragment extends Fragment implements View.OnClickListene
     public int REQUEST_CAMERA = 0, SELECT_FILE = 1, SELECT_VIDEO_FILE = 2, REQUEST_CAMERA_VIDEO = 3;
     public boolean result;
     public K4LVideoTrimmer videoTrimmer;
+    public RelativeLayout layoutHeader;
     @BindView(R.id.activity_ask_question_btncamera)
     ImageView imgCamera;
     @BindView(R.id.activity_ask_question_btnvideo)
@@ -96,6 +96,7 @@ public class AskQuestionFragment extends Fragment implements View.OnClickListene
     Spinner spinnerTime;
     @BindView(R.id.activity_ask_question_spinnerinterest)
     Spinner spinnerIntererst;
+    ProgressDialog dialog;
     private ArrayList<String> arrayInterestList;
     private ArrayList<String> arrayInterestIdList;
     private Bitmap bitmap;
@@ -103,7 +104,7 @@ public class AskQuestionFragment extends Fragment implements View.OnClickListene
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
-        View view = inflater.inflate(R.layout.activity_ask_quetion, container, false);
+        View view = inflater.inflate(R.layout.fragment_ask_quetion, container, false);
         ButterKnife.bind(this, view);
         init();
         new GetInterest().execute();
@@ -111,8 +112,18 @@ public class AskQuestionFragment extends Fragment implements View.OnClickListene
         return view;
     }
 
+    private void showdialog(ProgressDialog progressDialog) {
+        progressDialog = new ProgressDialog(getActivity());
+        progressDialog.setCancelable(false);
+        progressDialog.setMessage("Loading...");
+        progressDialog.show();
+    }
+
+
     // TODO: 2/21/2017 initilization
     private void init() {
+        layoutHeader = (RelativeLayout) getActivity().findViewById(R.id.mainview);
+        layoutHeader.setVisibility(View.VISIBLE);
         toolBar = (Toolbar) getActivity().findViewById(R.id.activity_main_toolbar);
         txtTitle = (TextView) toolBar.findViewById(R.id.toolbar_title);
         txtTitle.setText(R.string.question);
@@ -192,7 +203,6 @@ public class AskQuestionFragment extends Fragment implements View.OnClickListene
     // TODO: 4/13/2017 choose from camera for video
     private void cameraIntentVideos() {
         Intent takeVideoIntent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
-
         if (takeVideoIntent.resolveActivity(getActivity().getPackageManager()) != null) {
             String fileName = "myvideo.mp4";
             ContentValues values = new ContentValues();
@@ -201,7 +211,6 @@ public class AskQuestionFragment extends Fragment implements View.OnClickListene
                     values);
             takeVideoIntent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1);
             takeVideoIntent.putExtra(MediaStore.EXTRA_DURATION_LIMIT, 30);
-            takeVideoIntent.putExtra(MediaStore.EXTRA_OUTPUT, videoUri);
             startActivityForResult(takeVideoIntent, REQUEST_CAMERA_VIDEO);
         }
     }
@@ -381,10 +390,12 @@ public class AskQuestionFragment extends Fragment implements View.OnClickListene
     // TODO: 4/22/2017 store the details of question
     private void AddAskQuestionDetails(String userId, String question, String tags, String option1, String option2, String option3, String option4, String picturePath, String interest, String time) {
         if (picturePath != null) {
+            showdialog(dialog);
             //http://hire-people.com/host2/surveys/api/add_questions/669/hello/df/fd/fdf/fd/imagesss1.png/1/03:25:05/
             try {
                 Ion.with(getContext())
                         .load(Constant.QUESTION_BASE_URL + "add_questions")
+                        .progressDialog(dialog)
                         .setMultipartParameter("user_id", userId)
                         .setMultipartParameter("title", URLEncoder.encode(question, "utf-8"))
                         .setMultipartParameter("tags", URLEncoder.encode(tags, "utf-8"))
@@ -437,13 +448,16 @@ public class AskQuestionFragment extends Fragment implements View.OnClickListene
 
             } catch (UnsupportedEncodingException e1) {
                 e1.printStackTrace();
+                Log.d("EXP", "@" + e1);
             }
 
         } else {
             //http://hire-people.com/host2/surveys/api/add_questions/669/hello/df/fd/fdf/fd/imagesss1.png/1/03:25:05/
+            showdialog(dialog);
             try {
                 Ion.with(getContext())
                         .load(Constant.QUESTION_BASE_URL + "add_questions")
+                        .progressDialog(dialog)
                         .setMultipartParameter("user_id", userId)
                         .setMultipartParameter("title", URLEncoder.encode(question, "utf-8"))
                         .setMultipartParameter("tags", URLEncoder.encode(tags, "utf-8"))
@@ -453,7 +467,7 @@ public class AskQuestionFragment extends Fragment implements View.OnClickListene
                         .setMultipartParameter("option4", URLEncoder.encode(option4, "utf-8"))
                         .setMultipartParameter("timing", time)
                         .setMultipartParameter("in_id", interest)
-                        //.setMultipartFile("picture", new File(image))
+
                         .asString()
                         .setCallback(new FutureCallback<String>() {
                             @Override
@@ -489,12 +503,9 @@ public class AskQuestionFragment extends Fragment implements View.OnClickListene
                                     } catch (JSONException e1) {
                                         e1.printStackTrace();
                                     }
-
                                 }
                             }
                         });
-
-
             } catch (UnsupportedEncodingException e1) {
                 e1.printStackTrace();
             }

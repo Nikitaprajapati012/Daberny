@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.example.raviarchi.daberny.Activity.Utils.Utils;
 import com.example.raviarchi.daberny.R;
 
 import java.util.ArrayList;
@@ -19,10 +20,12 @@ import java.util.ArrayList;
 public class FriendListAdapter extends RecyclerView.Adapter<FriendListAdapter.MyViewHolder> {
     public String Id, interest;
     private ArrayList<String> arrayUserList;
+    private Utils utils;
     private Context context;
 
     public FriendListAdapter(Context context, ArrayList<String> arraylist) {
         this.context = context;
+        this.utils = new Utils(context);
         this.arrayUserList = arraylist;
         notifyDataSetChanged();
     }

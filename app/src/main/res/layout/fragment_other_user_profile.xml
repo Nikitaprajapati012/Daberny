@@ -4,31 +4,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <!--  <RelativeLayout
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:background="@color/logintext">
-          <TextView
-              android:id="@+id/fragment_other_user_profile_txttitle"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:layout_gravity="center"
-              android:gravity="center"
-              android:paddingTop="@dimen/_5sdp"
-              android:text="Profile"
-              android:textColor="@color/white"
-              android:textSize="@dimen/_15sdp"
-              android:textStyle="bold" />
-      </RelativeLayout>-->
-
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true">
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:orientation="vertical">
 
         <ScrollView
             android:layout_width="match_parent"
@@ -73,29 +55,30 @@
                                 <LinearLayout
                                     android:layout_width="match_parent"
                                     android:layout_height="match_parent"
-                                    android:layout_weight="1.4"
+                                    android:layout_weight="1.3"
                                     android:orientation="vertical">
 
                                     <LinearLayout
-                                        android:layout_width="match_parent"
+                                        android:layout_width="@dimen/_110sdp"
                                         android:layout_height="@dimen/_110sdp"
                                         android:layout_marginBottom="@dimen/_15sdp"
-                                        android:layout_marginLeft="@dimen/_5sdp"
                                         android:layout_marginTop="@dimen/_10sdp"
-                                        android:background="@drawable/ic_profilepic_bg"
+                                        android:layout_gravity="left"
+                                        android:gravity="left"
+                                        android:background="@mipmap/ic_daberny_mainicon"
                                         android:orientation="vertical">
 
                                         <RelativeLayout
-                                            android:layout_width="match_parent"
+                                            android:layout_width="wrap_content"
                                             android:layout_height="wrap_content">
 
                                             <ImageView
                                                 android:id="@+id/fragment_other_user_profile_imgphoto"
-                                                android:layout_width="match_parent"
+                                                android:layout_width="@dimen/_70sdp"
                                                 android:layout_height="match_parent"
                                                 android:layout_marginBottom="@dimen/_10sdp"
-                                                android:layout_marginLeft="@dimen/_10sdp"
-                                                android:layout_marginTop="@dimen/_25sdp"
+                                                android:layout_marginLeft="@dimen/_30sdp"
+                                                android:layout_marginTop="@dimen/_30sdp"
                                                 android:gravity="right"
                                                 android:padding="5dp"
                                                 android:src="@drawable/ic_blue_dot" />
@@ -103,9 +86,9 @@
                                             <RelativeLayout
                                                 android:layout_width="match_parent"
                                                 android:layout_height="@dimen/_25sdp"
-                                                android:layout_alignLeft="@+id/fragment_other_user_profile_imgphoto"
+                                                android:layout_alignLeft="@+id/fragment_user_profile_imgphoto"
                                                 android:layout_alignParentBottom="true"
-                                                android:layout_alignStart="@+id/fragment_other_user_profile_imgphoto"
+                                                android:layout_alignStart="@+id/fragment_user_profile_imgphoto"
                                                 android:layout_marginLeft="18dp"
                                                 android:layout_marginStart="18dp"
                                                 android:layout_marginTop="@dimen/_10sdp"
@@ -115,14 +98,14 @@
                                                     android:id="@+id/fragment_other_user_profile_txtusername"
                                                     android:layout_width="match_parent"
                                                     android:layout_height="match_parent"
-                                                    android:layout_alignParentLeft="true"
-                                                    android:layout_alignParentStart="true"
                                                     android:layout_gravity="center|bottom"
-                                                    android:layout_marginLeft="@dimen/_5sdp"
                                                     android:gravity="center|bottom"
                                                     android:text="@string/username"
+                                                    android:textStyle="bold"
+                                                    android:layout_marginLeft="@dimen/_5sdp"
                                                     android:textSize="@dimen/_10sdp"
-                                                    android:textStyle="bold" />
+                                                    android:layout_alignParentLeft="true"
+                                                    android:layout_alignParentStart="true"/>
                                             </RelativeLayout>
                                         </RelativeLayout>
                                     </LinearLayout>
@@ -131,8 +114,8 @@
                                 <LinearLayout
                                     android:layout_width="match_parent"
                                     android:layout_height="match_parent"
+                                    android:layout_weight="0.7"
                                     android:layout_margin="@dimen/_10sdp"
-                                    android:layout_weight="0.6"
                                     android:orientation="vertical"
                                     android:weightSum="2">
 
@@ -268,8 +251,7 @@
                                 android:layout_gravity="center"
                                 android:layout_marginTop="@dimen/_5sdp"
                                 android:gravity="center"
-                                android:orientation="vertical"
-                               >
+                                android:orientation="vertical">
 
 
                                 <LinearLayout
@@ -359,7 +341,7 @@
                                                     app:progress_max="100"
                                                     app:rcProgressColor="@color/signinbg"
                                                     app:rcReverse="false"
-                                                    app:rcSecondaryProgressColor="@color/background_color"/>
+                                                    app:rcSecondaryProgressColor="@color/background_color" />
 
                                                 <LinearLayout
                                                     android:layout_width="match_parent"
@@ -483,7 +465,7 @@
                                                     app:progress_max="100"
                                                     app:rcProgressColor="@color/signinbg"
                                                     app:rcReverse="false"
-                                                    app:rcSecondaryProgressColor="@color/background_color"/>
+                                                    app:rcSecondaryProgressColor="@color/background_color" />
 
                                                 <LinearLayout
                                                     android:layout_width="match_parent"
@@ -607,7 +589,7 @@
                                                     app:progress_max="100"
                                                     app:rcProgressColor="@color/signinbg"
                                                     app:rcReverse="false"
-                                                    app:rcSecondaryProgressColor="@color/background_color"/>
+                                                    app:rcSecondaryProgressColor="@color/background_color" />
 
                                                 <LinearLayout
                                                     android:layout_width="match_parent"
@@ -696,6 +678,7 @@
                                             </LinearLayout>
                                         </LinearLayout>
                                     </LinearLayout>
+
                                     <LinearLayout
                                         android:layout_width="match_parent"
                                         android:layout_height="match_parent"

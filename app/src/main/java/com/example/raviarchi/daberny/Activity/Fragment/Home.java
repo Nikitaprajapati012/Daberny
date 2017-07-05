@@ -4,7 +4,6 @@ import android.app.ProgressDialog;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -16,7 +15,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.raviarchi.daberny.Activity.Activity.LoginActivity;
 import com.example.raviarchi.daberny.Activity.Adapter.HomeAdapter;
 import com.example.raviarchi.daberny.Activity.Model.UserProfileDetails;
 import com.example.raviarchi.daberny.Activity.Utils.Constant;
@@ -61,8 +59,17 @@ public class Home extends Fragment {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
         init();
         findViewId(view);
-        new GetQuetionList().execute();
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (utils.isConnectingToInternet()) {
+            new GetQuetionList().execute();
+        } else {
+            Toast.makeText(getActivity(), "Please Check your internet connection.", Toast.LENGTH_SHORT).show();
+        }
     }
 
     // TODO: 2/22/2017 bind data with field
@@ -84,7 +91,7 @@ public class Home extends Fragment {
     private void openQuetionList() {
         // TODO: 2/21/2017 bind list and show in adapter
         adapter = new HomeAdapter(getActivity(), arrayUserList, arrayFollowingNameList, arrayFollowingIdList);
-        utils.setAdapterForList(recyclerViewHome,adapter);
+        utils.setAdapterForList(recyclerViewHome, adapter);
     }
 
     // TODO: 2/21/2017 get list of Question from URL
@@ -131,9 +138,9 @@ public class Home extends Fragment {
 
                         // TODO: 6/6/2017 set remain time
                         JSONObject remaintimeObj = questionObject.getJSONObject("remain_time");
-                        Utils.WriteSharePrefrence(getActivity(), Constant.REMAINTIME, remaintimeObj.toString());
                         if (remaintimeObj.length() > 0) {
                             remainTime = remaintimeObj.getString("remain_time");
+                            details.setQueRemainTimeMiliSeconds(remaintimeObj.getLong("miliseconds"));
                             SimpleDateFormat df = new SimpleDateFormat("HH:mm:ss");
                             try {
                                 Date d = df.parse(remainTime);
@@ -177,7 +184,7 @@ public class Home extends Fragment {
 
                         // TODO: 3/22/2017 get user details
                         JSONObject userObject = questionObject.getJSONObject("user");
-                        if (userObject.length() > 0 ){
+                        if (userObject.length() > 0) {
                             details.setUserImage(userObject.getString("user_image"));
                             details.setUserUserName(userObject.getString("username"));
                         }
@@ -252,7 +259,7 @@ public class Home extends Fragment {
                 new ExceptionCallback() {
                     @Override
                     public void onException(Exception e) {
-                        Log.d("EXP",""+e.toString());
+                        Log.d("EXP", "" + e.toString());
                     }
                 };
             }

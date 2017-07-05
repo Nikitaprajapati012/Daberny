@@ -95,7 +95,7 @@ public class SearchPeople extends Fragment {
         ProgressDialog pd;
         String user_id;
 
-        public GetPeopleList(String userId) {
+        private GetPeopleList(String userId) {
             this.user_id=userId;
         }
 
@@ -111,7 +111,6 @@ public class SearchPeople extends Fragment {
 
         @Override
         protected String doInBackground(String... strings) {
-
             //http://181.224.157.105/~hirepeop/host2/surveys/api/searched_user/752/
             String response = Utils.getResponseofGet(Constant.QUESTION_BASE_URL + "searched_user/" + user_id + "/");
             Log.d("RESPONSE", "Search People List..." + response);

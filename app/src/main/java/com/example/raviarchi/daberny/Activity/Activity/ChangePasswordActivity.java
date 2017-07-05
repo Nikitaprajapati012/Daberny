@@ -56,8 +56,7 @@ import butterknife.ButterKnife;
 import static android.app.Activity.RESULT_OK;
 import static com.example.raviarchi.daberny.Activity.Utils.DbBitmapUtility.getBytes;
 
-/**
- * Created by Ravi archi on 1/10/2017.
+/*** Created by Ravi archi on 1/10/2017.
  */
 public class ChangePasswordActivity extends AppCompatActivity implements View.OnClickListener {
     private static final String TAG = "AskQuestion";

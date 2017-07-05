@@ -3,8 +3,6 @@ package com.example.raviarchi.daberny.Activity.Adapter;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
-
-import com.example.raviarchi.daberny.Activity.Fragment.Notification;
 import com.example.raviarchi.daberny.Activity.Fragment.SearchLatest;
 import com.example.raviarchi.daberny.Activity.Fragment.SearchPeople;
 import com.example.raviarchi.daberny.Activity.Fragment.SearchTag;

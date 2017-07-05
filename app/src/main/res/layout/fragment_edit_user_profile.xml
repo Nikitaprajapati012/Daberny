@@ -5,37 +5,12 @@
     android:orientation="vertical">
 
     <RelativeLayout
+        android:id="@+id/headerview_edit"
         android:layout_width="match_parent"
         android:layout_height="@dimen/_40sdp"
-        android:background="@color/blue"
-        android:padding="@dimen/_5sdp">
-
-        <TextView
-            android:id="@+id/fragment_edit_user_profile_edback"
-            android:layout_width="wrap_content"
-            android:layout_height="@dimen/_40sdp"
-            android:layout_gravity="center"
-            android:gravity="center"
-            android:paddingTop="@dimen/_5sdp"
-            android:text="Back"
-            android:textColor="@color/white"
-            android:textSize="@dimen/_15sdp"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/fragment_edit_user_profile_edtitle"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/_40sdp"
-            android:layout_gravity="center"
-            android:gravity="center"
-            android:paddingTop="@dimen/_5sdp"
-            android:text="Edit Profile"
-            android:textColor="@color/white"
-            android:textSize="@dimen/_15sdp"
-            android:textStyle="bold" />
-
+        android:background="@color/signinbg">
+        <include layout="@layout/header_layout"/>
     </RelativeLayout>
-
 
     <ScrollView
         android:layout_width="match_parent"
@@ -46,7 +21,8 @@
             android:layout_height="match_parent"
             android:layout_marginTop="@dimen/_5sdp"
             android:orientation="vertical"
-            android:weightSum="6">
+            android:weightSum="6"
+            android:layout_margin="@dimen/_10sdp">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -54,33 +30,57 @@
                 android:layout_weight="1"
                 android:orientation="vertical">
 
-                <de.hdodenhof.circleimageview.CircleImageView
-                    android:id="@+id/fragment_edit_user_profile_imgprofilepic"
-                    android:layout_width="100dp"
-                    android:layout_height="100dp"
-                    android:layout_gravity="center"
-                    android:layout_weight="2"
-                    android:gravity="center"
-                    android:padding="@dimen/_10sdp"
-                    android:src="@drawable/ic_placeholder" />
-
-                <TextView
-                    android:id="@+id/fragment_edit_user_profile_txtchangepic"
+                <RelativeLayout
                     android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="right"
+                    android:gravity="right" >
+
+                    <ImageView
+                        android:id="@+id/fragment_edit_user_profile_imgchangepic"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_gravity="right"
+                        android:background="@drawable/roundborder_bluebg"
+                        android:padding="@dimen/_10sdp"
+                        android:src="@mipmap/ic_pencil" />
+                </RelativeLayout>
+
+                <LinearLayout
+                    android:layout_width="@dimen/_120sdp"
+                    android:layout_height="@dimen/_120sdp"
+                    android:layout_marginBottom="@dimen/_15sdp"
                     android:layout_gravity="center"
-                    android:gravity="center"
-                    android:text="Change Photo"
-                    android:textColor="@color/bluebgcolor"
-                    android:textSize="@dimen/_15sdp"
-                    android:textStyle="bold" />
+                    android:gravity="left"
+                    android:layout_marginTop="@dimen/_10sdp"
+                    android:background="@mipmap/ic_daberny_mainicon"
+                    android:orientation="vertical">
+
+                    <RelativeLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
+
+                        <ImageView
+                            android:id="@+id/fragment_edit_user_profile_imgprofilepic"
+                            android:layout_width="95dp"
+                            android:layout_height="95dp"
+                            android:layout_gravity="center"
+                            android:layout_marginBottom="@dimen/_5sdp"
+                            android:layout_marginLeft="@dimen/_40sdp"
+                            android:layout_marginTop="@dimen/_35sdp"
+                            android:gravity="center|right"
+                            android:padding="@dimen/_3sdp"
+                            android:src="@drawable/ic_placeholder" />
+                    </RelativeLayout>
+                </LinearLayout>
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:orientation="horizontal"
+                android:layout_marginTop="@dimen/_15sdp"
+                android:orientation="vertical"
                 android:weightSum="2">
 
                 <TextView
@@ -90,25 +90,27 @@
                     android:layout_weight="1"
                     android:gravity="center|left"
                     android:text="Full Name"
-                    android:textSize="@dimen/_15sdp"
-                    android:textStyle="bold" />
+                    android:layout_marginLeft="@dimen/_5sdp"
+                    android:textSize="@dimen/_13sdp" />
 
                 <EditText
                     android:id="@+id/fragment_edit_user_profile_edfullname"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="@dimen/_40sdp"
                     android:layout_gravity="center|left"
                     android:layout_weight="1"
+                    android:layout_margin="@dimen/_5sdp"
+                    android:paddingLeft="@dimen/_5sdp"
+                    android:background="@drawable/loginborder"
                     android:gravity="center|left"
-                    android:hint="Enter Full name"
-                    android:textSize="@dimen/_15sdp" />
+                    android:textSize="@dimen/_13sdp" />
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:orientation="horizontal"
+                android:orientation="vertical"
                 android:weightSum="2">
 
                 <TextView
@@ -116,28 +118,53 @@
                     android:layout_height="match_parent"
                     android:layout_gravity="center|left"
                     android:layout_weight="1"
+                    android:layout_marginLeft="@dimen/_5sdp"
                     android:gravity="center|left"
                     android:text="User Name"
-                    android:textSize="@dimen/_15sdp"
-                    android:textStyle="bold" />
+                    android:textSize="@dimen/_13sdp"
+                    />
 
                 <EditText
                     android:id="@+id/fragment_edit_user_profile_edusername"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="@dimen/_40sdp"
                     android:layout_gravity="center|left"
-
                     android:layout_weight="1"
+                    android:paddingLeft="@dimen/_5sdp"
+                    android:layout_margin="@dimen/_5sdp"
+                    android:background="@drawable/loginborder"
                     android:gravity="center|left"
-                    android:hint="Enter User Name"
-                    android:textSize="@dimen/_15sdp" />
+                    android:textSize="@dimen/_13sdp"  />
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:orientation="horizontal"
+                android:orientation="vertical"
+                >
+
+                <TextView
+                    android:id="@+id/fragment_edit_user_profile_txtchangepwd"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/_35sdp"
+                    android:layout_gravity="center"
+                    android:layout_marginLeft="@dimen/_55sdp"
+                    android:layout_marginRight="@dimen/_55sdp"
+                    android:layout_marginTop="@dimen/_5sdp"
+                    android:layout_weight="1"
+                    android:background="@drawable/changepwd_bg"
+                    android:gravity="center"
+                    android:text="@string/changepwd"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/_13sdp" />
+
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:orientation="vertical"
                 android:weightSum="2">
 
                 <TextView
@@ -147,25 +174,26 @@
                     android:layout_weight="1"
                     android:gravity="center|left"
                     android:text="Email"
-                    android:textSize="@dimen/_15sdp"
-                    android:textStyle="bold" />
+                    android:layout_marginLeft="@dimen/_5sdp"
+                    android:textSize="@dimen/_13sdp"  />
 
                 <EditText
                     android:id="@+id/fragment_edit_user_profile_edemail"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="@dimen/_40sdp"
                     android:layout_gravity="center|left"
                     android:layout_weight="1"
+                    android:paddingLeft="@dimen/_5sdp"
+                    android:layout_margin="@dimen/_5sdp"
+                    android:background="@drawable/loginborder"
                     android:gravity="center|left"
-                    android:hint="Enter Email"
-                    android:textSize="@dimen/_15sdp" />
+                    android:textSize="@dimen/_13sdp" />
             </LinearLayout>
-
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:orientation="horizontal"
+                android:orientation="vertical"
                 android:weightSum="2">
 
                 <TextView
@@ -174,60 +202,95 @@
                     android:layout_gravity="center|left"
                     android:layout_weight="1"
                     android:gravity="center|left"
-                    android:text="Select Country"
-                    android:textSize="@dimen/_15sdp"
-                    android:textStyle="bold" />
+                    android:text="@string/mobile"
+                    android:layout_marginLeft="@dimen/_5sdp"
+                    android:textSize="@dimen/_13sdp"  />
 
-                <Spinner
-                    android:id="@+id/fragment_edit_user_profile_spinnercountry"
+                <EditText
+                    android:id="@+id/fragment_edit_user_profile_edmobile"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/_40sdp"
+                    android:layout_gravity="center|left"
                     android:layout_weight="1"
-                    android:background="@android:color/transparent"
-                    android:gravity="center"
-                    android:textColor="@color/black"
-                    android:textColorHint="@color/black" />
+                    android:paddingLeft="@dimen/_5sdp"
+                    android:layout_margin="@dimen/_5sdp"
+                    android:background="@drawable/loginborder"
+                    android:gravity="center|left"
+                    android:inputType="number"
+                    android:textSize="@dimen/_13sdp" />
             </LinearLayout>
-
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
                 android:orientation="horizontal"
+                android:layout_weight="1"
                 android:weightSum="2">
-
-                <TextView
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_gravity="center|left"
                     android:layout_weight="1"
-                    android:gravity="center|left"
-                    android:text="Interests"
-                    android:textSize="@dimen/_15sdp"
-                    android:textStyle="bold" />
+                    android:layout_margin="@dimen/_5sdp"
+                    android:orientation="vertical"
+                    android:weightSum="2">
 
-                <com.example.raviarchi.multiplespinner.MultiSelectionSpinner
-                    android:id="@+id/fragment_edit_user_profile_spinnerinterest"
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center|left"
+                        android:layout_weight="1"
+                        android:gravity="center|left"
+                        android:text="Select Country"
+                        android:textSize="@dimen/_13sdp"/>
+
+                    <Spinner
+                        android:id="@+id/fragment_edit_user_profile_spinnercountry"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/_60sdp"
+                        android:layout_weight="1"
+                        android:background="@drawable/loginborder"
+                        android:gravity="center"
+                        android:textColor="@color/black"
+                        android:textColorHint="@color/black" />
+                </LinearLayout>
+                <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/_40sdp"
+                    android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:background="@android:color/transparent"
-                    android:gravity="center|left"
-                    android:textColor="@color/black"
-                    android:textColorHint="@color/black" />
+                    android:layout_margin="@dimen/_5sdp"
+                    android:orientation="vertical"
+                    android:weightSum="2">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center|left"
+                        android:layout_weight="1"
+                        android:gravity="center|left"
+                        android:text="Interests"
+                        android:textSize="@dimen/_13sdp"/>
+
+                    <com.example.raviarchi.multiplespinner.MultiSelectionSpinner
+                        android:id="@+id/fragment_edit_user_profile_spinnerinterest"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/_60sdp"
+                        android:layout_weight="1"
+                        android:background="@drawable/loginborder"
+                        android:gravity="center|left"
+                        android:textColor="@color/black"
+                        android:textColorHint="@color/black" />
+                </LinearLayout>
             </LinearLayout>
 
             <Button
                 android:id="@+id/fragment_edit_user_profile_btnsubmit"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_marginBottom="@dimen/_10sdp"
-                android:layout_marginTop="@dimen/_5sdp"
+                android:layout_marginBottom="@dimen/_20sdp"
+                android:layout_marginTop="@dimen/_10sdp"
                 android:layout_weight="1"
-                android:background="@color/blue"
+                android:background="@color/changepwd"
                 android:text="Submit"
                 android:textColor="@color/white" />
-
         </LinearLayout>
     </ScrollView>
 

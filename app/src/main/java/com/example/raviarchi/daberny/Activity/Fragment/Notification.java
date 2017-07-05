@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.example.raviarchi.daberny.Activity.Adapter.NotificationAdapter;
@@ -48,12 +49,15 @@ public class Notification extends Fragment {
     RecyclerView recyclerView;
     public NotificationAdapter adapter;
     public UserProfileDetails details;
+    public RelativeLayout layoutHeader;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
         View view = inflater.inflate(R.layout.fragment_notification, container, false);
         ButterKnife.bind(this,view);
+        layoutHeader = (RelativeLayout) getActivity().findViewById(R.id.mainview);
+        layoutHeader.setVisibility(View.VISIBLE);
         toolBar = (Toolbar) getActivity().findViewById(R.id.activity_main_toolbar);
         txtTitle = (TextView) toolBar.findViewById(R.id.toolbar_title);
         txtTitle.setText(R.string.notification);
@@ -105,6 +109,8 @@ public class Notification extends Fragment {
                         details.setQueNotificationType(notifyObjectdetails.getString("type"));
                         details.setUserId(notifyObjectdetails.getString("user_id"));
                         details.setQueNotificationStatus(notifyObjectdetails.getString("notifications_status"));
+                        details.setQueImage(notifyObjectdetails.getString("image"));
+                        details.setQuePostDate(notifyObjectdetails.getString("post_date"));
                         String contentId = notifyObjectdetails.getString("content_id");
                         details.setContentId(contentId);
                         if (!notifyObjectdetails.getString("type").equalsIgnoreCase("follow")){

@@ -26,7 +26,7 @@
                 android:src="@mipmap/ic_searchtab" />
 
             <EditText
-                android:id="@+id/fragment_searchdata_edsearch"
+                android:id="@+id/fragment_search_edsearch"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:hint="@string/search"

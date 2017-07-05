@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/_140sdp"
+    android:layout_height="@dimen/_130sdp"
     android:layout_margin="@dimen/_5sdp"
     android:orientation="vertical">
 
@@ -14,25 +14,25 @@
         android:weightSum="3">
 
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="@drawable/ic_profileiconsmall_bg"
-            android:layout_margin="@dimen/_10sdp"
+            android:layout_width="@dimen/_110sdp"
+            android:layout_height="@dimen/_110sdp"
+            android:layout_marginBottom="@dimen/_15sdp"
             android:layout_marginTop="@dimen/_10sdp"
-            android:layout_marginBottom="@dimen/_10sdp"
+            android:layout_gravity="left|center"
+            android:gravity="left"
+            android:background="@mipmap/ic_daberny_mainicon"
             android:orientation="vertical">
 
             <ImageView
                 android:id="@+id/adapter_follower_list_imgprofilepic"
-                android:layout_width="@dimen/_75sdp"
-                android:layout_height="@dimen/_70sdp"
-                android:layout_gravity="center"
-                android:gravity="center"
-                android:layout_marginTop="@dimen/_35sdp"
-                android:layout_marginLeft="@dimen/_8sdp"
-                android:padding="8dp"
-                android:src="@drawable/ic_placeholder" />
+                android:layout_width="@dimen/_70sdp"
+                android:layout_height="match_parent"
+                android:layout_marginBottom="@dimen/_10sdp"
+                android:layout_marginLeft="@dimen/_30sdp"
+                android:layout_marginTop="@dimen/_30sdp"
+                android:gravity="right"
+                android:padding="5dp"
+                android:src="@drawable/ic_blue_dot" />
         </LinearLayout>
 
         <LinearLayout

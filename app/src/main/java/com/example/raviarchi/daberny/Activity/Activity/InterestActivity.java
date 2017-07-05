@@ -77,7 +77,6 @@ public class InterestActivity extends AppCompatActivity implements View.OnClickL
                 break;
 
             case R.id.activity_interest_txtsave:
-                //Utils.ClearaSharePrefrence(InterestActivity.this);
                 InterestId = "";
                 for (int i = 0; i < interestID.size(); i++) {
                     if (InterestId.length() > 0) {
@@ -86,7 +85,6 @@ public class InterestActivity extends AppCompatActivity implements View.OnClickL
                         InterestId = interestID.get(i);
                     }
                 }
-                Log.d("interest_id", InterestId);
                 if (InterestId.length() > 0) {
                     new StoreInterest(InterestId).execute();
                     Intent isave = new Intent(InterestActivity.this, MainActivity.class);
@@ -95,7 +93,7 @@ public class InterestActivity extends AppCompatActivity implements View.OnClickL
                     new ExceptionCallback() {
                         @Override
                         public void onException(Exception e) {
-                            Log.d("EXP",""+e);
+                            Log.d("EXP", "" + e);
                         }
                     };
                 }
@@ -118,8 +116,6 @@ public class InterestActivity extends AppCompatActivity implements View.OnClickL
     public void selectedStrings(List<String> strings) {
         InterestName = strings.toString().replace("[", "").replace("]", "")
                 .replace(", ", ",");
-
-        Log.d("interest_name ", "string=" + InterestName);
     }
 
 
@@ -228,7 +224,12 @@ public class InterestActivity extends AppCompatActivity implements View.OnClickL
                 spinnerInterest.setItems(arrayInterestNameList);
 
             } else {
-               // Toast.makeText(InterestActivity.this, "No Interest Stored, Please Try Again.", Toast.LENGTH_SHORT).show();
+                new ExceptionCallback() {
+                    @Override
+                    public void onException(Exception e) {
+                        Log.d("Exp", "" + e);
+                    }
+                };
             }
         }
     }

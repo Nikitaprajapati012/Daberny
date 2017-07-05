@@ -2,12 +2,11 @@ package com.example.raviarchi.daberny.Activity.Adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.raviarchi.daberny.Activity.Activity.ChatActivity;
@@ -19,7 +18,6 @@ import com.example.raviarchi.daberny.R;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /*** Created by archi on 07-Apr-17.
  */
@@ -31,9 +29,9 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private Utils utils;
     private ArrayList<UserProfileDetails> arrayList;
     private UserProfileDetails details;
-    private String loginuserId,senderId,strMessageSender,strMessageReceiver;
+    private String loginuserId, senderId, strMessageSender, strMessageReceiver;
 
-       public ChatAdapter(ChatActivity context, ArrayList<UserProfileDetails> arrayUserList) {
+    public ChatAdapter(ChatActivity context, ArrayList<UserProfileDetails> arrayUserList) {
         this.mContext = context;
         utils = new Utils(context);
         this.arrayList = arrayUserList;
@@ -68,44 +66,45 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     @Override
     public void onBindViewHolder(final RecyclerView.ViewHolder holder, final int position) {
-        details =arrayList.get(position);
-        loginuserId = Utils.ReadSharePrefrence(mContext,Constant.USERID);
-        if (loginuserId.equalsIgnoreCase(details.getUserId())){
-            senderId=details.getOtherUserId();
-            strMessageReceiver=details.getUserMsgReceiver();
-            strMessageSender=details.getUserMsgSender();
-          }else
-        {
-            senderId=details.getUserId();
-            strMessageSender=details.getUserMsgSender();
-            strMessageReceiver=details.getUserMsgReceiver();
+        details = arrayList.get(position);
+        loginuserId = Utils.ReadSharePrefrence(mContext, Constant.USERID);
+        if (loginuserId.equalsIgnoreCase(details.getUserId())) {
+            senderId = details.getOtherUserId();
+            strMessageReceiver = details.getUserMsgReceiver();
+            strMessageSender = details.getUserMsgSender();
+        } else {
+            senderId = details.getUserId();
+            strMessageSender = details.getUserMsgSender();
+            strMessageReceiver = details.getUserMsgReceiver();
         }
 
         switch (holder.getItemViewType()) {
             case SENDERVIEW:
                 SenderViewHolder senderViewHolder = (SenderViewHolder) holder;
-                if(details.getUserMsgType().equalsIgnoreCase("image")){
+                if (details.getUserMsgType().equalsIgnoreCase("image")) {
                     Picasso.with(mContext).load(strMessageSender).placeholder(R.drawable.ic_placeholder)
-                            .transform(new RoundedTransformation(120,2))
+                            .transform(new RoundedTransformation(120, 2))
                             .into(senderViewHolder.imgMsg);
                     /*if(Utils.ReadSharePrefrence(mContext,Constant.CHAT_LIKE).equalsIgnoreCase("1")){
                         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(100, 100);
                         senderViewHolder.imgMsg.setLayoutParams(layoutParams);
                     }*/
                     senderViewHolder.msgTv.setVisibility(View.GONE);
-                }else
-                {
+                } else {
                     senderViewHolder.imgMsg.setVisibility(View.GONE);
                     senderViewHolder.msgTv.setVisibility(View.VISIBLE);
-                    senderViewHolder.msgTv.setText(strMessageSender);
+                    String next = "<font color='#5f5f5f'>" + details.getUserMsgTime() + "</font>";
+                    senderViewHolder.msgTv.setText(Html.fromHtml(strMessageSender + " "
+                            + "<small>" + next + "</small>"));
+
                 }
                 break;
 
             case RECEIVERVIEW:
                 ReceiverViewHolder receiverViewHolder = (ReceiverViewHolder) holder;
-                if(details.getUserMsgType().equalsIgnoreCase("image")){
+                if (details.getUserMsgType().equalsIgnoreCase("image")) {
                     Picasso.with(mContext).load(strMessageReceiver).placeholder(R.drawable.ic_placeholder)
-                            .transform(new RoundedTransformation(120,2))
+                            .transform(new RoundedTransformation(120, 2))
                             .into(receiverViewHolder.imgMsg);
                    /* if(Utils.ReadSharePrefrence(mContext,Constant.CHAT_LIKE).equalsIgnoreCase("1")){
                         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(100, 100);
@@ -113,13 +112,13 @@ public class ChatAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
                     }*/
                     receiverViewHolder.msgTv.setVisibility(View.GONE);
 
-                }else
-                {
+                } else {
                     receiverViewHolder.imgMsg.setVisibility(View.GONE);
                     receiverViewHolder.msgTv.setVisibility(View.VISIBLE);
-                    receiverViewHolder.msgTv.setText(strMessageReceiver);
+                    String next = "<font color='#5f5f5f'>" + details.getUserMsgTime() + "</font>";
+                    receiverViewHolder.msgTv.setText(Html.fromHtml(strMessageReceiver + " "
+                            + "<small>" + next + "</small>"));
                 }
-
                 break;
         }
     }

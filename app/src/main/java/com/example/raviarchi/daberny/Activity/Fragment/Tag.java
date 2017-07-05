@@ -1,12 +1,13 @@
 package com.example.raviarchi.daberny.Activity.Fragment;
 
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
@@ -17,6 +18,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.MediaController;
@@ -60,23 +62,22 @@ import butterknife.ButterKnife;
 public class Tag extends Fragment implements View.OnClickListener, MultiSelectSpinner.MultiSpinnerListener {
     public LinearLayoutManager layoutManager;
     public Toolbar toolBar;
+    public Dialog dialog;
+    public LinearLayout layoutFb, layoutTwitter, layoutList;
+    public MultiSelectSpinner spinnnerFollowing;
     public TextView txtTitle;
     public RelativeLayout layoutHeader;
     public long time;
     public Utils utils;
     public UserProfileDetails details;
-    @BindView(R.id.adapter_home_list_spinnerFollowing)
-    MultiSelectSpinner spinnnerFollowing;
-    @BindView(R.id.adapter_home_list_layoutfb)
-    LinearLayout layoutFacebook;
+    @BindView(R.id.adapter_home_list_play_button)
+    ImageButton imageButton;
     @BindView(R.id.adapter_home_list_btnshare)
     Button btnShare;
     @BindView(R.id.adapter_home_list_layout_all_voteresult)
     LinearLayout layoutAllVoteResult;
     @BindView(R.id.adapter_home_list_layoutCommentText)
     LinearLayout layoutCommentText;
-    @BindView(R.id.adapter_home_list_layouttwitter)
-    LinearLayout layoutTwitter;
     @BindView(R.id.adapter_home_list_txtusername)
     TextView txtUserName;
     @BindView(R.id.adapter_home_list_txthour)
@@ -161,6 +162,8 @@ public class Tag extends Fragment implements View.OnClickListener, MultiSelectSp
     ImageView imgQuestionPic;
     @BindView(R.id.adapter_home_list_imgprofilepic)
     ImageView imgProfilePic;
+    @BindView(R.id.adapter_home_list_optionmenu)
+    ImageView imgOptionMenu;
     @BindView(R.id.adapter_home_list_vdquevideo)
     VideoView vdProfile;
     @BindView(R.id.adapter_home_list_imglike)
@@ -205,12 +208,12 @@ public class Tag extends Fragment implements View.OnClickListener, MultiSelectSp
     private String loginUserId, questionId, Answer, followingPeopleName, followingPeopleId, commentText;
     private CountDownTimerClass timer;
     private int seconds, minutes, hours;
-    private Long remainTime;
+    private Long remainTime, remainTimeMiliSeconds;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
-        View view = inflater.inflate(R.layout.test_tag, container, false);
+        View view = inflater.inflate(R.layout.fragment_tag, container, false);
         ButterKnife.bind(this, view);
         utils = new Utils(getActivity());
         init();
@@ -243,25 +246,16 @@ public class Tag extends Fragment implements View.OnClickListener, MultiSelectSp
     private void openQuetionList() {
         // TODO: 6/16/2017 set the question details
         loginUserId = Utils.ReadSharePrefrence(getActivity(), Constant.USERID);
-        String isRemainTime = Utils.ReadSharePrefrence(getActivity(), Constant.REMAINTIME);
-        Long time;
-        if (isRemainTime.length() > 0) {
-            remainTime = details.getQueRemainTime();
-            if (remainTime != null) {
-                Utils.WriteSharePrefrence(getActivity(), Constant.TIME, String.valueOf(remainTime));
-            } else {
-                time = 0000000000L;
-                remainTime = time;
-            }
-        }
+        remainTime = details.getQueRemainTime();
+        remainTimeMiliSeconds = details.getQueRemainTimeMiliSeconds();
 
         // TODO: 6/6/2017 time handler
-        timer = new CountDownTimerClass(remainTime, 1000) {
+        timer = new CountDownTimerClass(remainTimeMiliSeconds, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
-                seconds = (int) (millisUntilFinished / 1000) % 60;
-                minutes = (int) ((millisUntilFinished / (1000 * 60)) % 60);
                 hours = (int) ((millisUntilFinished / (1000 * 60 * 60)) % 24);
+                minutes = (int) ((millisUntilFinished / (1000 * 60)) % 60);
+                seconds = (int) (millisUntilFinished / 1000) % 60;
                 txtHour.setText("" + String.format("%2d", hours));
                 txtMinute.setText("" + String.format("%2d", minutes));
                 txtSecond.setText("" + String.format("%2d", seconds));
@@ -284,6 +278,7 @@ public class Tag extends Fragment implements View.OnClickListener, MultiSelectSp
         }.start();
 
         // TODO: 16/6/2017 **************set the Visibility**********************
+        imgOptionMenu.setVisibility(View.INVISIBLE);
         rdAnswer3.setVisibility(View.VISIBLE);
         rdAnswer4.setVisibility(View.VISIBLE);
         txtVoteSucess.setVisibility(View.GONE);
@@ -425,18 +420,49 @@ public class Tag extends Fragment implements View.OnClickListener, MultiSelectSp
             if (details.getQueImage() != null) {
                 imgQuestionPic.setVisibility(View.VISIBLE);
                 vdProfile.setVisibility(View.VISIBLE);
+                imageButton.setVisibility(View.VISIBLE);
                 layoutMedia.setVisibility(View.VISIBLE);
                 if (details.getQueType().equalsIgnoreCase("0")) {
                     layoutMedia.setVisibility(View.GONE);
                 } else if (details.getQueType().equalsIgnoreCase("1")) {
                     vdProfile.setVisibility(View.GONE);
+                    imageButton.setVisibility(View.GONE);
                     Picasso.with(getActivity()).load(details.getQueImage()).placeholder(R.drawable.ic_placeholder).into(imgQuestionPic);
                 } else if (details.getQueType().equalsIgnoreCase("2")) {
                     imgQuestionPic.setVisibility(View.GONE);
                     vdProfile.setVideoURI(Uri.parse(details.getQueImage()));
                     vdProfile.setMediaController(new MediaController(getActivity()));
+                    vdProfile.setMediaController(null);
                     vdProfile.requestFocus();
-                    vdProfile.start();
+                    imageButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            if (vdProfile.isPlaying()) {
+                                vdProfile.pause();
+                            } else {
+                                vdProfile.start();
+                                new MediaController(getActivity()).show();
+                                imageButton.setVisibility(View.GONE);
+                                vdProfile.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                                    @Override
+                                    public void onPrepared(MediaPlayer mediaPlayer) {
+                                        try {
+                                            if (mediaPlayer.isPlaying()) {
+                                                mediaPlayer.stop();
+                                                mediaPlayer.release();
+                                                mediaPlayer = MediaPlayer.create(getActivity(), Uri.parse(details.getQueImage()));
+                                                Log.d("AUDIO", "@Enter----");
+                                            }
+                                            mediaPlayer.start();
+                                        } catch (Exception e) {
+                                            e.printStackTrace();
+                                            Log.d("AUDIOExp", "@" + e);
+                                        }
+                                    }
+                                });
+                            }
+                        }
+                    });
                 }
             }
         } else {
@@ -445,10 +471,6 @@ public class Tag extends Fragment implements View.OnClickListener, MultiSelectSp
         //TODO: 16/6/2017 ********************** End ************************
 
         // TODO: 16/6/2017 **************set the click event**********************
-        layoutFacebook.setOnClickListener(this);
-        layoutTwitter.setOnClickListener(this);
-        // TODO: 6/7/2017 get list of following people
-        spinnnerFollowing.setItems(arrayFollowingNameList, "Following", this);
 
         // TODO: 3/28/2017 redirect to show all comments
         txtViewAllComments.setOnClickListener(new View.OnClickListener() {
@@ -476,7 +498,6 @@ public class Tag extends Fragment implements View.OnClickListener, MultiSelectSp
             public void onClick(View view) {
                 String liketask = " ";
                 String isLiked = details.getQueLikeStatus();
-                Log.d("LIKE_STATUS@@", "" + details.getQueLikeStatus());
                 int likeTotalCount = details.getQueLikeTotalCount();
                 if (isLiked != null && isLiked.equalsIgnoreCase("0")) {
                     details.setQueLikeStatus("1");
@@ -565,11 +586,65 @@ public class Tag extends Fragment implements View.OnClickListener, MultiSelectSp
         btnShare.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                new SharePost(loginUserId, followingPeopleId, Utils.ReadSharePrefrence(getActivity(), Constant.QUESTION_ID), arrayUserList).execute();
+                openDialogForShare();
             }
         });
 // TODO: 16/6/2017 ********************** End ************************
 
+    }
+
+    private void openDialogForShare() {
+        dialog = new Dialog(getActivity());
+        dialog.setContentView(R.layout.dialog_share_option);
+        layoutFb = (LinearLayout) dialog.findViewById(R.id.dialog_share_option_layoutfb);
+        layoutTwitter = (LinearLayout) dialog.findViewById(R.id.dialog_share_option_layouttwitter);
+        layoutList = (LinearLayout) dialog.findViewById(R.id.dialog_share_option_layoutshare);
+        spinnnerFollowing = (MultiSelectSpinner) dialog.findViewById(R.id.dialog_share_option_spinnerFollowing);
+        dialog.show();
+        layoutFb.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                try {
+                    Intent i = new Intent(Intent.ACTION_SEND);
+                    i.setClassName("com.facebook.katana", "com.facebook.katana.LoginActivity");
+                    i.putExtra(Intent.EXTRA_SUBJECT, "Daberny");
+                    String sAux = "\nLet me recommend you this application\n\n";
+                    sAux = sAux + "https://play.google.com/store/apps/details?id=com.example.raviarchi\n\n";
+                    i.putExtra(Intent.EXTRA_TEXT, "https://i.diawi.com/UBMuRn");
+                    startActivity(Intent.createChooser(i, "choose one"));
+                } catch (Exception e) {
+                    //e.toString();
+                }
+                dialog.dismiss();
+            }
+        });
+
+        layoutTwitter.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                try {
+                    Intent i = new Intent(Intent.ACTION_SEND);
+                    i.setClassName("com.twitter.android", "com.twitter.android.LoginActivity");
+                    i.putExtra(Intent.EXTRA_SUBJECT, "Daberny");
+                    String sAux = "\nLet me recommend you this application\n\n";
+                    sAux = sAux + "https://play.google.com/store/apps/details?id=com.example.raviarchi\n\n";
+                    i.putExtra(Intent.EXTRA_TEXT, "https://i.diawi.com/UBMuRn");
+                    startActivity(Intent.createChooser(i, "choose one"));
+                } catch (Exception e) {
+                    //e.toString();
+                }
+                dialog.dismiss();
+            }
+        });
+        layoutList.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                spinnnerFollowing.performClick();
+                dialog.dismiss();
+            }
+        });
+        // TODO: 6/7/2017 get list of following people
+        spinnnerFollowing.setItems(arrayFollowingNameList, "Following", this);
     }
 
     @Override
@@ -627,6 +702,16 @@ public class Tag extends Fragment implements View.OnClickListener, MultiSelectSp
                 } else {
                     followingPeopleId = newGetId.get(j);
                 }
+            }
+        }
+        if (followingPeopleId != null && Utils.ReadSharePrefrence(getActivity(), Constant.QUESTION_ID) != null) {
+            Log.d("QUEID", "@@" + Utils.ReadSharePrefrence(getActivity(), Constant.QUESTION_ID));
+            Log.d("friends", "@@" + followingPeopleId);
+            if (followingPeopleId.trim().length() > 0) {
+                new SharePost(loginUserId, followingPeopleId,
+                        Utils.ReadSharePrefrence(getActivity(), Constant.QUESTION_ID), arrayUserList).execute();
+            } else {
+                Toast.makeText(getActivity(), "Please select user to share.", Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -935,9 +1020,9 @@ public class Tag extends Fragment implements View.OnClickListener, MultiSelectSp
 
                     // TODO: 6/6/2017 set remain time
                     JSONObject remaintimeObj = questionObject.getJSONObject("remain_time");
-                    Utils.WriteSharePrefrence(getActivity(), Constant.REMAINTIME, remaintimeObj.toString());
                     if (remaintimeObj.length() > 0) {
                         remainTime = remaintimeObj.getString("remain_time");
+                        details.setQueRemainTimeMiliSeconds(remaintimeObj.getLong("miliseconds"));
                         SimpleDateFormat df = new SimpleDateFormat("HH:mm:ss");
                         try {
                             Date d = df.parse(remainTime);
@@ -964,7 +1049,6 @@ public class Tag extends Fragment implements View.OnClickListener, MultiSelectSp
                     details.setQueVoteTotalCount(answerObj.getInt("total_count"));
                     details.setQueLikeStatus(answerObj.getString("liked"));
                     details.setQueLikeTotalCount(answerObj.getInt("likes_count"));
-                    Log.d("LIKECOUNT", "@@" + answerObj.getInt("likes_count"));
 
                     // TODO: 5/26/2017 set vote count of particular question
                     JSONObject answerCountObj = answerObj.getJSONObject("answers_count");

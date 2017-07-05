@@ -2,11 +2,6 @@ package com.example.raviarchi.daberny.Activity.Adapter;
 
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,12 +9,9 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.raviarchi.daberny.Activity.Activity.ChatActivity;
-import com.example.raviarchi.daberny.Activity.Fragment.OtherUserProfile;
 import com.example.raviarchi.daberny.Activity.Model.UserProfileDetails;
-import com.example.raviarchi.daberny.Activity.Utils.Constant;
 import com.example.raviarchi.daberny.Activity.Utils.RoundedTransformation;
 import com.example.raviarchi.daberny.Activity.Utils.Utils;
 import com.example.raviarchi.daberny.R;
@@ -32,7 +24,8 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-/** * Created by Ravi archi on 2/21/2017.
+/**
+ * Created by Ravi archi on 2/21/2017.
  */
 
 public class SearchChatPeopleAdapter extends RecyclerView.Adapter<SearchChatPeopleAdapter.MyViewHolder> {
@@ -43,6 +36,7 @@ public class SearchChatPeopleAdapter extends RecyclerView.Adapter<SearchChatPeop
 
     public SearchChatPeopleAdapter(Context context, ArrayList<UserProfileDetails> arraylist) {
         this.context = context;
+        this.utils = new Utils(context);
         this.arrayUserList = arraylist;
         notifyDataSetChanged();
     }
@@ -62,19 +56,19 @@ public class SearchChatPeopleAdapter extends RecyclerView.Adapter<SearchChatPeop
         holder.txtFullname.setText(userdetails.getUserFullName());
         if (userdetails.getUserImage().length() > 0) {
             Picasso.with(context).load(userdetails.getUserImage()).
-                    transform(new RoundedTransformation(120,2)).
+                    transform(new RoundedTransformation(120, 2)).
                     placeholder(R.drawable.ic_placeholder).into(holder.imgProfile);
         } else {
             Picasso.with(context).load(R.drawable.ic_placeholder).
-            transform(new RoundedTransformation(120,2)).
-            placeholder(R.drawable.ic_placeholder).into(holder.imgProfile);
+                    transform(new RoundedTransformation(120, 2)).
+                    placeholder(R.drawable.ic_placeholder).into(holder.imgProfile);
         }
 
         holder.linearLayoutPeople.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Gson gson = new Gson();
-                Intent ichat =new Intent(context,ChatActivity.class);
+                Intent ichat = new Intent(context, ChatActivity.class);
                 ichat.putExtra("userprofiledetails", gson.toJson(userdetails));
                 context.startActivity(ichat);
             }

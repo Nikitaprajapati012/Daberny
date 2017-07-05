@@ -12,6 +12,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.example.raviarchi.daberny.Activity.Adapter.GeneralAdapter;
@@ -50,6 +51,7 @@ public class General extends Fragment {
     private ArrayList<UserProfileDetails> arrayUserList;
     public Toolbar toolBar;
     public TextView txtTitle;
+    public RelativeLayout layoutHeader;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -70,6 +72,8 @@ public class General extends Fragment {
     // TODO: 2/22/2017 bind data with field
     private void findViewId(View view) {
         recyclerViewposts = (RecyclerView) view.findViewById(R.id.fragment_general_recyclermainlist);
+        layoutHeader = (RelativeLayout) getActivity().findViewById(R.id.mainview);
+        layoutHeader.setVisibility(View.VISIBLE);
         toolBar = (Toolbar) getActivity().findViewById(R.id.activity_main_toolbar);
         txtTitle = (TextView) toolBar.findViewById(R.id.toolbar_title);
         txtTitle.setText(R.string.general);
@@ -138,9 +142,9 @@ public class General extends Fragment {
 
                             // TODO: 6/6/2017 set remain time
                             JSONObject remaintimeObj = questionObject.getJSONObject("remain_time");
-                            Utils.WriteSharePrefrence(getActivity(), Constant.REMAINTIME, remaintimeObj.toString());
                             if (remaintimeObj.length() > 0) {
                                 remainTime = remaintimeObj.getString("remain_time");
+                                details.setQueRemainTimeMiliSeconds(remaintimeObj.getLong("miliseconds"));
                                 SimpleDateFormat df = new SimpleDateFormat("HH:mm:ss");
                                 try {
                                     Date d = df.parse(remainTime);

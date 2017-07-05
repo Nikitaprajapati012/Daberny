@@ -17,7 +17,7 @@
         android:padding="@dimen/_15sdp"
         android:layout_marginTop="@dimen/_5sdp"
         android:textColor="@color/black"
-        android:textSize="@dimen/_13sdp" />
+        android:textSize="@dimen/_12sdp" />
     <ImageView
         android:id="@+id/adapter_receiverview_image"
         android:layout_width="@dimen/_200sdp"

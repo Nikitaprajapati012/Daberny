@@ -35,7 +35,6 @@ import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.VideoView;
 
-import com.example.raviarchi.daberny.Activity.Adapter.BlockedUsersAdapter;
 import com.example.raviarchi.daberny.Activity.Model.UserProfileDetails;
 import com.example.raviarchi.daberny.R;
 import com.squareup.picasso.Picasso;
@@ -57,14 +56,13 @@ import java.util.Map;
 
 import javax.net.ssl.HttpsURLConnection;
 
-/**
- * Created by archirayan on 4/29/2016.
+/*** Created by archirayan on 4/29/2016.
  */
 public class Utils {
 
-    Context context;
-    SharedPreferences sp;
     Location getLocation;
+    private Context context;
+    private SharedPreferences sp;
 
     public Utils(Context context) {
         this.context = context;
@@ -72,7 +70,6 @@ public class Utils {
     }
 
     public static void WriteSharePrefrence(Context context, String key, String value) {
-
         final SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
         final SharedPreferences.Editor editor = preferences.edit();
         editor.putString(key, value);
@@ -80,7 +77,6 @@ public class Utils {
     }
 
     public static void WriteSharePre(Context context, String key, String value) {
-
         final SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
         final SharedPreferences.Editor editor = preferences.edit();
         editor.putString(key, value);
@@ -169,14 +165,12 @@ public class Utils {
         String response = "";
         try {
             url = new URL(URL);
-
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setReadTimeout(15000);
             conn.setConnectTimeout(15000);
             conn.setRequestMethod("POST");
             conn.setDoInput(true);
             conn.setDoOutput(true);
-
             OutputStream os = conn.getOutputStream();
             BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(os, "UTF-8"));
             writer.write(getPostDataString(postDataParams));
@@ -251,7 +245,6 @@ public class Utils {
                 first = false;
             else
                 result.append("&");
-
             result.append(URLEncoder.encode(entry.getKey(), "UTF-8"));
             result.append("=");
             result.append(URLEncoder.encode(entry.getValue(), "UTF-8"));
@@ -294,9 +287,7 @@ public class Utils {
     public void replaceFragment(Fragment fragment) {
         FragmentManager fm = ((FragmentActivity) context).getSupportFragmentManager();
         FragmentTransaction transaction = fm.beginTransaction();
-        transaction.replace(R.id.frame_contain_layout, fragment);
-        transaction.addToBackStack(null);
-        transaction.commit();
+        transaction.replace(R.id.frame_contain_layout, fragment).addToBackStack(null).commit();
     }
 
     public void setAdapterForList(RecyclerView recyclerView, RecyclerView.Adapter adapter) {
@@ -307,9 +298,8 @@ public class Utils {
         adapter.notifyDataSetChanged();
     }
 
-    public void setPostImageVideo(UserProfileDetails details, ImageView imgQuestionPic, VideoView vdProfile, LinearLayout layoutMedia) {
+    public void setPostImageVideo(UserProfileDetails details, ImageView imgQuestionPic, final VideoView vdProfile, LinearLayout layoutMedia) {
         if (details.getQueImageName().length() > 0) {
-
             if (details.getQueImage() != null) {
                 imgQuestionPic.setVisibility(View.VISIBLE);
                 vdProfile.setVisibility(View.VISIBLE);
@@ -321,10 +311,52 @@ public class Utils {
                     Picasso.with(context).load(details.getQueImage()).placeholder(R.drawable.ic_placeholder).into(imgQuestionPic);
                 } else if (details.getQueType().equalsIgnoreCase("2")) {
                     imgQuestionPic.setVisibility(View.GONE);
+                    MediaController mediaController = new MediaController(context);
+                    mediaController.setAnchorView(vdProfile);
+                    vdProfile.setMediaController(mediaController);
                     vdProfile.setVideoURI(Uri.parse(details.getQueImage()));
-                    vdProfile.setMediaController(new MediaController(context));
-                    vdProfile.requestFocus();
+                    //vdProfile.requestFocus();
                     vdProfile.start();
+                  /*  imageButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            if (vdProfile.isPlaying()) {
+                                resetPlayer();
+                            } else {
+                                playVideo(videoUrl, vdProfile.getHolder());
+                                new MediaController(context).show();
+                                // hide button once playback starts
+                                imageButton.setVisibility(View.GONE);
+                            }
+                        }
+                    });*/
+//   String urlStrinh = "https://www.thenewboston.com/forum/project_files/006_testVideo.mp4";
+//           VideoView buckysVideoView = (VideoView) findViewById(R.id.buckysVideoView);
+//           MediaController mediaController = new MediaController(this);
+//           mediaController.setAnchorView(buckysVideoView);
+//           Uri videoURI = Uri.parse(urlString);
+//           buckysVideoView.setMediaController(mediaController);
+//           buckysVideoView.setVideoURI(videoURI);
+//           buckysVideoView.start();
+                   /* vdProfile.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                        @Override
+                        public void onPrepared(MediaPlayer mediaPlayer) {
+                            mediaPlayer.setVolume(0f,0f);
+                        }
+                    });*/
+                /*    vdProfile.setOnTouchListener(new View.OnTouchListener() {
+                        @Override
+                        public boolean onTouch(View view, MotionEvent motionEvent) {
+                            if (vdProfile.isPlaying()){
+                                vdProfile.stopPlayback();
+                            }
+                            else{
+                                vdProfile.start();
+                            }
+                            return true;
+                        }
+                    });*/
+
                 }
             }
         } else {
@@ -345,8 +377,9 @@ public class Utils {
             }
         }
     }
+
     public void getSelectedFriendsId(boolean[] selected,
-                                     ArrayList<String> arrayfollowingUserIdList, String followingPeopleId){
+                                     ArrayList<String> arrayfollowingUserIdList, String followingPeopleId) {
         ArrayList<String> newGetId = new ArrayList<>();
         for (int i = 0; i < selected.length; i++) {
             if (selected[i]) {
@@ -362,6 +395,7 @@ public class Utils {
             }
         }
     }
+
     public void setPostUserImageInPicasso(UserProfileDetails details, ImageView imgProfilePic) {
         if (details.getUserImage() != null) {
             if (details.getUserImage().length() > 0) {

@@ -11,16 +11,21 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
 import com.example.raviarchi.daberny.Activity.Adapter.SearchLatestAdapter;
 import com.example.raviarchi.daberny.Activity.Model.UserProfileDetails;
 import com.example.raviarchi.daberny.Activity.Utils.Constant;
 import com.example.raviarchi.daberny.Activity.Utils.Utils;
 import com.example.raviarchi.daberny.R;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import java.util.ArrayList;
+
 import static com.example.raviarchi.daberny.Activity.Fragment.Search.edSearch;
+import static com.facebook.FacebookSdk.getApplicationContext;
 
 /*** Created by Ravi archi on 1/10/2017.
  */
@@ -46,13 +51,12 @@ public class SearchLatest extends Fragment {
     // TODO: 2/22/2017 bind data with field
     private void findViewId(View view) {
         recyclerViewPeople = (RecyclerView) view.findViewById(R.id.fragment_search_recyclerrecentlist);
-
     }
 
     // TODO: 2/21/2017 initilization
     private void init() {
-        utils = new Utils(getActivity());
-        userId = Utils.ReadSharePrefrence(getActivity(), Constant.USERID);
+        utils = new Utils(getApplicationContext());
+        userId = Utils.ReadSharePrefrence(getApplicationContext(), Constant.USERID);
         new GetPeopleList(userId).execute();
         edSearch.addTextChangedListener(new TextWatcher() {
             @Override
@@ -65,27 +69,29 @@ public class SearchLatest extends Fragment {
 
             @Override
             public void afterTextChanged(Editable s) {
-                String searchFor = edSearch.getText().toString();
+                String searchFor = edSearch.getText().toString().trim();
                 searchedArraylist = new ArrayList<>();
                 for (int i = 0; i < arrayUserList.size(); i++) {
                     if (arrayUserList.get(i).getQueTitle().toLowerCase().startsWith(searchFor.toLowerCase())) {
                         searchedArraylist.add(arrayUserList.get(i));
                     }
                 }
-                if (edSearch.getText().toString().length() > 0) {
-                    adapter = new SearchLatestAdapter(getActivity(), searchedArraylist);
+                // if (searchFor.length() > 0) {
+                if (searchedArraylist.size() > 0) {
+                    adapter = new SearchLatestAdapter(getFragmentManager(), getApplicationContext(), searchedArraylist);
                     utils.setAdapterForList(recyclerViewPeople, adapter);
                 }
+                //  }
             }
         });
     }
 
     private void openLatestList() {
         // TODO: 2/21/2017 bind list and show in adapter
-        if (edSearch.getText().toString().length() > 0) {
-            adapter = new SearchLatestAdapter(getActivity(), arrayUserList);
-            utils.setAdapterForList(recyclerViewPeople, adapter);
-        }
+        // if (edSearch.getText().toString().length() > 0) {
+        adapter = new SearchLatestAdapter(getFragmentManager(), getApplicationContext(), arrayUserList);
+        utils.setAdapterForList(recyclerViewPeople, adapter);
+        // }
     }
 
     // TODO: 2/21/2017 get list of Question from URL
@@ -101,7 +107,6 @@ public class SearchLatest extends Fragment {
         protected void onPreExecute() {
             super.onPreExecute();
             arrayUserList = new ArrayList<>();
-
         }
 
         @Override

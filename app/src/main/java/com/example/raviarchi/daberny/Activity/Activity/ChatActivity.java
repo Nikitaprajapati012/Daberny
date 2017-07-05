@@ -11,10 +11,11 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
@@ -37,7 +38,6 @@ import com.koushikdutta.ion.Ion;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -47,6 +47,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class ChatActivity extends AppCompatActivity implements View.OnClickListener {
+    public static EditText edMessage;
+    public static TextView txtSend;
     public ChatAdapter chatAdapter;
     public ArrayList<UserProfileDetails> arrayUserList;
     public UserProfileDetails details;
@@ -54,10 +56,6 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
     public Uri uri;
     public int REQUEST_CAMERA = 0, SELECT_FILE = 1;
     public boolean result;
-    @BindView(R.id.activity_chat_msg_edmsg)
-    EditText edMessage;
-    @BindView(R.id.activity_chat_txtsend)
-    TextView txtSend;
     @BindView(R.id.activity_chat_imggallery)
     ImageView imgGallery;
     @BindView(R.id.activity_chat_imglike)
@@ -84,12 +82,11 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_chat);
         ButterKnife.bind(this);
         init();
-        new GetChat(loginUserId, receiverId).execute();
         click();
     }
 
+
     // TODO: 5/29/2017 perform click event
-    //git
     private void click() {
         txtSend.setOnClickListener(this);
         imgBack.setOnClickListener(this);
@@ -98,13 +95,6 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
         edMessage.addTextChangedListener(new TextWatcher() {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (edMessage.getText().toString().length() > 0) {
-                    layoutAttachment.setVisibility(View.GONE);
-                    txtSend.setVisibility(View.VISIBLE);
-                } else {
-                    layoutAttachment.setVisibility(View.VISIBLE);
-                    txtSend.setVisibility(View.GONE);
-                }
             }
 
             @Override
@@ -113,6 +103,13 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
 
             @Override
             public void afterTextChanged(Editable s) {
+                if (edMessage.getText().toString().trim().length() > 0) {
+                    layoutAttachment.setVisibility(View.GONE);
+                    txtSend.setVisibility(View.VISIBLE);
+                } else {
+                    layoutAttachment.setVisibility(View.VISIBLE);
+                    txtSend.setVisibility(View.GONE);
+                }
             }
         });
     }
@@ -143,7 +140,6 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
                 String[] filePathColumn = {MediaStore.Images.Media.DATA};
                 Cursor cursor = getContentResolver().query(uri,
                         filePathColumn, null, null, null);
-
                 if (cursor == null || cursor.getCount() < 1) {
                     return; // no cursor or no record. DO YOUR ERROR HANDLING
                 }
@@ -152,14 +148,13 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
                 picturepath = cursor.getString(columnIndex);
                 if (columnIndex < 0) // no column index
                     return; // DO YOUR ERROR HANDLING
-                String image = getStringImage(bitmap);
                 picturepath = cursor.getString(columnIndex);
                 cursor.close(); // close cursor
                 // TODO: 6/2/2017 send image in chat
                 if (picturepath != null) {
-                    sendmessageImage(loginUserId, receiverId, strMsg, picturepath);
+                    sendmessageImage(arrayUserList, loginUserId, receiverId, strMsg, picturepath);
                 }
-                new GetChat(loginUserId, receiverId).execute();
+
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -168,19 +163,13 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    public String getStringImage(Bitmap bmp) {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        bmp.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-        byte[] imageBytes = baos.toByteArray();
-        String encodedImage = Base64.encodeToString(imageBytes, Base64.DEFAULT);
-        return encodedImage;
-    }
-
     // TODO: 5/29/2017 initilization
     private void init() {
         details = new UserProfileDetails();
         utils = new Utils(this);
         loginUserId = Utils.ReadSharePrefrence(this, Constant.USERID);
+        edMessage = (EditText) findViewById(R.id.activity_chat_msg_edmsg);
+        txtSend = (TextView) findViewById(R.id.activity_chat_txtsend);
         result = Boolean.parseBoolean(Utils.ReadSharePref(ChatActivity.this, Constant.PERMISSION));
         if (getIntent().getExtras() != null) {
             Gson gson = new Gson();
@@ -195,17 +184,21 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
             }
         }
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
+        // TODO: 6/30/2017 get list of chat
+        new GetChat(loginUserId, receiverId).execute();
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.activity_chat_imggallery:
-                if (result)
+                if (result) {
                     galleryIntent();
+                }
                 break;
+
             case R.id.activity_chat_imglike:
-                Utils.WriteSharePrefrence(ChatActivity.this,Constant.CHAT_LIKE,"1");
+                Utils.WriteSharePrefrence(ChatActivity.this, Constant.CHAT_LIKE, "1");
                 Uri imageUri = null;
                 try {
                     imageUri = Uri.parse(MediaStore.Images.Media.insertImage(this.getContentResolver(),
@@ -220,20 +213,18 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
                     int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
                     picturepath = cursor.getString(columnIndex);
                     if (picturepath != null) {
-                        sendmessageImage(loginUserId, receiverId, strMsg, picturepath);
+                        sendmessageImage(arrayUserList, loginUserId, receiverId, strMsg, picturepath);
                     }
-                    new GetChat(loginUserId, receiverId).execute();
                 } catch (NullPointerException e) {
                 }
                 break;
 
             case R.id.activity_chat_txtsend:
-                strMsg = edMessage.getText().toString().replaceAll(" ", "%20");
-                if (strMsg != null) {
-                    //sendmessageImage(loginUserId, receiverId, strMsg, picturepath);
+                String strMsg = edMessage.getText().toString().replaceAll(" ", "%20");
+                if (strMsg.trim().length() > 0) {
                     new SendMessage(arrayUserList, loginUserId, receiverId, strMsg).execute();
+                    edMessage.setText(" ");
                 }
-                new GetChat(loginUserId, receiverId).execute();
                 break;
 
 
@@ -251,9 +242,11 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     // TODO: 6/2/2017 send the message as well as image in chat
-    private void sendmessageImage(String loginUserId, String receiverId, String strMsg, String picturepath) {
+    private void sendmessageImage(ArrayList<UserProfileDetails> arrayList, final String loginUserId, final String receiverId, String strMsg, String picturepath) {
         //http://181.224.157.105/~hirepeop/host2/surveys/api/insert_chat_msg/677/669/hello
         if (picturepath != null) {
+            arrayList = new ArrayList<>();
+            final ArrayList<UserProfileDetails> finalArrayList = arrayList;
             Ion.with(this)
                     .load(Constant.QUESTION_BASE_URL + "insert_chat_msg")
                     .setMultipartParameter("sender_id", loginUserId)
@@ -281,11 +274,11 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
                                     details.setOtherUserId(receiverobject.getString("id"));
                                     details.setOtherUserName(receiverobject.getString("username"));
                                     details.setOtherUserImage(receiverobject.getString("user_image"));
-                                    arrayUserList.add(details);
+                                    finalArrayList.add(details);
                                 }
-                                if (arrayUserList.size() > 0) {
-                                    edMessage.setText("");
-                                    openChatDetailsList();
+                                if (finalArrayList.size() > 0) {
+                                    new GetChat(loginUserId, receiverId).execute();
+                                    openChatDetailsList(finalArrayList);
                                 }
                             } catch (Exception exp) {
                                 exp.printStackTrace();
@@ -296,16 +289,21 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-
     // TODO: 5/30/2017 bind the list with adapter
-    private void openChatDetailsList() {
-        chatAdapter = new ChatAdapter(ChatActivity.this, arrayUserList);
-        utils.setAdapterForList(recyclerView, chatAdapter);
+    private void openChatDetailsList(ArrayList<UserProfileDetails> arrayList) {
+        chatAdapter = new ChatAdapter(ChatActivity.this, arrayList);
+        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
+        mLayoutManager.scrollToPosition(arrayList.size()-1);
+        recyclerView.setLayoutManager(mLayoutManager);
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        recyclerView.setAdapter(chatAdapter);
+        chatAdapter.notifyDataSetChanged();
+
     }
 
     private class GetChat extends AsyncTask<String, String, String> {
         String receiver_id, login_id;
-        private ProgressDialog pd;
+        ProgressDialog pd;
 
         private GetChat(String loginUserId, String user_id) {
             this.login_id = loginUserId;
@@ -326,7 +324,8 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
         protected String doInBackground(String... params) {
             //http://181.224.157.105/~hirepeop/host2/surveys/api/get_chat_msg/752/669/
             String receivemessage;
-            receivemessage = Constant.QUESTION_BASE_URL + "get_chat_msg" + "/" + login_id + "/" + receiver_id;
+            receivemessage = Constant.QUESTION_BASE_URL + "get_chat_msg"
+                    + "/" + login_id + "/" + receiver_id;
            /*
             if (Constant.ON_CLICK_NOTIFICATION == 0) {
                 receivemessage = Constant.Base_URL + "get_chat_msg.php?" + "sender_id=" + user_id + "&recipient_id=" + receipt_id;
@@ -353,17 +352,20 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
                         details.setUserUserName(followingObject.getString("sender_username"));
                         details.setUserFullName(followingObject.getString("sender_fullname"));
                         details.setUserImage(followingObject.getString("sender_image"));
+                        details.setUserChatPostDate(followingObject.getString("post_date"));
                         details.setOtherUserId(followingObject.getString("recipient_id"));
                         details.setOtherUserFullName(followingObject.getString("recipient_fullname"));
                         details.setOtherUserName(followingObject.getString("recipient_username"));
                         details.setOtherUserImage(followingObject.getString("recipient_image"));
                         details.setUserMsgReceiver(followingObject.getString("receiver_msg"));
+                        details.setOtherChatPostDate(followingObject.getString("post_date"));
                         details.setUserMsgSender(followingObject.getString("sender_msg"));
+                        details.setUserMsgTime(followingObject.getString("time_distance"));
                         details.setUserMsgType(followingObject.getString("type"));
                         arrayUserList.add(details);
                     }
                     if (arrayUserList.size() > 0) {
-                        openChatDetailsList();
+                        openChatDetailsList(arrayUserList);
                     }
                 }
             } catch (Exception e) {
@@ -375,19 +377,19 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
     // TODO: 6/16/2017 send message in text
     private class SendMessage extends AsyncTask<String, String, String> {
         String strMessage, userId, receiver_Id;
-        ArrayList<UserProfileDetails> arrayUserList;
+        ArrayList<UserProfileDetails> arrayList;
 
         private SendMessage(ArrayList<UserProfileDetails> arrayUserList, String user_id, String receipt_id, String strMsg) {
             this.userId = user_id;
             this.receiver_Id = receipt_id;
             this.strMessage = strMsg;
-            this.arrayUserList = arrayUserList;
+            this.arrayList = arrayUserList;
         }
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            arrayUserList = new ArrayList<>();
+            arrayList = new ArrayList<>();
         }
 
         @Override
@@ -423,13 +425,11 @@ public class ChatActivity extends AppCompatActivity implements View.OnClickListe
                     details.setOtherUserId(receiverobject.getString("id"));
                     details.setOtherUserName(receiverobject.getString("username"));
                     details.setOtherUserImage(receiverobject.getString("user_image"));
-                    arrayUserList.add(details);
+                    arrayList.add(details);
                 }
-
-                if (arrayUserList.size() > 0) {
-                    edMessage.setText("");
-                    openChatDetailsList();
-
+                if (arrayList.size() > 0) {
+                    new GetChat(loginUserId, receiverId).execute();
+                    openChatDetailsList(arrayList);
                 }
             } catch (Exception e) {
                 e.printStackTrace();

@@ -148,9 +148,9 @@ public class Posts extends Fragment {
 
                         // TODO: 6/6/2017 set remain time
                         JSONObject remaintimeObj = questionObject.getJSONObject("remain_time");
-                        Utils.WriteSharePrefrence(getActivity(), Constant.REMAINTIME, remaintimeObj.toString());
                         if (remaintimeObj.length() > 0) {
                             remainTime = remaintimeObj.getString("remain_time");
+                            details.setQueRemainTimeMiliSeconds(remaintimeObj.getLong("miliseconds"));
                             SimpleDateFormat df = new SimpleDateFormat("HH:mm:ss");
                             try {
                                 Date d = df.parse(remainTime);
@@ -242,7 +242,7 @@ public class Posts extends Fragment {
                         arrayUserList.add(details);
                     }
                     // TODO: 3/27/2017 get the list of following
-                    JSONArray followingArray = jsonObject.getJSONArray("following");
+                    JSONArray followingArray = jsonObject.getJSONArray("follow_user");
                     if (followingArray.length() > 0) {
                         for (int f = 0; f < followingArray.length(); f++) {
                             JSONObject followingObject = followingArray.getJSONObject(f);

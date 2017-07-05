@@ -3,9 +3,6 @@ package com.example.raviarchi.daberny.Activity.Adapter;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,8 +24,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-/**
- * Created by Ravi archi on 2/21/2017.
+/*** Created by Ravi archi on 2/21/2017.
  */
 
 public class CommentPeopleAdapter extends RecyclerView.Adapter<CommentPeopleAdapter.MyViewHolder> {
@@ -39,6 +35,7 @@ public class CommentPeopleAdapter extends RecyclerView.Adapter<CommentPeopleAdap
 
     public CommentPeopleAdapter(Context context, ArrayList<UserProfileDetails> arraylist) {
         this.context = context;
+        this.utils = new Utils(context);
         this.arrayUserList = arraylist;
         notifyDataSetChanged();
     }
@@ -52,18 +49,16 @@ public class CommentPeopleAdapter extends RecyclerView.Adapter<CommentPeopleAdap
 
     @Override
     public void onBindViewHolder(MyViewHolder holder, final int position) {
-
         final UserProfileDetails userdetails = arrayUserList.get(position);
         Id = userdetails.getUserId();
-
         holder.txtUsername.setText(userdetails.getQueCommentUser());
-        holder.txtComment.setText(userdetails.getQueComment().replaceAll("%20"," "));
-
-        if (userdetails.getUserImage().length() > 0) {
-            Picasso.with(context).load(userdetails.getUserImage()).placeholder(R.drawable.ic_placeholder).into(holder.imgProfile);
-        } /*else {
-            Picasso.with(context).load(R.mipmap.ic_launcher).placeholder(R.drawable.ic_placeholder).into(holder.imgProfile);
-        }*/
+        holder.txtComment.setText(userdetails.getQueComment().replaceAll("%20", " "));
+        if (userdetails.getQueCommentUserProfilePic().length() > 0) {
+            Picasso.with(context)
+                    .load(userdetails.getQueCommentUserProfilePic())
+                    .placeholder(R.drawable.ic_placeholder)
+                    .into(holder.imgProfile);
+        }
 
         holder.linearLayoutPeople.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -72,11 +67,8 @@ public class CommentPeopleAdapter extends RecyclerView.Adapter<CommentPeopleAdap
                 Gson gson = new Gson();
                 Bundle bundle = new Bundle();
                 bundle.putString("id", userdetails.getUserId());
-
-                if (fragment != null) {
-                    fragment.setArguments(bundle);
-                    utils.replaceFragment(fragment);
-                }
+                fragment.setArguments(bundle);
+                utils.replaceFragment(fragment);
             }
         });
 

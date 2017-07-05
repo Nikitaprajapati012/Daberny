@@ -94,7 +94,6 @@ public class FriendsFacebook extends Fragment {
                                     }
                                 }
                                 if (friendList.size() > 0) {
-                                    //list
                                     FriendListAdapter friendAdapter = new FriendListAdapter(getActivity(), friendList);
                                     recyclerViewPeople.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
                                     recyclerViewPeople.setAdapter(friendAdapter);

@@ -35,8 +35,6 @@ import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-import static com.example.raviarchi.daberny.Activity.Fragment.Search.edSearch;
-import static com.facebook.FacebookSdk.getApplicationContext;
 
 /**
  * Created by Ravi archi on 1/10/2017.

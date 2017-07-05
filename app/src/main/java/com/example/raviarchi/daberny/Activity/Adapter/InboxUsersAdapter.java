@@ -24,14 +24,12 @@ import com.example.raviarchi.daberny.Activity.Utils.RoundedTransformation;
 import com.example.raviarchi.daberny.Activity.Utils.Utils;
 import com.example.raviarchi.daberny.R;
 import com.google.gson.Gson;
-import com.koushikdutta.async.http.socketio.ExceptionCallback;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -41,8 +39,8 @@ import butterknife.ButterKnife;
  */
 
 public class InboxUsersAdapter extends RecyclerView.Adapter<InboxUsersAdapter.MyViewHolder> {
-    private String Id, loginUserId, interest;
     public Utils utils;
+    private String Id, loginUserId, interest;
     private ArrayList<UserProfileDetails> arrayUserList;
     private Context context;
 
@@ -68,11 +66,12 @@ public class InboxUsersAdapter extends RecyclerView.Adapter<InboxUsersAdapter.My
         if (userdetails.getUserId().equalsIgnoreCase(loginUserId)) {
             // TODO: 6/12/2017 set the details of the other user which is in sender
             Utils.WriteSharePrefrence(context, Constant.OTHER_USERID, userdetails.getOtherUserId());
+            Utils.WriteSharePrefrence(context, Constant.SENDER_ID, userdetails.getUserId());
             holder.txtUsername.setText(userdetails.getOtherUserName());
             if (userdetails.getUserMsgType().equalsIgnoreCase("image")) {
                 holder.txtMessage.setText(R.string.yousentmsg);
             } else {
-                utils.setTextOfInboxList(userdetails,holder.txtMessage);
+                utils.setTextOfInboxList(userdetails, holder.txtMessage);
                 holder.txtMessage.setText(userdetails.getUserMsgSender());
             }
             if (userdetails.getOtherUserImage().length() > 0) {
@@ -84,12 +83,13 @@ public class InboxUsersAdapter extends RecyclerView.Adapter<InboxUsersAdapter.My
             }
         } else {
             // TODO: 6/12/2017 set the details of the other user which is in receiver
+            Utils.WriteSharePrefrence(context, Constant.SENDER_ID, userdetails.getOtherUserId());
             Utils.WriteSharePrefrence(context, Constant.OTHER_USERID, userdetails.getUserId());
             holder.txtUsername.setText(userdetails.getUserUserName());
             if (userdetails.getUserMsgType().equalsIgnoreCase("image")) {
                 holder.txtMessage.setText(R.string.yousentmsg);
             } else {
-                utils.setTextOfInboxList(userdetails,holder.txtMessage);
+                utils.setTextOfInboxList(userdetails, holder.txtMessage);
                 holder.txtMessage.setText(userdetails.getUserMsgReceiver());
             }
             if (userdetails.getUserImage().length() > 0) {
@@ -100,7 +100,8 @@ public class InboxUsersAdapter extends RecyclerView.Adapter<InboxUsersAdapter.My
                         .placeholder(R.drawable.ic_placeholder).into(holder.imgProfile);
             }
         }
-        final String otherUserId=Utils.ReadSharePrefrence(context,Constant.OTHER_USERID);
+        final String otherUserId = Utils.ReadSharePrefrence(context, Constant.OTHER_USERID);
+        final String senderId = Utils.ReadSharePrefrence(context, Constant.SENDER_ID);
         holder.layoutInbox.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -125,7 +126,7 @@ public class InboxUsersAdapter extends RecyclerView.Adapter<InboxUsersAdapter.My
                                             int which) {
                                         arrayUserList.remove(position);
                                         notifyDataSetChanged();
-                                        new DeleteConverstion(loginUserId,otherUserId,position,arrayUserList).execute();
+                                        new DeleteConverstion(loginUserId, otherUserId, senderId, position, arrayUserList).execute();
                                         dialog.cancel();
                                     }
                                 }).show();
@@ -175,16 +176,17 @@ public class InboxUsersAdapter extends RecyclerView.Adapter<InboxUsersAdapter.My
     }
 
     private class DeleteConverstion extends AsyncTask<String, String, String> {
-        String userId, otheruserId;
+        String userId, otheruserId, senderId;
         ProgressDialog pd;
         int position;
         ArrayList<UserProfileDetails> arrayUserList;
 
-        private DeleteConverstion(String id, String queId, int position, ArrayList<UserProfileDetails> arrayUserList) {
+        private DeleteConverstion(String id, String queId, String senderId, int position, ArrayList<UserProfileDetails> arrayUserList) {
             this.userId = id;
             this.otheruserId = queId;
-            this.position=position;
-            this.arrayUserList=arrayUserList;
+            this.senderId = senderId;
+            this.position = position;
+            this.arrayUserList = arrayUserList;
             notifyDataSetChanged();
         }
 
@@ -201,7 +203,8 @@ public class InboxUsersAdapter extends RecyclerView.Adapter<InboxUsersAdapter.My
         @Override
         protected String doInBackground(String... strings) {
             //http://181.224.157.105/~hirepeop/host2/surveys/api/delete_conversion/752/864
-            return Utils.getResponseofGet(Constant.QUESTION_BASE_URL + "delete_conversion/" + userId + "/" + otheruserId );
+            return Utils.getResponseofGet(Constant.QUESTION_BASE_URL +
+                    "delete_conversion/" + userId + "/" + otheruserId);
         }
 
         @Override
@@ -220,9 +223,7 @@ public class InboxUsersAdapter extends RecyclerView.Adapter<InboxUsersAdapter.My
                         arrayUserList.add(details);
                         notifyDataSetChanged();
                     }
-                }
-                else
-                {
+                } else {
                     Toast.makeText(context, jsonObject.getString("msg"), Toast.LENGTH_SHORT).show();
                 }
             } catch (JSONException e) {

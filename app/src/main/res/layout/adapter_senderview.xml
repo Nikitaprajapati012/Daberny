@@ -9,24 +9,23 @@
         android:id="@+id/adapter_sendview_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:gravity="right|center"
-        android:padding="@dimen/_15sdp"
+        android:layout_gravity="right"
         android:layout_marginTop="@dimen/_5sdp"
         android:background="@drawable/chat_bg"
+        android:gravity="right|center"
+        android:padding="@dimen/_15sdp"
         android:text="@string/message"
-        android:layout_gravity="right"
         android:textColor="@color/black"
-        android:textSize="@dimen/_13sdp" />
+        android:textSize="@dimen/_12sdp" />
 
     <ImageView
         android:id="@+id/adapter_sendview_image"
         android:layout_width="@dimen/_200sdp"
         android:layout_height="@dimen/_200sdp"
-        android:gravity="right|center"
-        android:background="@android:color/transparent"
-        android:src="@drawable/ic_placeholder"
-        android:layout_marginTop="@dimen/_5sdp"
         android:layout_gravity="right"
-        />
+        android:layout_marginTop="@dimen/_5sdp"
+        android:background="@android:color/transparent"
+        android:gravity="right|center"
+        android:src="@drawable/ic_placeholder" />
 
 </LinearLayout>

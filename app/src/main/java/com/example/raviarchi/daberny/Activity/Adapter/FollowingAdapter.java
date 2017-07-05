@@ -28,8 +28,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 
-/**
- * Created by Ravi archi on 2/21/2017.
+/** * Created by Ravi archi on 2/21/2017.
  */
 
 public class FollowingAdapter extends RecyclerView.Adapter<FollowingAdapter.MyViewHolder> {

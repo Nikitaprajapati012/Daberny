@@ -3,7 +3,6 @@ package com.example.raviarchi.daberny.Activity.Adapter;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.RecyclerView;
@@ -14,7 +13,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.example.raviarchi.daberny.Activity.Fragment.Home;
 import com.example.raviarchi.daberny.Activity.Fragment.Tag;
 import com.example.raviarchi.daberny.Activity.Model.UserProfileDetails;
 import com.example.raviarchi.daberny.Activity.Utils.Utils;
@@ -35,11 +33,14 @@ public class SearchTagAdapter extends RecyclerView.Adapter<SearchTagAdapter.MyVi
     public Utils utils;
     private List<UserProfileDetails> arrayUserList;
     private Context context;
+    private FragmentManager fragmentManager;
 
-    public SearchTagAdapter(Context context, ArrayList<UserProfileDetails> arraylist) {
+
+    public SearchTagAdapter(FragmentManager supportFragmentManager, Context context, ArrayList<UserProfileDetails> arraylist) {
         this.context = context;
         this.arrayUserList = arraylist;
-        this.utils =new Utils(context);
+        this.utils = new Utils(context);
+        this.fragmentManager = supportFragmentManager;
         notifyDataSetChanged();
     }
 
@@ -54,9 +55,12 @@ public class SearchTagAdapter extends RecyclerView.Adapter<SearchTagAdapter.MyVi
     public void onBindViewHolder(MyViewHolder holder, final int position) {
         final UserProfileDetails userdetails = arrayUserList.get(position);
         Id = userdetails.getUserId();
-
-        holder.txtTags.setText(userdetails.getQueTag());
-
+        if (!userdetails.getQueTag().equalsIgnoreCase(" ")) {
+            holder.txtTags.setVisibility(View.VISIBLE);
+            holder.txtTags.setText(userdetails.getQueTag());
+        } else {
+            holder.txtTags.setVisibility(View.GONE);
+        }
 
         holder.linearLayoutTag.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -65,14 +69,11 @@ public class SearchTagAdapter extends RecyclerView.Adapter<SearchTagAdapter.MyVi
                 Gson gson = new Gson();
                 Bundle bundle = new Bundle();
                 bundle.putString("userprofiledetails", gson.toJson(userdetails));
-
-                if (fragment != null) {
-                    fragment.setArguments(bundle);
-                    utils.replaceFragment(fragment);
-                }
+                fragment.setArguments(bundle);
+                FragmentTransaction transaction = fragmentManager.beginTransaction();
+                transaction.replace(R.id.frame_contain_layout, fragment).addToBackStack(null).commit();
             }
         });
-
     }
 
     @Override

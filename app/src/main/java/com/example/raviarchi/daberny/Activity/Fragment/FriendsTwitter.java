@@ -4,11 +4,7 @@ import android.app.ProgressDialog;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,9 +21,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-
-import static com.example.raviarchi.daberny.Activity.Fragment.Search.edSearch;
-import static com.facebook.FacebookSdk.getApplicationContext;
 
 /*** Created by Ravi archi on 1/10/2017.
  */
@@ -64,7 +57,7 @@ public class FriendsTwitter extends Fragment {
 
     private void openLatestList() {
         // TODO: 2/21/2017 bind list and show in adapter
-        adapter = new SearchLatestAdapter(getActivity(), arrayUserList);
+        adapter = new SearchLatestAdapter(getActivity().getSupportFragmentManager(), getActivity(), arrayUserList);
         utils.setAdapterForList(recyclerViewPeople,adapter);
 
     }

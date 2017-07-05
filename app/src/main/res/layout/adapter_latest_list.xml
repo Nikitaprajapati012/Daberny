@@ -17,7 +17,7 @@
             android:id="@+id/adapter_latest_list_txtquestin"
             android:layout_width="match_parent"
             android:layout_height="@dimen/_40sdp"
-            android:text="@string/username"
+            android:text="@string/question"
             android:gravity="center|left"
             android:paddingLeft="@dimen/_5sdp"
             android:textColor="@color/logintext"

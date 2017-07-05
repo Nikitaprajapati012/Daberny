@@ -2,7 +2,6 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="@dimen/_50sdp"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/signinbg"
     android:orientation="vertical">
 
@@ -10,8 +9,7 @@
         android:id="@+id/activity_main_toolbar"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/signinbg"
-        >
+        android:background="@color/signinbg">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -27,8 +25,7 @@
                 android:gravity="center|left"
                 android:text="@string/daberny"
                 android:textColor="@android:color/white"
-                android:textSize="@dimen/_16sdp"
-                />
+                android:textSize="@dimen/_16sdp" />
 
             <ImageView
                 android:id="@+id/toolbar_useradd"

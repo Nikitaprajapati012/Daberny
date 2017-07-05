@@ -29,6 +29,8 @@ public class UserProfileDetails {
     private String queVotePercentage3;
     private String queVotePercentage4;
     private String userFullName;
+    private String userChatPostDate;
+    private String otherChatPostDate;
     private String userMobileNumber;
     private String otherUserFullName;
     private String userUserName;
@@ -63,6 +65,7 @@ public class UserProfileDetails {
     private Long queCreatedTime;
     private Long queTiming;
     private Long queRemainTime;
+    private Long queRemainTimeMiliSeconds;
     private String queTimingDuration;
     private String queCategory;
     private String quePostDate;
@@ -93,15 +96,49 @@ public class UserProfileDetails {
     private String userMsgReceiver;
     private String userMsgPostDate;
     private String userMsgType;
+    private String userMsgTime;
     private String userMsgStatus;
     private String userContactName;
     private String userContactNumber;
     private Message inserted_data;
     public UserProfileDetails() {
     }
+
     public UserProfileDetails(String quename, boolean isSelected) {
         this.queTitle = quename;
         this.isSelected = isSelected;
+    }
+
+    public String getUserMsgTime() {
+        return userMsgTime;
+    }
+
+    public void setUserMsgTime(String userMsgTime) {
+        this.userMsgTime = userMsgTime;
+    }
+
+    public Long getQueRemainTimeMiliSeconds() {
+        return queRemainTimeMiliSeconds;
+    }
+
+    public void setQueRemainTimeMiliSeconds(Long queRemainTimeMiliSeconds) {
+        this.queRemainTimeMiliSeconds = queRemainTimeMiliSeconds;
+    }
+
+    public String getOtherChatPostDate() {
+        return otherChatPostDate;
+    }
+
+    public void setOtherChatPostDate(String otherChatPostDate) {
+        this.otherChatPostDate = otherChatPostDate;
+    }
+
+    public String getUserChatPostDate() {
+        return userChatPostDate;
+    }
+
+    public void setUserChatPostDate(String userChatPostDate) {
+        this.userChatPostDate = userChatPostDate;
     }
 
     public String getContentId() {

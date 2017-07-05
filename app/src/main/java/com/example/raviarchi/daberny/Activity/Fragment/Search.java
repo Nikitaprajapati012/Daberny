@@ -50,7 +50,7 @@ public class Search extends Fragment implements TabLayout.OnTabSelectedListener 
 
     private void findById(View view) {
         tabLayout = (TabLayout) view.findViewById(R.id.tabLayout);
-        edSearch = (EditText) view.findViewById(R.id.fragment_searchdata_edsearch);
+        edSearch = (EditText) view.findViewById(R.id.fragment_search_edsearch);
         toolBar = (Toolbar) getActivity().findViewById(R.id.activity_main_toolbar);
         txtTitle = (TextView) toolBar.findViewById(R.id.toolbar_title);
         txtTitle.setText(R.string.search);

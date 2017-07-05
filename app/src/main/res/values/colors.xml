@@ -13,6 +13,8 @@
     <color name="purpole">#39103b</color>
     <color name="white">#ffffff</color>
     <color name="black">#000000</color>
+    <color name="anstext">#dddfe0</color>
+    <color name="anstextcolor">#b2b2b2</color>
     <color name="red">#ff352b</color>
     <color name="light_brown">#a84937</color>
     <color name="pink">#b1455c</color>

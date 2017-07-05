@@ -126,7 +126,7 @@ public class EditUserProfile extends Fragment implements View.OnClickListener, M
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
-        View view = inflater.inflate(R.layout.test_edit_user_profile, container, false);
+        View view = inflater.inflate(R.layout.fragment_edit_user_profile, container, false);
         ButterKnife.bind(this, view);
         headerView = (RelativeLayout) getActivity().findViewById(R.id.mainview);
         toolBar = (Toolbar) getActivity().findViewById(R.id.activity_main_toolbar);

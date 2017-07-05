@@ -24,10 +24,7 @@ import com.example.raviarchi.daberny.R;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.util.ArrayList;
-
-import static com.example.raviarchi.daberny.Activity.Fragment.Search.edSearch;
 import static com.facebook.FacebookSdk.getApplicationContext;
 
 /*** Created by Ravi archi on 1/10/2017.

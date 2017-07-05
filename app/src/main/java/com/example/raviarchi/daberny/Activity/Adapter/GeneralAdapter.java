@@ -1,11 +1,12 @@
 package com.example.raviarchi.daberny.Activity.Adapter;
 
+import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
+import android.media.MediaPlayer;
+import android.net.Uri;
 import android.os.AsyncTask;
-import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
@@ -15,8 +16,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.MediaController;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -33,7 +36,6 @@ import com.example.raviarchi.daberny.Activity.Utils.CountDownTimerClass;
 import com.example.raviarchi.daberny.Activity.Utils.RoundedTransformation;
 import com.example.raviarchi.daberny.Activity.Utils.Utils;
 import com.example.raviarchi.daberny.R;
-import com.example.raviarchi.multiplespinner.MultiSelectionSpinner;
 import com.koushikdutta.async.http.socketio.ExceptionCallback;
 import com.squareup.picasso.Picasso;
 
@@ -51,10 +53,13 @@ import butterknife.ButterKnife;
 /*** Created by Ravi archi on 2/21/2017.
  */
 
-public class GeneralAdapter extends RecyclerView.Adapter<GeneralAdapter.MyViewHolder> implements View.OnClickListener, MultiSelectSpinner.MultiSpinnerListener {
+public class GeneralAdapter extends RecyclerView.Adapter<GeneralAdapter.MyViewHolder> implements MultiSelectSpinner.MultiSpinnerListener {
     public long time;
     public Utils utils;
     public UserProfileDetails details;
+    public Dialog dialog;
+    public LinearLayout layoutFb, layoutTwitter, layoutList;
+    public MultiSelectSpinner spinnnerFollowing;
     private ArrayList<String> arrayfollowingUserList;
     private ArrayList<String> arrayfollowingUserIdList;
     private String loginUserId, queId, Answer, followingPeopleName, followingPeopleId, commentText;
@@ -62,9 +67,7 @@ public class GeneralAdapter extends RecyclerView.Adapter<GeneralAdapter.MyViewHo
     private ArrayList<UserProfileDetails> arrayList;
     private Context context;
     private int seconds, minutes, hours;
-    private Handler handler;
-    private Long remainTime;
-    private boolean mCancelled = false;
+    private Long remainTime, remainTimeMiliSeconds;
 
     public GeneralAdapter(Context context, ArrayList<UserProfileDetails> arraylist, ArrayList<String> arrayFollowingNameList, ArrayList<String> arrayFollowingIdList) {
         this.context = context;
@@ -81,7 +84,7 @@ public class GeneralAdapter extends RecyclerView.Adapter<GeneralAdapter.MyViewHo
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.test, parent, false);
+                .inflate(R.layout.adapter_home_list, parent, false);
         return new MyViewHolder(itemView);
     }
 
@@ -89,34 +92,15 @@ public class GeneralAdapter extends RecyclerView.Adapter<GeneralAdapter.MyViewHo
     public void onBindViewHolder(final MyViewHolder holder, final int position) {
         final UserProfileDetails details = arrayList.get(position);
         loginUserId = Utils.ReadSharePrefrence(context, Constant.USERID);
-        String isRemainTime = Utils.ReadSharePrefrence(context, Constant.REMAINTIME);
         queId = details.getQueId();
-        Long time;
-        if (isRemainTime.length() > 0) {
-            remainTime = arrayList.get(position).getQueRemainTime();
-            if (remainTime != null) {
-                Utils.WriteSharePrefrence(context, Constant.TIME, String.valueOf(remainTime));
-            } else {
-                time = 0000000000L;
-                remainTime = time;
-            }
-        }
-
+        Utils.WriteSharePrefrence(context, Constant.QUE, details.getQueId());
+        remainTime = arrayList.get(position).getQueRemainTime();
+        remainTimeMiliSeconds = arrayList.get(position).getQueRemainTimeMiliSeconds();
 
         // TODO: 6/6/2017 time handler
-        timer = new CountDownTimerClass(remainTime, 1000) {
+        timer = new CountDownTimerClass(remainTimeMiliSeconds, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
-               /* long years = millisUntilFinished / (365 * 60 * 60 * 24);
-                long months = (millisUntilFinished - years * 365 * 60 * 60 * 24) / (30 * 60 * 60 * 24);
-                long days = (millisUntilFinished - years * 365 * 60 * 60 * 24 - months * 30 * 60 * 60 * 24) / (60 * 60 * 24);
-                long hours = (millisUntilFinished - years * 365 * 60 * 60 * 24
-                        - months * 30 * 60 * 60 * 24 - days * 60 * 60 * 24) / (60 * 60);
-                long minutes = (millisUntilFinished - years * 365 * 60 * 60 * 24 - months * 30 * 60 * 60 * 24 - days * 60 * 60 * 24 - hours * 60 * 60) / 60;
-                long seconds = (millisUntilFinished - years * 365 * 60 * 60 * 24 - months * 30 * 60 * 60 * 24 - days * 60 * 60 * 24 - hours * 60 * 60 - minutes * 60);
-                Log.d("TIMER", "--Y-"+years +"-M-"+ months +"-D-"+days
-                        +"-H-"+hours+"-MI-"+minutes+"-S-"+seconds);*/
-                /////////////////////////////
                 hours = (int) ((millisUntilFinished / (1000 * 60 * 60)) % 24);
                 minutes = (int) ((millisUntilFinished / (1000 * 60)) % 60);
                 seconds = (int) (millisUntilFinished / 1000) % 60;
@@ -142,6 +126,7 @@ public class GeneralAdapter extends RecyclerView.Adapter<GeneralAdapter.MyViewHo
         }.start();
 
         // TODO: 5/25/2017 **************set the Visibility**********************
+        holder.imgOptionMenu.setVisibility(View.INVISIBLE);
         holder.rdAnswer3.setVisibility(View.VISIBLE);
         holder.rdAnswer4.setVisibility(View.VISIBLE);
         holder.txtVoteSucess.setVisibility(View.GONE);
@@ -169,7 +154,6 @@ public class GeneralAdapter extends RecyclerView.Adapter<GeneralAdapter.MyViewHo
         } else {
             holder.layoutShare.setVisibility(View.GONE);
         }*/
-
         // TODO: 6/20/2017 set the layout if any comment on post
         if (details.getQueComment() != null) {
             holder.layoutCommentText.setVisibility(View.VISIBLE);
@@ -256,12 +240,10 @@ public class GeneralAdapter extends RecyclerView.Adapter<GeneralAdapter.MyViewHo
         } else {
             holder.imgLike.setImageDrawable(ContextCompat.getDrawable(context, R.mipmap.ic_like_icon));
         }
-
         // TODO: 5/25/2017 ************** End **********************
 
 
         // TODO: 5/25/2017 **************set the value in ImageView & VideoView*******************
-
         // TODO: 2/23/2017 set user profile image of comment user
         utils.setCommentUserImageInPicasso(details, holder.imgCommentUserProfilePic);
 
@@ -269,16 +251,67 @@ public class GeneralAdapter extends RecyclerView.Adapter<GeneralAdapter.MyViewHo
         utils.setPostUserImageInPicasso(details, holder.imgProfilePic);
 
         // TODO: 2/23/2017 set image & video dynamically
-        utils.setPostImageVideo(details, holder.imgQuestionPic, holder.vdProfile, holder.layoutMedia);
+        // utils.setPostImageVideo(details, holder.imgQuestionPic, holder.vdProfile, holder.layoutMedia);
+        if (details.getQueImageName().length() > 0) {
+            if (details.getQueImage() != null) {
+                holder.imgQuestionPic.setVisibility(View.VISIBLE);
+                holder.vdProfile.setVisibility(View.VISIBLE);
+                holder.layoutMedia.setVisibility(View.VISIBLE);
+                if (details.getQueType().equalsIgnoreCase("0")) {
+                    holder.layoutMedia.setVisibility(View.GONE);
+                } else if (details.getQueType().equalsIgnoreCase("1")) {
+                    holder.vdProfile.setVisibility(View.GONE);
+                    holder.imageButton.setVisibility(View.GONE);
+                    Picasso.with(context).load(details.getQueImage()).placeholder(R.drawable.ic_placeholder).into(holder.imgQuestionPic);
+                } else if (details.getQueType().equalsIgnoreCase("2")) {
+                    holder.imgQuestionPic.setVisibility(View.GONE);
+                    final MediaController mediaController = new MediaController(context);
+                    mediaController.setAnchorView(holder.vdProfile);
+                    holder.vdProfile.setMediaController(null);
+                    holder.vdProfile.setVideoURI(Uri.parse(details.getQueImage()));
+                    holder.vdProfile.getBufferPercentage();
+                    holder.vdProfile.requestFocus();
+//                    MediaPlayer mp = MediaPlayer.create(context, Uri.parse(details.getQueImage()));
+//                    mp.start();
+                    //for mute mp.setVolume(0,0);
+                    //for unmute or full volume mp.setVolume(1,1);
+                    holder.imageButton.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            if (holder.vdProfile.isPlaying()) {
+                                holder.vdProfile.pause();
+                            } else {
+                                holder.vdProfile.start();
+                                new MediaController(context).show();
+                                holder.imageButton.setVisibility(View.GONE);
+                                holder.vdProfile.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
+                                    @Override
+                                    public void onPrepared(MediaPlayer mediaPlayer) {
+                                        try {
+                                            if (mediaPlayer.isPlaying()) {
+                                                mediaPlayer.stop();
+                                                mediaPlayer.release();
+                                                mediaPlayer = MediaPlayer.create(context, Uri.parse(details.getQueImage()));
+                                                Log.d("AUDIO", "@Enter----");
+                                            }
+                                            mediaPlayer.start();
+                                        } catch (Exception e) {
+                                            e.printStackTrace();
+                                            Log.d("AUDIOExp", "@" + e);
+                                        }
+                                    }
+                                });
+                            }
+                        }
+                    });
+                }
+            }
+        }
 
         //TODO: 5/25/2017 ********************** End ************************
 
 
         // TODO: 5/25/2017 **************set the click event**********************
-        holder.layoutFacebook.setOnClickListener(this);
-        holder.layoutTwitter.setOnClickListener(this);
-        // TODO: 6/7/2017 get list of following people
-        holder.spinnnerFollowing.setItems(arrayfollowingUserList, "Following", this);
 
         // TODO: 3/28/2017 redirect to show all comments
         holder.txtViewAllComments.setOnClickListener(new View.OnClickListener() {
@@ -296,7 +329,6 @@ public class GeneralAdapter extends RecyclerView.Adapter<GeneralAdapter.MyViewHo
                 Fragment fragment = new CommentPeopleDetail();
                 utils.setIdOfQuestion(details, fragment);
                 utils.replaceFragment(fragment);
-
             }
         });
         holder.imgComment.setOnClickListener(new View.OnClickListener() {
@@ -339,7 +371,6 @@ public class GeneralAdapter extends RecyclerView.Adapter<GeneralAdapter.MyViewHo
                 utils.replaceFragment(fragment);
             }
         });
-
         holder.imgProfilePic.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -388,12 +419,64 @@ public class GeneralAdapter extends RecyclerView.Adapter<GeneralAdapter.MyViewHo
         holder.btnShare.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                new SharePost(holder, position, loginUserId, followingPeopleId, details.getQueId(), arrayList).execute();
-                //Toast.makeText(context, "Please select user to share.", Toast.LENGTH_SHORT).show();
-
+                openDialogForShare();
             }
         });
 // TODO: 5/25/2017 ********************** End ************************
+    }
+
+    private void openDialogForShare() {
+        dialog = new Dialog(context);
+        dialog.setContentView(R.layout.dialog_share_option);
+        layoutFb = (LinearLayout) dialog.findViewById(R.id.dialog_share_option_layoutfb);
+        layoutTwitter = (LinearLayout) dialog.findViewById(R.id.dialog_share_option_layouttwitter);
+        layoutList = (LinearLayout) dialog.findViewById(R.id.dialog_share_option_layoutshare);
+        spinnnerFollowing = (MultiSelectSpinner) dialog.findViewById(R.id.dialog_share_option_spinnerFollowing);
+        dialog.show();
+        layoutFb.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                try {
+                    Intent i = new Intent(Intent.ACTION_SEND);
+                    i.setClassName("com.facebook.katana", "com.facebook.katana.LoginActivity");
+                    i.putExtra(Intent.EXTRA_SUBJECT, "Daberny");
+                    String sAux = "\nLet me recommend you this application\n\n";
+                    sAux = sAux + "https://play.google.com/store/apps/details?id=com.example.raviarchi\n\n";
+                    i.putExtra(Intent.EXTRA_TEXT, "https://i.diawi.com/UBMuRn");
+                    context.startActivity(Intent.createChooser(i, "choose one"));
+                } catch (Exception e) {
+                    //e.toString();
+                }
+                dialog.dismiss();
+            }
+        });
+
+        layoutTwitter.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                try {
+                    Intent i = new Intent(Intent.ACTION_SEND);
+                    i.setClassName("com.twitter.android", "com.twitter.android.LoginActivity");
+                    i.putExtra(Intent.EXTRA_SUBJECT, "Daberny");
+                    String sAux = "\nLet me recommend you this application\n\n";
+                    sAux = sAux + "https://play.google.com/store/apps/details?id=com.example.raviarchi\n\n";
+                    i.putExtra(Intent.EXTRA_TEXT, "https://i.diawi.com/UBMuRn");
+                    context.startActivity(Intent.createChooser(i, "choose one"));
+                } catch (Exception e) {
+                    //e.toString();
+                }
+                dialog.dismiss();
+            }
+        });
+        layoutList.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                spinnnerFollowing.performClick();
+                dialog.dismiss();
+            }
+        });
+        // TODO: 6/7/2017 get list of following people
+        spinnnerFollowing.setItems(arrayfollowingUserList, "Following", this);
     }
 
     @Override
@@ -407,55 +490,72 @@ public class GeneralAdapter extends RecyclerView.Adapter<GeneralAdapter.MyViewHo
     }
 
     @Override
-    public void onClick(View v) {
-        PackageManager pm = context.getPackageManager();
-        switch (v.getId()) {
-            case R.id.adapter_home_list_layoutfb:
-                Intent ifeb = new Intent("android.intent.category.LAUNCHER");
-                ifeb.setClassName("com.facebook.katana", "com.facebook.katana.LoginActivity");
-                context.startActivity(ifeb);
-                break;
-
-            case R.id.adapter_home_list_layouttwitter:
-                Intent intent = new Intent(Intent.ACTION_VIEW);
-                intent.setClassName("com.twitter.android", "com.twitter.android.LoginActivity");
-                context.startActivity(intent);
-                //to share application link via twitter
-                /*try {
-                    Intent i = new Intent(Intent.ACTION_SEND);
-                    i.setType("text/plain");
-                    i.putExtra(Intent.EXTRA_SUBJECT, "My application name");
-                    String sAux = "\nLet me recommend you this application\n\n";
-                    sAux = sAux + "https://play.google.com/store/apps/details?id=com.example.raviarchi\n\n";
-                    i.putExtra(Intent.EXTRA_TEXT, sAux);
-                    context.startActivity(Intent.createChooser(i, "choose one"));
-                } catch(Exception e) {
-                    //e.toString();
-                }*/
-                break;
-        }
-    }
-
-    @Override
     public void onItemsSelected(boolean[] selected) {
-        utils.getSelectedFriendsId(selected, arrayfollowingUserIdList, followingPeopleId);
+        ArrayList<String> newGetId = new ArrayList<>();
+        for (int i = 0; i < selected.length; i++) {
+            if (selected[i]) {
+                newGetId.add(arrayfollowingUserIdList.get(i));
+            }
+            followingPeopleId = "";
+            for (int j = 0; j < newGetId.size(); j++) {
+                if (followingPeopleId.length() > 0) {
+                    followingPeopleId = followingPeopleId + "," + newGetId.get(j);
+                } else {
+                    followingPeopleId = newGetId.get(j);
+                }
+            }
+        }
+        if (followingPeopleId != null && Utils.ReadSharePrefrence(context, Constant.QUE) != null) {
+            Log.d("QUEID", "@@" + Utils.ReadSharePrefrence(context, Constant.QUE));
+            Log.d("friends", "@@" + followingPeopleId);
+            if (followingPeopleId.trim().length() > 0) {
+                new SharePost(loginUserId, followingPeopleId, Utils.ReadSharePrefrence(context, Constant.QUE), arrayList).execute();
+            } else {
+                Toast.makeText(context, "Please select user to share.", Toast.LENGTH_SHORT).show();
+            }
+        }
+
+//        Log.d("QUE_ID", "@@" + Utils.ReadSharePrefrence(context, Constant.QUE));
+//        ArrayList<String> newGetId = new ArrayList<>();
+//        for (int i = 0; i < selected.length; i++) {
+//            if (selected[i]) {
+//                newGetId.add(arrayfollowingUserIdList.get(i));
+//            }
+//            followingPeopleId = "";
+//            for (int j = 0; j < newGetId.size(); j++) {
+//                if (followingPeopleId.length() > 0) {
+//                    followingPeopleId = followingPeopleId + "," + newGetId.get(j);
+//                } else {
+//                    followingPeopleId = newGetId.get(j);
+//                }
+//            }
+//        }
+//        if (followingPeopleId != null && Utils.ReadSharePrefrence(context, Constant.QUE) != null) {
+//            Log.d("friends", "@@" + followingPeopleId);
+//            if (followingPeopleId.trim().length() > 0) {
+//                new SharePost(loginUserId, followingPeopleId,
+//                        Utils.ReadSharePrefrence(context, Constant.QUE), arrayList).execute();
+//            } else {
+//                Toast.makeText(context, "Please select user to share.", Toast.LENGTH_SHORT).show();
+//            }
+//        }
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
-        @BindView(R.id.adapter_home_list_spinnerFollowing)
-        MultiSelectSpinner spinnnerFollowing;
-        @BindView(R.id.adapter_home_list_layoutfb)
-        LinearLayout layoutFacebook;
-        @BindView(R.id.adapter_home_list_layoutshare)
-        LinearLayout layoutShare;
+        @BindView(R.id.adapter_home_list_play_sound)
+        ImageButton playsound;
+        @BindView(R.id.adapter_home_list_play_button)
+        ImageButton imageButton;
+        @BindView(R.id.adapter_home_list_optionmenu)
+        ImageView imgOptionMenu;
+        @BindView(R.id.adapter_home_list_layout)
+        LinearLayout layoutHome;
         @BindView(R.id.adapter_home_list_btnshare)
         Button btnShare;
         @BindView(R.id.adapter_home_list_layout_all_voteresult)
         LinearLayout layoutAllVoteResult;
         @BindView(R.id.adapter_home_list_layoutCommentText)
         LinearLayout layoutCommentText;
-        @BindView(R.id.adapter_home_list_layouttwitter)
-        LinearLayout layoutTwitter;
         @BindView(R.id.adapter_home_list_txtusername)
         TextView txtUserName;
         @BindView(R.id.adapter_home_list_txthour)
@@ -568,7 +668,6 @@ public class GeneralAdapter extends RecyclerView.Adapter<GeneralAdapter.MyViewHo
         LinearLayout layoutInterest3;
         @BindView(R.id.adapter_home_list_radiogroup)
         RadioGroup radioGroup;
-        MultiSelectionSpinner multiSelectionSpinnerFollowing;
         @BindView(R.id.adapter_home_list_beforecounter)
         LinearLayout layoutCounter;
         @BindView(R.id.adapter_home_list_progressbar1)
@@ -651,57 +750,52 @@ public class GeneralAdapter extends RecyclerView.Adapter<GeneralAdapter.MyViewHo
 
     }
 
-    private class SharePost extends AsyncTask<String, String, String> {
-        String id, que_id, otheruser_id, loginuser_id;
-        ProgressDialog pd;
-        int position;
-        ArrayList<UserProfileDetails> arrayList;
-        MyViewHolder holder;
+    /* private class SharePost extends AsyncTask<String, String, String> {
+         String id, que_id, otheruser_id, loginuser_id;
+         ProgressDialog pd;
+         ArrayList<UserProfileDetails> arrayList;
 
-        private SharePost(MyViewHolder holder, int position, String userid, String otheruserId, String queId, ArrayList<UserProfileDetails> arrayList) {
-            this.holder = holder;
-            this.position = position;
-            this.loginuser_id = userid;
-            this.otheruser_id = otheruserId;
-            this.que_id = queId;
-            this.arrayList = arrayList;
-            notifyDataSetChanged();
-        }
+         SharePost(String userid, String otheruserId, String queId, ArrayList<UserProfileDetails> arrayList) {
+             this.loginuser_id = userid;
+             this.otheruser_id = otheruserId;
+             this.que_id = queId;
+             this.arrayList = arrayList;
+             notifyDataSetChanged();
+         }
 
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            arrayList = new ArrayList<>();
-            pd = new ProgressDialog(context);
-            pd.setMessage("Loading");
-            pd.setCancelable(false);
-            pd.show();
-        }
+         @Override
+         protected void onPreExecute() {
+             super.onPreExecute();
+             arrayList = new ArrayList<>();
+             pd = new ProgressDialog(context);
+             pd.setMessage("Loading");
+             pd.setCancelable(false);
+             pd.show();
+         }
 
-        @Override
-        protected String doInBackground(String... strings) {
-            //http://181.224.157.105/~hirepeop/host2/surveys/api/question_share_data/752/669,885/709
-            return Utils.getResponseofGet(Constant.QUESTION_BASE_URL + "question_share_data/" + loginuser_id + "/" + otheruser_id + "/" + que_id);
-        }
+         @Override
+         protected String doInBackground(String... strings) {
+             //http://181.224.157.105/~hirepeop/host2/surveys/api/question_share_data/752/669,885/709
+             return Utils.getResponseofGet(Constant.QUESTION_BASE_URL + "question_share_data/" + loginuser_id + "/" + otheruser_id + "/" + que_id);
+         }
 
-        @Override
-        protected void onPostExecute(String s) {
-            super.onPostExecute(s);
-            pd.dismiss();
-            Log.d("RESPONSE", "Share Post..." + s);
-            try {
-                JSONObject jsonObject = new JSONObject(s);
-                if (jsonObject.getString("status").equalsIgnoreCase("true")) {
-                    Toast.makeText(context, "Success! Post shared to selected users", Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(context, jsonObject.getString("msg"), Toast.LENGTH_SHORT).show();
-                }
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
+         @Override
+         protected void onPostExecute(String s) {
+             super.onPostExecute(s);
+             pd.dismiss();
+             Log.d("RESPONSE", "Share Post..." + s);
+             try {
+                 JSONObject jsonObject = new JSONObject(s);
+                 if (jsonObject.getString("status").equalsIgnoreCase("true")) {
+                     Toast.makeText(context, "Success! Post shared to selected users", Toast.LENGTH_SHORT).show();
+                 } else {
+                     Toast.makeText(context, jsonObject.getString("msg"), Toast.LENGTH_SHORT).show();
+                 }
+             } catch (JSONException e) {
+                 e.printStackTrace();
+             }
+         }
+     }*/
     // TODO: 3/28/2017  like and dislike the post
     private class LikePost extends AsyncTask<String, String, String> {
         String user_id, que_id, task;
@@ -783,7 +877,7 @@ public class GeneralAdapter extends RecyclerView.Adapter<GeneralAdapter.MyViewHo
         ArrayList<UserProfileDetails> arrayList;
         MyViewHolder holder;
 
-        public CommentPost(MyViewHolder holder, ArrayList<UserProfileDetails> arrayList, String id, String queId, String comment) {
+        private CommentPost(MyViewHolder holder, ArrayList<UserProfileDetails> arrayList, String id, String queId, String comment) {
             this.id = id;
             this.queId = queId;
             this.comment = comment;
@@ -852,6 +946,53 @@ public class GeneralAdapter extends RecyclerView.Adapter<GeneralAdapter.MyViewHo
             }
         }
 
+    }
+
+    private class SharePost extends AsyncTask<String, String, String> {
+        String id, que_id, otheruser_id, loginuser_id;
+        ProgressDialog pd;
+        ArrayList<UserProfileDetails> arrayList;
+
+        private SharePost(String userid, String otheruserId, String queId, ArrayList<UserProfileDetails> arrayList) {
+            this.loginuser_id = userid;
+            this.otheruser_id = otheruserId;
+            this.que_id = queId;
+            this.arrayList = arrayList;
+            notifyDataSetChanged();
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            arrayList = new ArrayList<>();
+            pd = new ProgressDialog(context);
+            pd.setMessage("Loading");
+            pd.setCancelable(false);
+            pd.show();
+        }
+
+        @Override
+        protected String doInBackground(String... strings) {
+            //http://181.224.157.105/~hirepeop/host2/surveys/api/question_share_data/752/669,885/709
+            return Utils.getResponseofGet(Constant.QUESTION_BASE_URL + "question_share_data/" + loginuser_id + "/" + otheruser_id + "/" + que_id);
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+            pd.dismiss();
+            Log.d("RESPONSE", "Share Post..." + s);
+            try {
+                JSONObject jsonObject = new JSONObject(s);
+                if (jsonObject.getString("status").equalsIgnoreCase("true")) {
+                    Toast.makeText(context, "Success! Post shared to selected users", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(context, jsonObject.getString("msg"), Toast.LENGTH_SHORT).show();
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }
 

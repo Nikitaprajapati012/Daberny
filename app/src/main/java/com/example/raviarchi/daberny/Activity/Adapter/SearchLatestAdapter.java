@@ -25,8 +25,9 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-/**
- * Created by Ravi archi on 2/21/2017.
+import static com.facebook.FacebookSdk.getApplicationContext;
+
+/*** Created by Ravi archi on 2/21/2017.
  */
 
 public class SearchLatestAdapter extends RecyclerView.Adapter<SearchLatestAdapter.MyViewHolder> {
@@ -34,11 +35,13 @@ public class SearchLatestAdapter extends RecyclerView.Adapter<SearchLatestAdapte
     public Utils utils;
     private List<UserProfileDetails> arrayUserList;
     private Context context;
+    private FragmentManager fragmentManager;
 
-    public SearchLatestAdapter(Context context, ArrayList<UserProfileDetails> arraylist) {
+    public SearchLatestAdapter(FragmentManager supportFragmentManager, Context context, ArrayList<UserProfileDetails> arraylist) {
         this.context = context;
         this.arrayUserList = arraylist;
-        this.utils =new Utils(context);
+        this.utils = new Utils(context);
+        this.fragmentManager =supportFragmentManager;
         notifyDataSetChanged();
     }
 
@@ -62,7 +65,8 @@ public class SearchLatestAdapter extends RecyclerView.Adapter<SearchLatestAdapte
                 bundle.putString("userprofiledetails", gson.toJson(userdetails));
                 Fragment fragment = new Tag();
                 fragment.setArguments(bundle);
-                utils.replaceFragment(fragment);
+                FragmentTransaction transaction = fragmentManager.beginTransaction();
+                transaction.replace(R.id.frame_contain_layout, fragment).addToBackStack(null).commit();
             }
         });
 

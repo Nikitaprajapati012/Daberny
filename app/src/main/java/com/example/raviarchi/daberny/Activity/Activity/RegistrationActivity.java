@@ -217,7 +217,7 @@ public class RegistrationActivity extends AppCompatActivity implements View.OnCl
         @Override
         protected String doInBackground(String... strings) {
             //http://181.224.157.105/~hirepeop/host2/surveys/api/country_list/
-            return utils.getResponseofGet(Constant.QUESTION_BASE_URL + "country_list/");
+            return Utils.getResponseofGet(Constant.QUESTION_BASE_URL + "country_list/");
         }
 
         @Override
