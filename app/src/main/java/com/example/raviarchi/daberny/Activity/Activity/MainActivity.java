@@ -62,7 +62,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // TODO: 2/21/2017 if user is login then redirect on relevant screen
-        // TODO: 3/6/2017 utils intialize
+        // TODO: 3/6/2017 utils intializee
         utils = new Utils(MainActivity.this);
         userId = ReadSharePrefrence(this, Constant.USERID);
         fbUserId = ReadSharePrefrence(this, Constant.FB_USER_ID);
